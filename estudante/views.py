@@ -10,6 +10,7 @@ from .models import (SistemaProfessor, Estudante, Professor, Funcionario, PEI,
                      PerfilEstudante, Atividade, Planejamento, HabilidadeAcademica,
                      Checklist)
 from django.contrib.auth.hashers import make_password, check_password
+from django.contrib import messages
 
 # Create your views here.
 
@@ -28,9 +29,9 @@ def cadastro_sistema(request):
         SistemaProfessor.objects.create(cpf=cpf, nome=nome, email=email, senha=senha)
         professor = SistemaProfessor.objects.filter(cpf=cpf).first()
         if professor:
-            return HttpResponse("o usuario foi cadastrado")
-        else:
-            return HttpResponse("o usuario não foi cadastrado")
+            messages.success(request, "O usuario foi cadastrado")
+            redirect("login")
+        messages.error(request, "O usuario não foi cadastrado", extra_tags="danger")
 
 def login(request):
     if request.method == "GET":
@@ -44,7 +45,8 @@ def login(request):
                 request.session["sistema_professor_cpf"] = sistema_professor.cpf
                 request.session["sistema_professor_nome"] = sistema_professor.nome
                 return redirect("painel_administrador")
-        return HttpResponse("login não realizado")
+        messages.error(request, "login não realizado", extra_tags="danger")
+        return redirect("login")
 
 def sair(request):
     request.session.flush()
@@ -52,12 +54,13 @@ def sair(request):
 
 def painel_administrador(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
-    if request.method == "GET":
-        return render(request, "painel_administrador.html")
+    return render(request, "painel_administrador.html")
 
 def cadastro_estudante(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         return render(request, 'cadastro_estudante.html')
@@ -85,12 +88,14 @@ def cadastro_estudante(request):
                                  email_responsavel=email_responsavel)
         estudante = Estudante.objects.filter(cpf=cpf).first()
         if estudante:
-            return HttpResponse("estudante cadastrado ")
-        else:
-            return HttpResponse("estudante não cadastrado ")
+            messages.success(request, "estudante cadastrado")
+            return redirect("cadastro_estudante")
+        messages.error(request, "estudante não cadastrado", extra_tags="danger")
+        return redirect("cadastro_estudante")
 
 def cadastro_professor(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         return render(request, 'cadastro_professor.html')
@@ -106,12 +111,14 @@ def cadastro_professor(request):
                                  telefone=telefone)
         professor = Professor.objects.filter(cpf=cpf).first()
         if professor:
-            return HttpResponse("O professor foi cadastrado ")
-        else:
-            return HttpResponse("O professor não foi cadastrado ")
+            messages.success(request, "professor foi cadastrado")
+            return redirect("cadastro_professor")
+        messages.error(request, "professor não foi cadastrado", extra_tags="danger")
+        return redirect("cadastro_professor")
 
 def cadastro_funcionario(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o login")
         return redirect("login")
     if request.method == "GET":
         return render(request, 'cadastro_funcionario.html')
@@ -122,12 +129,14 @@ def cadastro_funcionario(request):
         Funcionario.objects.create(cpf=cpf, nome=nome, funcao=funcao)
         funcionario = Funcionario.objects.filter(cpf=cpf).first()
         if funcionario:
-            return HttpResponse("Funcionario cadastrado ")
-        else:
-            return  HttpResponse("Funcionario não cadastrado")
+            messages.success(request, "o funcionario foi cadastrado")
+            return redirect("cadastro_funcionario")
+        messages.warning(request, "o funcionario não foi cadastrado", extra_tags="danger")
+        return redirect("cadastro_funcionario")
 
 def pei(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         return render(request, 'PEI.html')
@@ -143,12 +152,14 @@ def pei(request):
         professor = Professor.objects.filter(matricula = matricula_professor).first()
         if estudante and professor:
             PEI.objects.create(estudante=estudante, professor=professor, tempo=validade)
-            return HttpResponse("PEI cadastrado")
-        else:
-            return HttpResponse("PEI não cadastrado")
+            messages.success(request, "o pei foi cadastrado")
+            return redirect("PEI")
+        messages.error(request, "o pei não foi cadastrado", extra_tags="danger")
+        return redirect("PEI")
 
 def cadastro_equipe(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         quantidade = request.GET.get("quantidade", 0)
@@ -159,6 +170,7 @@ def cadastro_equipe(request):
     if request.method == "POST":
         quantidade = request.POST.get("quantidade", 0)
         quantidade = int(quantidade)
+        quantidade1 = 0
         matricula = request.POST.get("matricula")
         estudante = Estudante.objects.filter(matricula=matricula).first()
         for i in range(quantidade):
@@ -166,12 +178,15 @@ def cadastro_equipe(request):
             funcionario = Funcionario.objects.filter(cpf=cpf).first()
             if estudante and funcionario:
                 FuncionarioEstudante.objects.create(estudante=estudante, funcionario=funcionario)
-            else:
-                return HttpResponse("equipe não cadastrada")
-        return HttpResponse("equipe cadastrada")
+                quantidade1 += 1
+        if quantidade == quantidade1:
+            messages.success(request, "funcionario cadastrado")
+            return redirect("cadastro_equipe")
+        messages.error(request, f'{quantidade1} funcionario cadastrado', extra_tags="danger")
 
 def diagnostico(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         return render(request, 'diagnostico.html')
@@ -193,11 +208,14 @@ def diagnostico(request):
                                        texto=texto_diagnostico, ano_diagnostico=ano,
                                        atendimento_fora_da_escola = atendimento,
                                        texto_atendimento=texto_atendimento)
-            return HttpResponse("diagnostico cadastrado")
-        return HttpResponse("diagnostico não cadastrado")
+            messages.success(request, "diagnostico cadastrado")
+            return redirect("diagnostico")
+        messages.error(request, "diagnostico nao cadastrado", extra_tags="danger")
+        return redirect("diagnostico")
 
 def historico_escolar(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         return render(request, 'historico_escolar.html')
@@ -212,11 +230,14 @@ def historico_escolar(request):
         estudante = Estudante.objects.filter(matricula=matricula).first()
         if estudante:
             HistoricoEscolar.objects.create(texto=texto, texto2=texto2, estudante=estudante)
-            return HttpResponse("historico escolar cadastrado")
-        return HttpResponse("historico escolar não cadastrado")
+            messages.success(request, "historico escolar cadastrado")
+            return redirect("historico_escolar")
+        messages.error(request, "historico escolar não cadastrado", extra_tags="danger")
+        return redirect("historico_escolar")
 
 def perfil_estudante(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         return render(request, 'perfil_estudante.html')
@@ -233,11 +254,14 @@ def perfil_estudante(request):
                                            interesse=interesse, habilidade = habilidade,
                                            nao_gosta=nao_gosta, dificuldade=desafio,
                                            informacao=informacao)
-            return HttpResponse("perfil do estudante cadastrado")
-        return HttpResponse("perfil do estudante não cadastrado")
+            messages.success(request, "perfil estudante cadastrado")
+            return redirect("perfil_estudante")
+        messages.error(request, "perfil estudante não cadastrado", extra_tags="danger")
+        return redirect("perfil_estudante")
 
 def atividade(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         return render(request, "atividade.html")
@@ -249,11 +273,14 @@ def atividade(request):
         if estudante:
             Atividade.objects.create(estudante=estudante, atividade=atividade1,
                                      descricao=descricao)
-            return HttpResponse("Atividade cadastrada")
-        return HttpResponse("Atividade não cadastrada")
+            messages.success(request, "atividade cadastrada")
+            return redirect("atividade")
+        messages.error(request, "atividade não cadastrada", extra_tags="danger")
+        return redirect("atividade")
 
 def planejamento(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         return render(request, "planejamento.html")
@@ -269,11 +296,14 @@ def planejamento(request):
                                         metas_curto_prazo=metas_curto_prazo,
                                         metas_medio_prazo = metas_medio_prazo,
                                         metas_longo_prazo = metas_longo_prazo)
-            return HttpResponse("Planejamento cadastrado")
-        return HttpResponse("Planejamento não cadastrado")
+            messages.success(request, "planejamento cadastrado")
+            return redirect("planejamento")
+        messages.error(request, "planejamento não cadastrado", extra_tags="danger")
+        return redirect("planejamento")
 
 def habilidade_academica(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         return render(request, 'habilidade_academica.html')
@@ -298,11 +328,14 @@ def habilidade_academica(request):
                                                metas_turma = meta_turma, metas_especifica = meta_especifica,
                                                procedimento_metodologico = procedimento,
                                                avaliacao = avaliacao)
-            return HttpResponse("Habilidade registrada")
-        return HttpResponse("Habilidade nao registrada")
+            messages.success(request, "habilidade_academica cadastrado")
+            return redirect("habilidade_academica")
+        messages.error(request, "habilidade_academica não cadastrado", extra_tags="danger")
+        return redirect("habilidade_academica")
 
 def adaptacao_curriculo(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         tipo = "adaptacao de acesso ao curriculo"
@@ -324,12 +357,14 @@ def adaptacao_curriculo(request):
         if estudante:
             Checklist.objects.create(estudante=estudante, checklist=tipo,
                                      pergunta=checklist, texto=texto)
-            return HttpResponse("checklist registrada")
-        else:
-            return HttpResponse("checklist não registrada")
+            messages.success(request, "adaptacao curriculo cadastrado")
+            return redirect("adaptacao_curriculo")
+        messages.error(request, "adaptacao curriculo não cadastrado", extra_tags="danger")
+        return redirect("adaptacao_curriculo")
 
 def adaptacao_objetivo(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         tipo = "adaptacao de objetivo"
@@ -350,12 +385,14 @@ def adaptacao_objetivo(request):
         if estudante:
             Checklist.objects.create(estudante=estudante, checklist=tipo,
                                      pergunta=checklist, texto=texto)
-            return HttpResponse("checklist registrada")
-        else:
-            return HttpResponse("checklist não registrada")
+            messages.success(request, "adaptacao objetivo cadastrado")
+            return redirect("adaptacao_objetivo")
+        messages.error(request, "adaptacao objetivo não cadastrado", extra_tags="danger")
+        return redirect("adaptacao_objetivo")
 
 def adaptacao_conteudo(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         tipo = "adaptacao de conteudo"
@@ -377,12 +414,14 @@ def adaptacao_conteudo(request):
         if estudante:
             Checklist.objects.create(estudante=estudante, checklist=tipo,
                                      pergunta=checklist, texto=texto)
-            return HttpResponse("checklist registrada")
-        else:
-            return HttpResponse("checklist não registrada")
+            messages.success(request, "adaptacao conteudo cadastrado")
+            return redirect("adaptacao_conteudo")
+        messages.error(request, "adaptacao conteudo não cadastrado", extra_tags="danger")
+        return redirect("adaptacao_conteudo")
 
 def adaptacao_metodo(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         tipo = "adaptacao do metodo de ensino e da organizacao didatica"
@@ -404,12 +443,14 @@ def adaptacao_metodo(request):
         if estudante:
             Checklist.objects.create(estudante=estudante, checklist=tipo,
                                      pergunta=checklist, texto=texto)
-            return HttpResponse("checklist registrada")
-        else:
-            return HttpResponse("checklist não registrada")
+            messages.success(request, "adaptacao metodo cadastrado")
+            return redirect("adaptacao_metodo")
+        messages.error(request, "adaptacao metodo não cadastrado", extra_tags="danger")
+        return redirect("adaptacao_metodo")
 
 def adaptacao_sistema(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         tipo = "adaptacao do sistema de avaliacao"
@@ -431,12 +472,14 @@ def adaptacao_sistema(request):
         if estudante:
             Checklist.objects.create(estudante=estudante, checklist=tipo,
                                      pergunta=checklist, texto=texto)
-            return HttpResponse("checklist registrada")
-        else:
-            return HttpResponse("checklist não registrada")
+            messages.success(request, "adaptacao sistema cadastrado")
+            return redirect("adaptacao_sistema")
+        messages.error(request, "adaptacao sistema não cadastrado", extra_tags="danger")
+        return redirect("adaptacao_sistema")
 
 def adaptacao_temporalidade(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         tipo = "adaptacao de temporalidade"
@@ -458,12 +501,14 @@ def adaptacao_temporalidade(request):
         if estudante:
             Checklist.objects.create(estudante=estudante, checklist=tipo,
                                      pergunta=checklist, texto=texto)
-            return HttpResponse("checklist registrada")
-        else:
-            return HttpResponse("checklist não registrada")
+            messages.success(request, "adaptacao temporalidade cadastrado")
+            return redirect("adaptacao_temporalidade")
+        messages.error(request, "adaptacao temporalidade não cadastrado", extra_tags="danger")
+        return redirect("adaptacao_temporalidade")
 
 def gerar_pdf(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         return render(request, "gerar_pdf_matricula.html")
@@ -491,6 +536,7 @@ def gerar_pdf(request):
 
 def estudante_cadastrado(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     estudantes = Estudante.objects.all()
     dicionario = {"estudantes":estudantes}
@@ -498,6 +544,7 @@ def estudante_cadastrado(request):
 
 def remover_estudante(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         estudantes = Estudante.objects.all()
@@ -510,11 +557,14 @@ def remover_estudante(request):
             estudante = Estudante.objects.filter(matricula=matricula).first()
             if estudante:
                 estudante.delete()
-                return HttpResponse("estudante removido")
-        return HttpResponse("estudante não removido")
+                messages.success(request, "estudante removido")
+                return redirect("remover_estudante")
+            messages.error(request, "estudante não removido", extra_tags="danger")
+            return redirect("remover_estudante")
 
 def remover_professor(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         professor = Professor.objects.all()
@@ -527,11 +577,14 @@ def remover_professor(request):
             professor = Professor.objects.filter(matricula=matricula).first()
             if professor:
                 professor.delete()
-                return HttpResponse("professor removido")
-        return HttpResponse("professor não removido")
+                messages.success(request, "profesoor removido")
+                return redirect("remover_profesoor")
+            messages.error(request, "profesoor não removido", extra_tags="danger")
+            return redirect("remover_profesoor")
 
 def remover_funcionario(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         funcionario = Funcionario.objects.all()
@@ -544,11 +597,14 @@ def remover_funcionario(request):
             funcionario = Funcionario.objects.filter(cpf=cpf).first()
             if funcionario:
                 funcionario.delete()
-                return HttpResponse("funcionario removido")
-        return HttpResponse("funcionario não removido")
+                messages.success(request, "funcionario removido")
+                return redirect("remover_funcionario")
+            messages.error(request, "efuncionario não removido", extra_tags="danger")
+            return redirect("remover_funcionario")
 
 def professor_cadastrado(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     professor = Professor.objects.all()
     dicionario = {"professores":professor}
@@ -556,6 +612,7 @@ def professor_cadastrado(request):
 
 def funcionario_cadastrado(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     funcionario = Funcionario.objects.all()
     dicionario = {"funcionarios":funcionario}
@@ -563,20 +620,24 @@ def funcionario_cadastrado(request):
 
 def gerenciar_professor(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     return render(request, "gerenciar_professor.html")
 
 def gerenciar_estudante(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     return render(request, "gerenciar_estudante.html")
 
 def gerenciar_funcionario(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     return render(request, "gerenciar_funcionario.html")
 
 def cadastrar_pei(request):
     if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
         return redirect("login")
     return render(request, "cadastrar_pei.html")

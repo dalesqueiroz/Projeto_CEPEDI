@@ -3,27 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <title>Document</title>
 </head>
 <body>
+    {% if messages %}
+    {% for msg in messages %}
+    <div class="alert alert-{{ msg.tags }}">
+        {{msg}}
+    </div>
+    {% endfor %}
+    {% endif %}
+
     <h1>painel do administrador</h1>
     <p><a href="{% url 'gerenciar_professor' %}">gerenciar professor</a></p>
     <p><a href="{% url 'gerenciar_funcionario' %}">gerenciar funcionario</a></p>
     <p><a href="{% url 'gerenciar_estudante' %}">gerenciar estudante</a></p>
-    <p><a href="{% url 'pei' %}">PEI</a></p>
-    <p><a href="{% url 'cadastro_equipe' %}">cadastro equipe</a></p>
-    <p><a href="{% url 'diagnostico' %}">diagnostico</a></p>
-    <p><a href="{% url 'historico_escolar' %}">historico escolar</a></p>
-    <p><a href="{% url 'perfil_estudante' %}">perfil estudante</a></p>
-    <p><a href="{% url 'atividade' %}">atividade</a></p>
-    <p><a href="{% url 'planejamento' %}">planejamento</a></p>
-    <p><a href="{% url 'habilidade_academica' %}">habilidade academica</a></p>
-    <p><a href="{% url 'adaptacao_curriculo' %}">adaptacao curriculo</a></p>
-    <p><a href="{% url 'adaptacao_objetivo' %}">adaptacao objetivo</a></p>
-    <p><a href="{% url 'adaptacao_conteudo' %}">adaptacao conteudo</a></p>
-    <p><a href="{% url 'adaptacao_metodo' %}">adaptacao metodo</a></p>
-    <p><a href="{% url 'adaptacao_sistema' %}">adaptacao sistema</a></p>
-    <p><a href="{% url 'adaptacao_temporalidade'%}">adaptacao temporalidade</a></p>
+    <p><a href="{% url 'cadastrar_pei' %}">cadastrar pei</a></p>
     <p><a href="{% url 'gerar_pdf' %}">gerar_pdf</a></p>
     <p><a href="{% url 'sair' %}">sair</a></p>
 </body>

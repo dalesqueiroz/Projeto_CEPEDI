@@ -8,76 +8,76 @@
 <body>
     <h1>gerar pdf</h1>
     <h1>Identificação</h1>
-    <p>nome do estudante {{estudante.nome}}</p>
-    <p>data de nascimento {{estudante.data_de_nascimento}}</p>
-    <p>ano {{estudante.periodo}}</p>
-    <p>professor regente {{professor.nome}}</p>
-    <p>equipe de elaboração do pei</p>
+    <p>nome do estudante: {{estudante.nome}}</p>
+    <p>data de nascimento: {{estudante.data_de_nascimento}}</p>
+    <p>ano: {{estudante.periodo}}</p>
+    <p>professor regente: {{professor.nome}}</p>
+    <p>equipe de elaboração do pei:</p>
     {% for fs in funcionarioEstudante %}
     <p>{{fs.funcionario.nome}}</p>
     {% endfor %}
-    <p>tempo de validade do pei {{pei.tempo}}</p>
+    <p>tempo de validade do pei: {{pei.tempo}}</p>
     <hr>
     <h1>diagnostico</h1>
-    <p>o estudante tem laudo</p>
-    <p>{{diagnostico.laudo}}</p>
-    <p>diagnostico</p>
+    <p>o estudante tem laudo: {{diagnostico.laudo}}</p>
+    <p>diagnostico:</p>
     <p>{{diagnostico.texto}}</p>
-    <p>ano que o diagnostico foi descoberto {{diagnostico.ano_diagnostico}}</p>
-    <p>realiza algum atendimento fora da escola {{diagnostico.fora_da_escola}}</p>
-    <p>atendimento</p>
+    <p>ano que o diagnostico foi descoberto: {{diagnostico.ano_diagnostico}}</p>
+    <p>realiza algum atendimento fora da escola: {{diagnostico.atendimento_fora_da_escola}}</p>
+    <p>atendimento:</p>
     <p>{{diagnostico.texto_atendimento}}</p>
     <hr>
     <h1>breve historico escolar</h1>
+    <p>texto:</p>
     <p>{{historico_escolar.texto}}</p>
-    <p>adaptacoes</p>
+    <p>adaptacoes:</p>
     <p>{{historico_escolar.texto2}}</p>
     <hr>
     <h1>perfil do estudante</h1>
-    <p>principais interesses</p>
+    <p>principais interesses:</p>
     <p>{{perfil_estudante.interesse}}</p>
-    <p>principais habilidades</p>
+    <p>principais habilidades:</p>
     <p>{{perfil_estudante.habilidade}}</p>
-    <p>nao gosta de </p>
+    <p>nao gosta de: </p>
     <p>{{perfil_estudante.nao_gosta}}</p>
-    <p>principais dificuldades e desafios</p>
+    <p>principais dificuldades e desafios:</p>
     <p>{{perfil_estudante.dificuldade}}</p>
-    <p>informacoes</p>
+    <p>informacoes:</p>
     <p>{{perfil_estudante.informacao}}</p>
     <hr>
     <h1>adaptacoes</h1>
     {% for adaptacao in checklist %}
     <h2>{{adaptacao.checklist}}</h2>
     <p>{{adaptacao.pergunta|linebreaks}}</p>
-    <p>texto</p>
+    <p>texto:</p>
     <p>{{adaptacao.texto}}</p>
     {% endfor %}
     <hr>
     <h1>outras atividades</h1>
-    <p>atividade {{atividade.atividade}}</p>
-    <p>descricao {{atividade.descricao}}</p>
+    <p>atividade: {{atividade.atividade}}</p>
+    <p>descricao: {{atividade.descricao}}</p>
     <hr>
-    <p>habilidades {{planejamento.habilidade}}</p>
-    <p>metas curto prazo {{planejamento.metas_curto_prazo}}</p>
-    <p>metas medio prazo {{planejamento.metas_medio_prazo}}</p>
-    <p>metas longo prazo {{planejamento.metas_longo_prazo}}</p>
+    <p>habilidades: {{planejamento.habilidade}}</p>
+    <p>metas curto prazo: {{planejamento.metas_curto_prazo}}</p>
+    <p>metas medio prazo: {{planejamento.metas_medio_prazo}}</p>
+    <p>metas longo prazo: {{planejamento.metas_longo_prazo}}</p>
     <hr>
     <h1>habilidades academicas</h1>
-    <p>componente curricular</p>
+    <p>componente curricular:</p>
     <p>{{habilidadeAcademica.componente_curricular}}</p>
-    <p>adaptacao</p>
+    <p>adaptacao:</p>
     <p>{{habilidadeAcademica.adaptacao_curricular}}</p>
-    <p>habilidade</p>
+    <p>habilidade:</p>
     <p>{{habilidadeAcademica.habilidade}}</p>
-    <p>facilidade e dificuldade</p>
+    <p>facilidade e dificuldade:</p>
     <p>{{habilidadeAcademica.facilidade_dificuldade}}</p>
-    <p>metas turma</p>
+    <p>metas turma:</p>
     <p>{{habilidadeAcademica.metas_turma}}</p>
-    <p>metas especificas</p>
+    <p>metas especificas:</p>
     <p>{{habilidadeAcademica.metas_especifica}}</p>
-    <p>procedimentos metodologicos</p>
+    <p>procedimentos metodologicos:</p>
     <p>{{habilidadeAcademica.procedimento_metodologico}}</p>
-    <p>avaliacao</p>
+    <p>avaliacao:</p>
     <p>{{habilidadeAcademica.avaliacao}}</p>
 </body>
 </html>

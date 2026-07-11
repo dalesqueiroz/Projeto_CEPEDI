@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <title>Document</title>
 </head>
 <body>
+    {% if messages %}
+        {% for msg in messages %}
+        <div class="alert alert-{{msg.tags}}">
+            {{msg}}
+        </div>
+        {% endfor %}
+    {% endif %}
     <h1>habilidade academica</h1>
     <form action="{% url 'habilidade_academica' %}" method="post">{% csrf_token %}
         <p>matricula do estudante <input type="text" name="matricula" id="matricula"></p>
