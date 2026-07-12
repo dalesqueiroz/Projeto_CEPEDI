@@ -4,6 +4,7 @@ from django.core.handlers.base import reset_urlconf
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.template.loader import render_to_string
+from fontTools.misc.cython import returns
 from weasyprint import HTML
 from .models import (SistemaProfessor, Estudante, Professor, Funcionario, PEI,
                      FuncionarioEstudante, Diagnostico, HistoricoEscolar,
@@ -641,3 +642,167 @@ def cadastrar_pei(request):
         messages.warning(request, "faça o  login")
         return redirect("login")
     return render(request, "cadastrar_pei.html")
+
+def remover_pei(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
+        return redirect("login")
+    estudante = Estudante.objects.filter(matricula=matricula).first()
+    if estudante:
+        pei1 = PEI.objects.filter(estudante=estudante).first()
+        if pei1:
+            pei1.delete()
+            messages.success(request, "pei removido")
+            return redirect("dados_pei")
+        else:
+            messages.error(request, "pei não encontrado", extra_tags="danger")
+            return redirect("dados_pei")
+    else:
+        messages.error(request, "estudante não encontrado", extra_tags="danger")
+        return redirect("dados_pei")
+
+def remover_diagnostico(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
+        return redirect("login")
+    estudante = Estudante.objects.filter(matricula=matricula).first()
+    if estudante:
+        diagnostico1 = Diagnostico.objects.filter(estudante=estudante).first()
+        if diagnostico1:
+            diagnostico1.delete()
+            messages.success(request, "diagnostico removido")
+            return redirect("dados_pei")
+        else:
+            messages.error(request, "diagnostico não encontrado", extra_tags="danger")
+            return redirect("dados_pei")
+    else:
+        messages.error(request, "estudante não encontrado", extra_tags="danger")
+        return redirect("dados_pei")
+
+
+def remover_historico_escolar(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
+        return redirect("login")
+    estudante = Estudante.objects.filter(matricula=matricula).first()
+    if estudante:
+        historico_escolar1 = HistoricoEscolar.objects.filter(estudante=estudante).first()
+        if historico_escolar1:
+            historico_escolar1.delete()
+            messages.success(request, "historico escolar removido")
+            return redirect("dados_pei")
+        else:
+            messages.error(request, "historico escolar não encontrado", extra_tags="danger")
+            return redirect("dados_pei")
+    else:
+        messages.error(request, "estudante não encontrado", extra_tags="danger")
+        return redirect("dados_pei")
+
+def remover_perfil_estudante(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
+        return redirect("login")
+    estudante = Estudante.objects.filter(matricula=matricula).first()
+    if estudante:
+        perfil_estudante1 = PerfilEstudante.objects.filter(estudante=estudante).first()
+        if perfil_estudante1:
+            perfil_estudante1.delete()
+            messages.success(request, "perfil estudante removido")
+            return redirect("dados_pei")
+        else:
+            messages.error(request, "perfil estudante não encontrado", extra_tags="danger")
+            return redirect("dados_pei")
+    else:
+        messages.error(request, "estudante não encontrado", extra_tags="danger")
+        return redirect("dados_pei")
+
+def remover_checklist(request, matricula, checklist):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
+        return redirect("login")
+    estudante = Estudante.objects.filter(matricula=matricula).first()
+    if estudante:
+        checklist = Checklist.objects.filter(checklist=checklist)
+        checklist1 = checklist.filter(estudante=estudante).first()
+        if checklist1:
+            checklist1.delete()
+            messages.success(request, "checklist removido")
+            return redirect("dados_pei")
+        else:
+            messages.error(request, "checklist não encontrado", extra_tags="danger")
+            return redirect("dados_pei")
+    else:
+        messages.error(request, "estudante não encontrado", extra_tags="danger")
+        return redirect("dados_pei")
+
+def remover_atividade(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
+        return redirect("login")
+    estudante = Estudante.objects.filter(matricula=matricula).first()
+    if estudante:
+        atividade1 = Atividade.objects.filter(estudante=estudante).first()
+        if atividade1:
+            atividade1.delete()
+            messages.success(request, "atividade removida")
+            return redirect("dados_pei")
+        else:
+            messages.error(request, "atividade não encontrada", extra_tags="danger")
+            return redirect("dados_pei")
+    else:
+        messages.error(request, "estudante não encontrado", extra_tags="danger")
+        return redirect("dados_pei")
+
+def remover_planejamento(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
+        return redirect("login")
+    estudante = Estudante.objects.filter(matricula=matricula).first()
+    if estudante:
+        planejamento1 = Planejamento.objects.filter(estudante=estudante).first()
+        if planejamento1:
+            planejamento1.delete()
+            messages.success(request, "planejamento removido")
+            return redirect("dados_pei")
+        else:
+            messages.error(request, "planejamento não encontrado", extra_tags="danger")
+            return redirect("dados_pei")
+    else:
+        messages.error(request, "estudante não encontrado", extra_tags="danger")
+        return redirect("dados_pei")
+
+def remover_equipe_pei(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
+        return redirect("login")
+    estudante = Estudante.objects.filter(matricula=matricula).first()
+    if estudante:
+        funcionario_estudante = FuncionarioEstudante.objects.filter(estudante=estudante)
+        if funcionario_estudante:
+            funcionario_estudante.delete()
+            messages.success(request, "equipe pei removido")
+            return redirect("dados_pei")
+        else:
+            messages.error(request, "equipe pei não encontrado", extra_tags="danger")
+            return redirect("dados_pei")
+    else:
+        messages.error(request, "estudante não encontrado", extra_tags="danger")
+        return redirect("dados_pei")
+
+def remover_habilidade_academica(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
+        return redirect("login")
+    estudante = Estudante.objects.filter(matricula=matricula).first()
+    if estudante:
+        habilidade_academica1 = HabilidadeAcademica.objects.filter(estudante=estudante)
+        if habilidade_academica1:
+            habilidade_academica1.delete()
+            messages.success(request, "habilidade academica removido")
+            return redirect("dados_pei")
+        else:
+            messages.error(request, "habilidade academica não encontrado", extra_tags="danger")
+            return redirect("dados_pei")
+    else:
+        messages.error(request, "estudante não encontrado", extra_tags="danger")
+        return redirect("dados_pei")

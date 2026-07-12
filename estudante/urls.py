@@ -34,6 +34,15 @@ urlpatterns = [
     path("gerenciar_professor/", views.gerenciar_professor, name="gerenciar_professor"),
     path("gerenciar_funcionario/", views.gerenciar_funcionario, name="gerenciar_funcionario"),
     path("gerenciar_estudante/", views.gerenciar_estudante, name="gerenciar_estudante"),
-    path("cadastrar_pei/", views.cadastrar_pei, name="cadastrar_pei")
+    path("cadastrar_pei/", views.cadastrar_pei, name="cadastrar_pei"),
+    path("remover_pei/<int:matricula>/", views.remover_pei, name="remover_pei"),
+    path("remover_diagnostico/<int:matricula>/", views.remover_diagnostico, name="remover_diagnostico"),
+    path("remover_historico_escolar/<int:matricula>/", views.remover_historico_escolar, name="remover_historico_escolar"),
+    path("remover_perfil_estudante/<int:matricula>/", views.remover_perfil_estudante, name="remover_perfil_estudante"),
+    path("remover_chacklist/<int:matricula>/<str:checklist>", views.remover_checklist, name="remover_checklist"),
+    path("remover_atividade/<int:matricula>/", views.remover_atividade, name="remover_atividade"),
+    path("remover_planejamento/<int>matricula/", views.remover_planejamento, name="remover_planejamento"),
+    path("remover_equipe_pei/<int>matricula/", views.remover_equipe_pei, name="remover_equipe_pei"),
+    path("remover_habilidade_academica/<int>matricula/", views.remover_habilidade_academica, name="remover_habilidade_academica")
 ]
 
