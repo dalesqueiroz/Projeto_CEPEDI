@@ -22,7 +22,13 @@
     </form>
     {% elif quantidade > 0 %}
     <form action="{% url 'cadastro_equipe' %}" method="post">{% csrf_token %}
-        <p>matricula do estudante <input type="number" name="matricula" id="matricula"></p>
+        <p> matricula estudante
+            <select name="matricula" id="matricula">
+                {% for estudante in estudantes %}
+                <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
+                {% endfor %}
+            </select>
+        </p>
         {% for i in lista %}
         <p>cpf do funcionario <input type="number" name="cpf_{{i}}" id="cpf_{{i}}"></p>
         {% endfor %}

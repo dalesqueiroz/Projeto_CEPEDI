@@ -16,8 +16,13 @@
     {% endif %}
     <h1>perfil do estudante</h1>
     <form action="{% url 'perfil_estudante' %}" method="post">{% csrf_token %}
-        <p>matricula do estudante <input type="number" name="matricula" id="matricula"></p>
-        <p>interesse <input type="text" name="interesse" id="interesse"></p>
+        <p> matricula estudante
+            <select name="matricula" id="matricula">
+                {% for estudante in estudantes %}
+                <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
+                {% endfor %}
+            </select>
+        </p>        <p>interesse <input type="text" name="interesse" id="interesse"></p>
         <p>habilidade <input type="text" name="habilidade" id="habilidade"></p>
         <p>nao gosta <input type="text" name="nao_gosta" id="nao_gosta"></p>
         <p>desafio <input type="text" name="desafio" id="desafio"></p>

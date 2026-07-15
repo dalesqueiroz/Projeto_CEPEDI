@@ -16,10 +16,22 @@
     {% endif %}
     <h1>PEI</h1>
     <form action="{% url 'pei' %}" method="post">{% csrf_token %}
-        <p>matricula do estudante <input type="number" name="matricula_estudante" id="matricula_estudante"></p>
-        <p>matricula do professor <input type="number" name="matricula_professor" id="matricula_professor"></p>
+        <p> matricula estudante
+            <select name="matricula_estudante" id="matricula_estudante">
+                {% for estudante in estudantes %}
+                <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p> matricula professor
+            <select name="matricula_professor" id="matricula_professor">
+                {% for professor in professores %}
+                <option value="{{professor.matricula}}">{{professor.matricula}} - {{professor.nome}}</option>
+                {% endfor %}
+            </select>
+        </p>
         <p>data de validade do PEI <input type="date" name="validade" id="validade"></p>
-        <input type="submit" value="cadastrar">
+        <input class="btn btn-success" type="submit" value="cadastrar">
     </form>
 
 </body>

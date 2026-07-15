@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <title>Document</title>
 </head>
 <body>
     <h1>gerenciar estudante</h1>
-    <p><a href="{% url 'cadastro_estudante' %}">cadastrar estudante</a></p>
-    <p><a href="{% url 'estudante_cadastrado'%}">estudantes cadastrados</a></p>
-    <p><a href="{% url 'remover_estudante'%}">remover estudante</a></p>
+    <p><a class="btn btn-success" href="{% url 'cadastro_estudante' %}">cadastrar estudante</a></p>
+    <p><a class="btn btn-success" href="{% url 'estudante_cadastrado'%}">estudantes cadastrados</a></p>
+    <p><a class="btn btn-success" href="{% url 'remover_estudante'%}">remover estudante</a></p>
 </body>
 </html>

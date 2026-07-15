@@ -16,7 +16,13 @@
     {% endif %}
     <h1>Planejamento</h1>
     <form action="" method="post">{% csrf_token %}
-        <p>matricula do estudante <input type="number" name="matricula" id="matricula"></p>
+        <p> matricula estudante
+            <select name="matricula" id="matricula">
+                {% for estudante in estudantes %}
+                <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
+                {% endfor %}
+            </select>
+        </p>
         <p>habilidades <input type="text" name="habilidade" id="habilidade"></p>
         <p>metas curto prazo <input type="text" name="meta_curto_prazo" id="meta_curto_prazo"></p>
         <p>metas medio prazo <input type="text" name="meta_medio_prazo" id="meta_medio_prazo"></p>

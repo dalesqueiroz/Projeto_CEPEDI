@@ -12,6 +12,9 @@ from .models import (SistemaProfessor, Estudante, Professor, Funcionario, PEI,
                      Checklist)
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib import messages
+from .forms import (Pei, EquipePei, FormularioDiagnostico, FormularioHistoricoEscolar,
+                    FormularioPerfilEstudante, FormularioChecklist, FormularioAtividade,
+                    FormularioPlanejamento, FormularioHabilidadeAcademica)
 
 # Create your views here.
 
@@ -33,6 +36,7 @@ def cadastro_sistema(request):
             messages.success(request, "O usuario foi cadastrado")
             redirect("login")
         messages.error(request, "O usuario não foi cadastrado", extra_tags="danger")
+        return redirect("cadastro_sistema")
 
 def login(request):
     if request.method == "GET":
@@ -81,13 +85,17 @@ def cadastro_estudante(request):
         mae = request.POST.get("mae")
         telefone_responsavel = request.POST.get("telefone_responsavel")
         email_responsavel = request.POST.get("email_responsavel")
+        estudante = Estudante.objects.filter(matricula=matricula).first()
+        if estudante:
+            messages.error(request, "estudante ja cadastrado", extra_tags="danger")
+            return redirect("cadastro_estudante")
         Estudante.objects.create(cpf=cpf, matricula=matricula, nome=nome,
                                  data_de_nascimento=data_de_nascimento, curso=curso,
-                                 periodo=periodo, turma=turma, ingresso = ingresso,
+                                 periodo=periodo, turma=turma, ingresso=ingresso,
                                  nota=nota, telefone=telefone, email=email, pai=pai, mae=mae,
                                  telefone_responsavel=telefone_responsavel,
                                  email_responsavel=email_responsavel)
-        estudante = Estudante.objects.filter(cpf=cpf).first()
+        estudante = Estudante.objects.filter(matricula=matricula).first()
         if estudante:
             messages.success(request, "estudante cadastrado")
             return redirect("cadastro_estudante")
@@ -107,12 +115,17 @@ def cadastro_professor(request):
         data_de_nascimento = request.POST.get("data_de_nascimento")
         email = request.POST.get("email")
         telefone = request.POST.get("telefone")
+        professor = Professor.objects.filter(matricula=matricula).first()
+        if professor:
+            messages.error(request, "professor ja cadastrado", extra_tags="danger")
+            return redirect("cadastro_professor")
         Professor.objects.create(cpf=cpf, nome=nome, matricula=matricula,
                                  data_de_nascimento=data_de_nascimento, email=email,
                                  telefone=telefone)
-        professor = Professor.objects.filter(cpf=cpf).first()
+        professor = Professor.objects.filter(matricula=matricula).first()
+
         if professor:
-            messages.success(request, "professor foi cadastrado")
+            messages.success(request, "professor cadastrado")
             return redirect("cadastro_professor")
         messages.error(request, "professor não foi cadastrado", extra_tags="danger")
         return redirect("cadastro_professor")
@@ -127,6 +140,10 @@ def cadastro_funcionario(request):
         cpf = request.POST.get("cpf")
         nome = request.POST.get("nome")
         funcao = request.POST.get("funcao")
+        funcionario = Funcionario.objects.filter(cpf=cpf).first()
+        if funcionario:
+            messages.error(request, "o funcionario ja cadastrado", extra_tags="danger")
+            return redirect("cadastro_funcionario")
         Funcionario.objects.create(cpf=cpf, nome=nome, funcao=funcao)
         funcionario = Funcionario.objects.filter(cpf=cpf).first()
         if funcionario:
@@ -140,7 +157,10 @@ def pei(request):
         messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
-        return render(request, 'PEI.html')
+        estudante = Estudante.objects.all()
+        professor = Professor.objects.all()
+        dicionario = {"estudantes":estudante, "professores":professor}
+        return render(request, 'PEI.html', dicionario)
     if request.method == "POST":
         matricula1 = request.POST.get("matricula1")
         if matricula1:
@@ -152,21 +172,26 @@ def pei(request):
         estudante = Estudante.objects.filter(matricula = matricula_estudante).first()
         professor = Professor.objects.filter(matricula = matricula_professor).first()
         if estudante and professor:
+            pei1 = PEI.objects.filter(estudante=estudante).first()
+            if pei1:
+                messages.error(request, "o pei ja cadastrado", extra_tags="danger")
+                return redirect("pei")
             PEI.objects.create(estudante=estudante, professor=professor, tempo=validade)
             messages.success(request, "o pei foi cadastrado")
-            return redirect("PEI")
+            return redirect("pei")
         messages.error(request, "o pei não foi cadastrado", extra_tags="danger")
-        return redirect("PEI")
+        return redirect("pei")
 
 def cadastro_equipe(request):
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
+        estudante = Estudante.objects.all()
         quantidade = request.GET.get("quantidade", 0)
         quantidade = int(quantidade)
         lista = range(quantidade)
-        dicionario = {"quantidade":quantidade, "lista":lista}
+        dicionario = {"quantidade":quantidade, "lista":lista, "estudantes":estudante}
         return render(request, 'cadastro_equipe.html', dicionario)
     if request.method == "POST":
         quantidade = request.POST.get("quantidade", 0)
@@ -177,6 +202,11 @@ def cadastro_equipe(request):
         for i in range(quantidade):
             cpf = request.POST.get(f"cpf_{i}")
             funcionario = Funcionario.objects.filter(cpf=cpf).first()
+            funcionario_estudante = FuncionarioEstudante.objects.filter(estudante=estudante)
+            funcionario_estudante = funcionario_estudante.filter(funcionario=funcionario).first()
+            if funcionario_estudante:
+                messages.error(request, "equipe pei ja cadastrado", extra_tags="danger")
+                return redirect("cadastro_equipe")
             if estudante and funcionario:
                 FuncionarioEstudante.objects.create(estudante=estudante, funcionario=funcionario)
                 quantidade1 += 1
@@ -190,7 +220,9 @@ def diagnostico(request):
         messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
-        return render(request, 'diagnostico.html')
+        estudante = Estudante.objects.all()
+        dicionario = {"estudantes":estudante}
+        return render(request, 'diagnostico.html', dicionario)
     if request.method == "POST":
         matricula1 = request.POST.get("matricula1")
         if matricula1:
@@ -205,6 +237,10 @@ def diagnostico(request):
         texto_atendimento = request.POST.get("texto_atendimento", " ")
         estudante = Estudante.objects.filter(matricula=estudante).first()
         if estudante:
+            diagnostico1 = Diagnostico.objects.filter(estudante=estudante).first()
+            if diagnostico1:
+                messages.error(request, "diagnostico ja cadastrado", extra_tags="danger")
+                return redirect("diagnostico")
             Diagnostico.objects.create(estudante=estudante, laudo=laudo,
                                        texto=texto_diagnostico, ano_diagnostico=ano,
                                        atendimento_fora_da_escola = atendimento,
@@ -219,17 +255,23 @@ def historico_escolar(request):
         messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
-        return render(request, 'historico_escolar.html')
+        estudante = Estudante.objects.all()
+        dicionario = {"estudantes":estudante}
+        return render(request, 'historico_escolar.html', dicionario)
     if request.method == "POST":
         matricula1 = request.POST.get("matricula1")
         if matricula1:
-            dicionario = {"matricula1": matricula1}
+            dicionario = {"matricula1":matricula1}
             return render(request, "diagnostico.html", dicionario)
         matricula = request.POST.get("matricula")
         texto = request.POST.get("texto")
         texto2 = request.POST.get("texto2")
         estudante = Estudante.objects.filter(matricula=matricula).first()
         if estudante:
+            historico_escolar1 = HistoricoEscolar.objects.filter(estudante=estudante).first()
+            if historico_escolar1:
+                messages.error(request, "historico escolar ja cadastrado", extra_tags="danger")
+                return redirect("historico_escolar")
             HistoricoEscolar.objects.create(texto=texto, texto2=texto2, estudante=estudante)
             messages.success(request, "historico escolar cadastrado")
             return redirect("historico_escolar")
@@ -241,7 +283,9 @@ def perfil_estudante(request):
         messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
-        return render(request, 'perfil_estudante.html')
+        estudante = Estudante.objects.all()
+        dicionario = {"estudantes":estudante}
+        return render(request, 'perfil_estudante.html', dicionario)
     if request.method == "POST":
         matricula = request.POST.get("matricula")
         interesse = request.POST.get("interesse")
@@ -251,6 +295,10 @@ def perfil_estudante(request):
         informacao = request.POST.get("informacao")
         estudante = Estudante.objects.filter(matricula=matricula).first()
         if estudante:
+            perfil_estudante1 = PerfilEstudante.objects.filter(estudante=estudante).first()
+            if perfil_estudante1:
+                messages.error(request, "perfil estudnate ja cadastrado", extra_tags="danger")
+                return redirect("perfil_estudante")
             PerfilEstudante.objects.create(estudante=estudante,
                                            interesse=interesse, habilidade = habilidade,
                                            nao_gosta=nao_gosta, dificuldade=desafio,
@@ -265,13 +313,19 @@ def atividade(request):
         messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
-        return render(request, "atividade.html")
+        estudante = Estudante.objects.all()
+        dicionario = {"estudantes":estudante}
+        return render(request, "atividade.html", dicionario)
     if request.method == "POST":
         matricula = request.POST.get("matricula")
         atividade1 = request.POST.get("atividade")
         descricao = request.POST.get("descricao")
         estudante = Estudante.objects.filter(matricula=matricula).first()
         if estudante:
+            atividade2 = Atividade.objects.filter(estudante=estudante).first()
+            if atividade2:
+                messages.error(request, "atividade ja cadastrado", extra_tags="danger")
+                return redirect("atividade")
             Atividade.objects.create(estudante=estudante, atividade=atividade1,
                                      descricao=descricao)
             messages.success(request, "atividade cadastrada")
@@ -284,7 +338,9 @@ def planejamento(request):
         messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
-        return render(request, "planejamento.html")
+        estudante = Estudante.objects.all()
+        dicionario = {"estudantes":estudante}
+        return render(request, "planejamento.html", dicionario)
     if request.method == "POST":
         matricula = request.POST.get("matricula")
         habilidade = request.POST.get("habilidade")
@@ -293,6 +349,10 @@ def planejamento(request):
         metas_longo_prazo = request.POST.get("meta_longo_prazo")
         estudante = Estudante.objects.filter(matricula=matricula).first()
         if estudante:
+            planejamento1 = Planejamento.objects.filter(estudante=estudante).first()
+            if planejamento1:
+                messages.error(request, "planejamento ja cadastrado", extra_tags="danger")
+                return redirect("planejamento")
             Planejamento.objects.create(estudante=estudante, habilidade=habilidade,
                                         metas_curto_prazo=metas_curto_prazo,
                                         metas_medio_prazo = metas_medio_prazo,
@@ -307,7 +367,9 @@ def habilidade_academica(request):
         messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
-        return render(request, 'habilidade_academica.html')
+        estudante = Estudante.objects.all()
+        dicionario = {"estudantes":estudante}
+        return render(request, 'habilidade_academica.html', dicionario)
     if request.method == "POST":
         matricula = request.POST.get("matricula")
         componente = request.POST.get("componente")
@@ -321,6 +383,10 @@ def habilidade_academica(request):
         avaliacao = request.POST.get("avaliacao")
         estudante = Estudante.objects.filter(matricula=matricula).first()
         if estudante:
+            habilidade_academica1 = HabilidadeAcademica.objects.filter(estudante=estudante).first()
+            if habilidade_academica1:
+                messages.error(request, "habilidade academica ja cadastrado", extra_tags="danger")
+                return redirect("habilidade_academica")
             HabilidadeAcademica.objects.create(estudante=estudante,
                                                componente_curricular=componente,
                                                adaptacao_curricular = adaptacao,
@@ -334,190 +400,88 @@ def habilidade_academica(request):
         messages.error(request, "habilidade_academica não cadastrado", extra_tags="danger")
         return redirect("habilidade_academica")
 
-def adaptacao_curriculo(request):
+def checklist2(request):
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
+        checklist = []
+        lista = []
+        estudante = Estudante.objects.all()
         tipo = "adaptacao de acesso ao curriculo"
         checklist = ["Organização dos agrupamentos de estudantes",
                      "Organização do Espaço Físico e Condições Ambientais",
                      "Organização dos Recursos Didáticos",
                      "Organização Didática da Aula"]
-        nome = "adaptacao_curriculo"
-        dicionario = {"tipo":tipo, "checklist":checklist, "nome":nome}
-
-        return render(request, 'checklist.html', dicionario)
-    if request.method == "POST":
-        matricula = request.POST.get("matricula")
-        checklist = request.POST.getlist("checklist")
-        texto = request.POST.get("texto")
-        tipo = "adaptacao de acesso ao curriculo"
-        checklist = "\n".join(checklist)
-        estudante = Estudante.objects.filter(matricula=matricula).first()
-        if estudante:
-            Checklist.objects.create(estudante=estudante, checklist=tipo,
-                                     pergunta=checklist, texto=texto)
-            messages.success(request, "adaptacao curriculo cadastrado")
-            return redirect("adaptacao_curriculo")
-        messages.error(request, "adaptacao curriculo não cadastrado", extra_tags="danger")
-        return redirect("adaptacao_curriculo")
-
-def adaptacao_objetivo(request):
-    if not request.session.get("sistema_professor_cpf"):
-        messages.warning(request, "faça o  login")
-        return redirect("login")
-    if request.method == "GET":
+        lista.append({"tipo":tipo, "checklist":checklist})
         tipo = "adaptacao de objetivo"
         checklist = ["Priorização de habilidades básicas de atenção, participação e adaptabilidade",
-                    "Adequação de objetivos, de acordo com a especificidade do(a) estudante",
-                    "Retirada de objetivos propostos no currículo escolar",
-                    "Introdução de objetivos específicos, complementares e/ou alternativos",]
-        nome = "adaptacao_objetivo"
-        dicionario = {"tipo":tipo, "checklist":checklist, "nome":nome}
-        return render(request, 'checklist.html', dicionario)
-    if request.method == "POST":
-        matricula = request.POST.get("matricula")
-        checklist = request.POST.getlist("checklist")
-        texto = request.POST.get("texto")
-        tipo = "adaptacao de objetivo"
-        checklist = "\n".join(checklist)
-        estudante = Estudante.objects.filter(matricula=matricula).first()
-        if estudante:
-            Checklist.objects.create(estudante=estudante, checklist=tipo,
-                                     pergunta=checklist, texto=texto)
-            messages.success(request, "adaptacao objetivo cadastrado")
-            return redirect("adaptacao_objetivo")
-        messages.error(request, "adaptacao objetivo não cadastrado", extra_tags="danger")
-        return redirect("adaptacao_objetivo")
-
-def adaptacao_conteudo(request):
-    if not request.session.get("sistema_professor_cpf"):
-        messages.warning(request, "faça o  login")
-        return redirect("login")
-    if request.method == "GET":
+                     "Adequação de objetivos, de acordo com a especificidade do(a) estudante",
+                     "Retirada de objetivos propostos no currículo escolar",
+                     "Introdução de objetivos específicos, complementares e/ou alternativos"]
+        lista.append({"tipo": tipo, "checklist": checklist})
         tipo = "adaptacao de conteudo"
+
         checklist = ["Priorização de conteúdos",
-                    "Reformulação da sequência dos conteúdos",
-                    "Retomada de determinados conteúdos, garantindo seu domínio e consolidação",
-                    "Eliminação de conteúdos secundários, para dar enfoque mais intensivo e prolongado a conteúdos mais básicos e essenciais no currículo",
-                    "Introdução de conteúdos específicos, complementares ou alternativos" ]
-        nome = "adaptacao_conteudo"
-        dicionario = {"tipo":tipo, "checklist":checklist, "nome":nome}
-        return render(request, 'checklist.html', dicionario)
-    if request.method == "POST":
-        matricula = request.POST.get("matricula")
-        checklist = request.POST.getlist("checklist")
-        texto = request.POST.get("texto")
-        tipo = "adaptacao de conteudo"
-        checklist = "\n".join(checklist)
-        estudante = Estudante.objects.filter(matricula=matricula).first()
-        if estudante:
-            Checklist.objects.create(estudante=estudante, checklist=tipo,
-                                     pergunta=checklist, texto=texto)
-            messages.success(request, "adaptacao conteudo cadastrado")
-            return redirect("adaptacao_conteudo")
-        messages.error(request, "adaptacao conteudo não cadastrado", extra_tags="danger")
-        return redirect("adaptacao_conteudo")
-
-def adaptacao_metodo(request):
-    if not request.session.get("sistema_professor_cpf"):
-        messages.warning(request, "faça o  login")
-        return redirect("login")
-    if request.method == "GET":
+                     "Reformulação da sequência dos conteúdos",
+                     "Retomada de determinados conteúdos, garantindo seu domínio e consolidação",
+                     "Eliminação de conteúdos secundários, para dar enfoque mais intensivo e prolongado a conteúdos mais básicos e essenciais no currículo",
+                     "Introdução de conteúdos específicos, complementares ou alternativos"]
+        lista.append({"tipo": tipo, "checklist": checklist})
         tipo = "adaptacao do metodo de ensino e da organizacao didatica"
         checklist = ["Modificação de procedimentos / estratégias de ensino",
-                    "Adoção de métodos, procedimentos e atividades alternativas e/ou complementares às previstas",
-                    "Organização diferenciada da sala de aula",
-                    "Adaptação de materiais",
-                    "Utilização de recursos específicos de acesso ao currículo"]
-        nome = "adaptacao_metodo"
-        dicionario = {"tipo":tipo, "checklist":checklist, "nome":nome}
-        return render(request, 'checklist.html', dicionario)
-    if request.method == "POST":
-        matricula = request.POST.get("matricula")
-        checklist = request.POST.getlist("checklist")
-        texto = request.POST.get("texto")
-        tipo = "adaptacao do metodo de ensino e da organizacao didatica"
-        checklist = "\n".join(checklist)
-        estudante = Estudante.objects.filter(matricula=matricula).first()
-        if estudante:
-            Checklist.objects.create(estudante=estudante, checklist=tipo,
-                                     pergunta=checklist, texto=texto)
-            messages.success(request, "adaptacao metodo cadastrado")
-            return redirect("adaptacao_metodo")
-        messages.error(request, "adaptacao metodo não cadastrado", extra_tags="danger")
-        return redirect("adaptacao_metodo")
-
-def adaptacao_sistema(request):
-    if not request.session.get("sistema_professor_cpf"):
-        messages.warning(request, "faça o  login")
-        return redirect("login")
-    if request.method == "GET":
-        tipo = "adaptacao do sistema de avaliacao"
-        checklist = ["Adaptação e/ou modificação de técnicas, instrumentos, procedimentos e critérios",
-                    "Introdução de critérios específicos de avaliação",
-                    "Necessidade de Avaliação em espaço diferente dos colegas",
-                    "Eliminação de critérios gerais de avaliação",
-                    "Modificação dos critérios de promoção"]
-        nome = "adaptacao_sistema"
-        dicionario = {"tipo":tipo, "checklist":checklist, "nome":nome}
-        return render(request, 'checklist.html', dicionario)
-    if request.method == "POST":
-        matricula = request.POST.get("matricula")
-        checklist = request.POST.getlist("checklist")
-        texto = request.POST.get("texto")
-        tipo = "adaptacao do sistema de avaliacao"
-        checklist = "\n".join(checklist)
-        estudante = Estudante.objects.filter(matricula=matricula).first()
-        if estudante:
-            Checklist.objects.create(estudante=estudante, checklist=tipo,
-                                     pergunta=checklist, texto=texto)
-            messages.success(request, "adaptacao sistema cadastrado")
-            return redirect("adaptacao_sistema")
-        messages.error(request, "adaptacao sistema não cadastrado", extra_tags="danger")
-        return redirect("adaptacao_sistema")
-
-def adaptacao_temporalidade(request):
-    if not request.session.get("sistema_professor_cpf"):
-        messages.warning(request, "faça o  login")
-        return redirect("login")
-    if request.method == "GET":
+                     "Adoção de métodos, procedimentos e atividades alternativas e/ou complementares às previstas",
+                     "Organização diferenciada da sala de aula",
+                     "Adaptação de materiais",
+                     "Utilização de recursos específicos de acesso ao currículo"]
+        lista.append({"tipo": tipo, "checklist": checklist})
+        tipo = "adaptacao sistema"
+        checklist = ["Adaptação e/ou modificação de técnicas, instrumentos, procedimentos e critérios.",
+                         "Introdução de critérios específicos de avaliação.",
+                         "Necessidade de Avaliação em espaço diferente dos colegas.",
+                         "Eliminação de critérios gerais de avaliação.",
+                         "Modificação dos critérios de promoção"]
+        lista.append({"tipo": tipo, "checklist": checklist})
         tipo = "adaptacao de temporalidade"
         checklist = ["Aumento do Tempo para atividades e avaliações",
-                    "Aumento do tempo para trabalhar determinados objetivos/conteúdos",
-                    "Diminuição do tempo para trabalhar determinados objetivos/conteúdos",
-                    "Aumento do tempo do estudante em uma série",
-                    "Aceleração do estudante para série posterior"]
-        nome = "adaptacao_temporalidade"
-        dicionario = {"tipo":tipo, "checklist":checklist, "nome":nome}
+                     "Aumento do tempo para trabalhar determinados objetivos/conteúdos",
+                     "Diminuição do tempo para trabalhar determinados objetivos/conteúdos",
+                     "Aumento do tempo do estudante em uma série",
+                     "Aceleração do estudante para série posterior"]
+        lista.append({"tipo": tipo, "checklist": checklist})
+        dicionario = {"lista":lista, "estudantes":estudante}
         return render(request, 'checklist.html', dicionario)
     if request.method == "POST":
         matricula = request.POST.get("matricula")
         checklist = request.POST.getlist("checklist")
         texto = request.POST.get("texto")
-        tipo = "adaptacao de temporalidade"
+        tipo = request.POST.get("tipo")
         checklist = "\n".join(checklist)
         estudante = Estudante.objects.filter(matricula=matricula).first()
         if estudante:
             Checklist.objects.create(estudante=estudante, checklist=tipo,
                                      pergunta=checklist, texto=texto)
-            messages.success(request, "adaptacao temporalidade cadastrado")
-            return redirect("adaptacao_temporalidade")
-        messages.error(request, "adaptacao temporalidade não cadastrado", extra_tags="danger")
-        return redirect("adaptacao_temporalidade")
+            messages.success(request, f"{tipo} cadastrado")
+            return redirect("checklist2")
+        messages.error(request, f"{tipo} não cadastrado", extra_tags="danger")
+        return redirect("checklist2")
 
 def gerar_pdf(request):
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
-        return render(request, "gerar_pdf_matricula.html")
+        estudante = Estudante.objects.all()
+        dicionario = {"estudantes":estudante}
+        return render(request, "gerar_pdf_matricula.html", dicionario)
     if request.method == "POST":
         matricula = request.POST.get("matricula")
         estudante = Estudante.objects.filter(matricula=matricula).first()
         pei1 = PEI.objects.filter(estudante=estudante).first()
-        professor = pei1.professor
+        if pei1:
+            professor = pei1.professor
+        else:
+            professor = None
         funcionario_estudante = FuncionarioEstudante.objects.filter(estudante=estudante)
         diagnostico1 = Diagnostico.objects.filter(estudante=estudante).first()
         historico_escolar1 = HistoricoEscolar.objects.filter(estudante=estudante).first()
@@ -653,13 +617,13 @@ def remover_pei(request, matricula):
         if pei1:
             pei1.delete()
             messages.success(request, "pei removido")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
         else:
             messages.error(request, "pei não encontrado", extra_tags="danger")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
     else:
         messages.error(request, "estudante não encontrado", extra_tags="danger")
-        return redirect("dados_pei")
+        return redirect("dados_pei", matricula=matricula)
 
 def remover_diagnostico(request, matricula):
     if not request.session.get("sistema_professor_cpf"):
@@ -671,13 +635,13 @@ def remover_diagnostico(request, matricula):
         if diagnostico1:
             diagnostico1.delete()
             messages.success(request, "diagnostico removido")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
         else:
             messages.error(request, "diagnostico não encontrado", extra_tags="danger")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
     else:
         messages.error(request, "estudante não encontrado", extra_tags="danger")
-        return redirect("dados_pei")
+        return redirect("dados_pei", matricula=matricula)
 
 
 def remover_historico_escolar(request, matricula):
@@ -690,13 +654,13 @@ def remover_historico_escolar(request, matricula):
         if historico_escolar1:
             historico_escolar1.delete()
             messages.success(request, "historico escolar removido")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
         else:
             messages.error(request, "historico escolar não encontrado", extra_tags="danger")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
     else:
         messages.error(request, "estudante não encontrado", extra_tags="danger")
-        return redirect("dados_pei")
+        return redirect("dados_pei", matricula=matricula)
 
 def remover_perfil_estudante(request, matricula):
     if not request.session.get("sistema_professor_cpf"):
@@ -708,32 +672,31 @@ def remover_perfil_estudante(request, matricula):
         if perfil_estudante1:
             perfil_estudante1.delete()
             messages.success(request, "perfil estudante removido")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
         else:
             messages.error(request, "perfil estudante não encontrado", extra_tags="danger")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
     else:
         messages.error(request, "estudante não encontrado", extra_tags="danger")
-        return redirect("dados_pei")
+        return redirect("dados_pei", matricula=matricula)
 
-def remover_checklist(request, matricula, checklist):
+def remover_checklist(request, matricula, id1):
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
     estudante = Estudante.objects.filter(matricula=matricula).first()
     if estudante:
-        checklist = Checklist.objects.filter(checklist=checklist)
-        checklist1 = checklist.filter(estudante=estudante).first()
+        checklist1 = Checklist.objects.filter(id=id1).first()
         if checklist1:
             checklist1.delete()
             messages.success(request, "checklist removido")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
         else:
             messages.error(request, "checklist não encontrado", extra_tags="danger")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
     else:
         messages.error(request, "estudante não encontrado", extra_tags="danger")
-        return redirect("dados_pei")
+        return redirect("dados_pei", matricula=matricula)
 
 def remover_atividade(request, matricula):
     if not request.session.get("sistema_professor_cpf"):
@@ -745,13 +708,13 @@ def remover_atividade(request, matricula):
         if atividade1:
             atividade1.delete()
             messages.success(request, "atividade removida")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
         else:
             messages.error(request, "atividade não encontrada", extra_tags="danger")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
     else:
         messages.error(request, "estudante não encontrado", extra_tags="danger")
-        return redirect("dados_pei")
+        return redirect("dados_pei", matricula=matricula)
 
 def remover_planejamento(request, matricula):
     if not request.session.get("sistema_professor_cpf"):
@@ -763,13 +726,13 @@ def remover_planejamento(request, matricula):
         if planejamento1:
             planejamento1.delete()
             messages.success(request, "planejamento removido")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
         else:
             messages.error(request, "planejamento não encontrado", extra_tags="danger")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
     else:
         messages.error(request, "estudante não encontrado", extra_tags="danger")
-        return redirect("dados_pei")
+        return redirect("dados_pei", matricula=matricula)
 
 def remover_equipe_pei(request, matricula):
     if not request.session.get("sistema_professor_cpf"):
@@ -781,13 +744,13 @@ def remover_equipe_pei(request, matricula):
         if funcionario_estudante:
             funcionario_estudante.delete()
             messages.success(request, "equipe pei removido")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
         else:
             messages.error(request, "equipe pei não encontrado", extra_tags="danger")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
     else:
         messages.error(request, "estudante não encontrado", extra_tags="danger")
-        return redirect("dados_pei")
+        return redirect("dados_pei", matricula=matricula)
 
 def remover_habilidade_academica(request, matricula):
     if not request.session.get("sistema_professor_cpf"):
@@ -799,10 +762,236 @@ def remover_habilidade_academica(request, matricula):
         if habilidade_academica1:
             habilidade_academica1.delete()
             messages.success(request, "habilidade academica removido")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
         else:
             messages.error(request, "habilidade academica não encontrado", extra_tags="danger")
-            return redirect("dados_pei")
+            return redirect("dados_pei", matricula=matricula)
     else:
         messages.error(request, "estudante não encontrado", extra_tags="danger")
-        return redirect("dados_pei")
+        return redirect("dados_pei", matricula=matricula)
+
+def verificar_formulario(formulario, modelo):
+    if modelo:
+        formulario1 = formulario(instance=modelo)
+    else:
+        formulario1 = None
+    return formulario1
+
+def dados_pei(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o login")
+        return redirect("login")
+    lista = []
+    estudante = Estudante.objects.filter(matricula=matricula).first()
+    pei1 = PEI.objects.filter(estudante=estudante).first()
+    formulario_pei = verificar_formulario(Pei, pei1)
+    funcionario_estudante = FuncionarioEstudante.objects.filter(estudante=estudante).first()
+    equipe_pei = verificar_formulario(EquipePei, funcionario_estudante)
+    diagnostico1 = Diagnostico.objects.filter(estudante=estudante).first()
+    formulario_diagnostico1 = verificar_formulario(FormularioDiagnostico, diagnostico1)
+    historico_escolar1 = HistoricoEscolar.objects.filter(estudante=estudante).first()
+    formulario_historico_escolar = verificar_formulario(FormularioHistoricoEscolar,
+                                                        historico_escolar1)
+    perfil_estudante1 = PerfilEstudante.objects.filter(estudante=estudante).first()
+    formulario_perfil_estudante = verificar_formulario(FormularioPerfilEstudante,
+                                                       perfil_estudante1)
+
+    checklist1 = Checklist.objects.filter(estudante=estudante)
+    for checklist in checklist1:
+        formulario_checklist = verificar_formulario(FormularioChecklist, checklist)
+        lista.append(formulario_checklist)
+    atividade1 = Atividade.objects.filter(estudante=estudante).first()
+    formulario_atividade = verificar_formulario(FormularioAtividade, atividade1)
+    planejamento1 = Planejamento.objects.filter(estudante=estudante).first()
+    formulario_planejamento = verificar_formulario(FormularioPlanejamento, planejamento1)
+    habilidade_academica1 = HabilidadeAcademica.objects.filter(estudante=estudante).first()
+    formulario_habilidade_academica = verificar_formulario(FormularioHabilidadeAcademica, habilidade_academica1)
+    dicionario = {"pei":formulario_pei, "equipe_pei":equipe_pei,
+                  "diagnostico":formulario_diagnostico1,
+                  "historico_escolar":formulario_historico_escolar,
+                  "perfil_estudante":formulario_perfil_estudante,
+                  "checklist":lista, "atividade":formulario_atividade,
+                  "planejamento":formulario_planejamento,
+                  "habilidade_academica":formulario_habilidade_academica,
+                  "matricula":matricula, "estudante":estudante}
+    return render(request, "dados_pei.html", dicionario)
+
+def editar_pei(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o login")
+        return redirect("login")
+    if request.method == "GET":
+        return redirect("dados_pei", matricula=matricula)
+    if request.method == "POST":
+        estudante = Estudante.objects.filter(matricula=matricula).first()
+        pei1 = PEI.objects.filter(estudante=estudante).first()
+        formulario = Pei(request.POST, instance=pei1)
+        if formulario.is_valid():
+            formulario.save()
+            messages.success(request, "pei editado com sucesso")
+            return redirect("dados_pei", matricula)
+        else:
+            messages.error(request, "pei não editado", extra_tags="danger")
+            return redirect("dados_pei", matricula)
+
+def editar_equipe_pei(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o login")
+        return redirect("login")
+    if request.method == "GET":
+        return redirect("dados_pei", matricula=matricula)
+    if request.method == "POST":
+        estudante = Estudante.objects.filter(matricula=matricula).first()
+        funcionario_estudante = FuncionarioEstudante.objects.filter(estudante=estudante).first()
+        formulario = EquipePei(request.POST, instance=funcionario_estudante)
+        if formulario.is_valid():
+            formulario.save()
+            messages.success(request, "equipe pei editado com sucesso")
+            return redirect("dados_pei", matricula)
+        else:
+            messages.error(request, "funcionario não editado", extra_tags="danger")
+            return redirect("dados_pei", matricula)
+
+def editar_diagnostico(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o login")
+        return redirect("login")
+    if request.method == "GET":
+        return redirect("dados_pei", matricula=matricula)
+    if request.method == "POST":
+        estudante = Estudante.objects.filter(matricula=matricula).first()
+        diagnostico1 = Diagnostico.objects.filter(estudante=estudante).first()
+        formulario = FormularioDiagnostico(request.POST, instance=diagnostico1)
+        if formulario.is_valid():
+            formulario.save()
+            messages.success(request, "diagnostico editado com sucesso")
+            return redirect("dados_pei", matricula)
+        else:
+            messages.error(request, "diagnostico não editado", extra_tags="danger")
+            return redirect("dados_pei", matricula)
+
+def editar_historico_escolar(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o login")
+        return redirect("login")
+    if request.method == "GET":
+        return redirect("dados_pei", matricula=matricula)
+    if request.method == "POST":
+        estudante = Estudante.objects.filter(matricula=matricula).first()
+        historico_escolar1 = HistoricoEscolar.objects.filter(estudante=estudante).first()
+        formulario = FormularioHistoricoEscolar(request.POST, instance=historico_escolar1)
+        if formulario.is_valid():
+            formulario.save()
+            messages.success(request, "historico escolar editado com sucesso")
+            return redirect("dados_pei", matricula)
+        else:
+            messages.error(request, "historico escolar não editado", extra_tags="danger")
+            return redirect("dados_pei", matricula)
+
+def editar_perfil_estudante(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o login")
+        return redirect("login")
+    if request.method == "GET":
+        return redirect("dados_pei", matricula=matricula)
+    if request.method == "POST":
+        estudante = Estudante.objects.filter(matricula=matricula).first()
+        perfil_estudante1 = PerfilEstudante.objects.filter(estudante=estudante).first()
+        formulario = FormularioPerfilEstudante(request.POST, instance=perfil_estudante1)
+        if formulario.is_valid():
+            formulario.save()
+            messages.success(request, "perfil estudante editado com sucesso")
+            return redirect("dados_pei", matricula)
+        else:
+            messages.error(request, "perfil estudante não editado", extra_tags="danger")
+            return redirect("dados_pei", matricula)
+
+def editar_checklist(request, matricula, id1):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o login")
+        return redirect("login")
+    if request.method == "GET":
+        return redirect("dados_pei", matricula=matricula)
+    if request.method == "POST":
+        checklist1 = Checklist.objects.filter(id=id1).first()
+        formulario = FormularioChecklist(request.POST, instance=checklist1)
+        if formulario.is_valid():
+            formulario.save()
+            messages.success(request, "checklist editado com sucesso")
+            return redirect("dados_pei", matricula)
+        else:
+            messages.error(request, "checklist não editado", extra_tags="danger")
+            return redirect("dados_pei", matricula)
+
+def editar_atividade(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o login")
+        return redirect("login")
+    if request.method == "GET":
+        return redirect("dados_pei", matricula=matricula)
+    if request.method == "POST":
+        estudante = Estudante.objects.filter(matricula=matricula).first()
+        atividade1 = Atividade.objects.filter(estudante=estudante).first()
+        formulario = FormularioAtividade(request.POST, instance=atividade1)
+        if formulario.is_valid():
+            formulario.save()
+            messages.success(request, "atividade editada com sucesso")
+            return redirect("dados_pei", matricula)
+        else:
+            messages.error(request, "atividade não editada", extra_tags="danger")
+            return redirect("dados_pei", matricula)
+
+def editar_planejamento(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o login")
+        return redirect("login")
+    if request.method == "GET":
+        return redirect("dados_pei", matricula=matricula)
+    if request.method == "POST":
+        estudante = Estudante.objects.filter(matricula=matricula).first()
+        planejamento1 = Planejamento.objects.filter(estudante=estudante).first()
+        formulario = FormularioPlanejamento(request.POST, instance=planejamento1)
+        if formulario.is_valid():
+            formulario.save()
+            messages.success(request, "planejamento editado com sucesso")
+            return redirect("dados_pei", matricula)
+        else:
+            messages.error(request, "planejamento não editado", extra_tags="danger")
+            return redirect("dados_pei", matricula)
+
+def editar_habilidade_academica(request, matricula):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o login")
+        return redirect("login")
+    if request.method == "GET":
+        return redirect("dados_pei", matricula=matricula)
+    if request.method == "POST":
+        estudante = Estudante.objects.filter(matricula=matricula).first()
+        habilidade_academica1 = HabilidadeAcademica.objects.filter(estudante=estudante).first()
+        formulario = FormularioHabilidadeAcademica(request.POST, instance=habilidade_academica1)
+        if formulario.is_valid():
+            formulario.save()
+            messages.success(request, "habilidade academica editado com sucesso")
+            return redirect("dados_pei", matricula)
+        else:
+            messages.error(request, "habilidade academica não editado", extra_tags="danger")
+            return redirect("dados_pei", matricula)
+
+def gerenciar_pei(request):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o login")
+        return redirect("login")
+    if request.method == "GET":
+        return render(request, "gerenciar_pei.html")
+
+def gerenciar_pei_matricula(request):
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o login")
+        return redirect("login")
+    if request.method == "GET":
+        estudante = Estudante.objects.all()
+        dicionario = {"estudantes":estudante}
+        return render(request, "gerenciar_pei_matricula.html", dicionario)
+    if request.method == "POST":
+        matricula = request.POST.get("matricula")
+        return redirect("dados_pei", matricula=matricula)

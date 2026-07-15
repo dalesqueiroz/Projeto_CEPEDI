@@ -16,11 +16,11 @@
     {% endif %}
 
     <h1>painel do administrador</h1>
-    <p><a href="{% url 'gerenciar_professor' %}">gerenciar professor</a></p>
-    <p><a href="{% url 'gerenciar_funcionario' %}">gerenciar funcionario</a></p>
-    <p><a href="{% url 'gerenciar_estudante' %}">gerenciar estudante</a></p>
-    <p><a href="{% url 'cadastrar_pei' %}">cadastrar pei</a></p>
-    <p><a href="{% url 'gerar_pdf' %}">gerar_pdf</a></p>
-    <p><a href="{% url 'sair' %}">sair</a></p>
+    <p><a class="btn btn-success" href="{% url 'gerenciar_professor' %}">gerenciar professor</a></p>
+    <p><a class="btn btn-success" href="{% url 'gerenciar_funcionario' %}">gerenciar funcionario</a></p>
+    <p><a class="btn btn-success" href="{% url 'gerenciar_estudante' %}">gerenciar estudante</a></p>
+    <p><a class="btn btn-success" href="{% url 'gerenciar_pei' %}">gerenciar pei</a></p>
+    <p><a class="btn btn-success" href="{% url 'gerar_pdf' %}">gerar_pdf</a></p>
+    <p><a class="btn btn-danger" href="{% url 'sair' %}">sair</a></p>
 </body>
 </html>

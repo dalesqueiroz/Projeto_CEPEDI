@@ -16,7 +16,13 @@
     {% endif %}
     <h1>diagnostico</h1>
     <form action="{% url 'diagnostico' %}" method="post">{% csrf_token %}
-        <p>Qual a matricula do estudante <input type="number" name="estudante" id="estudante"></p>
+        <p> matricula estudante
+            <select name="estudante" id="estudante">
+                {% for estudante in estudantes %}
+                <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
+                {% endfor %}
+            </select>
+        </p>
         <p>O estudante possui laudo</p>
         <select name="laudo" id="laudo">
             <option value="sim">sim</option>
