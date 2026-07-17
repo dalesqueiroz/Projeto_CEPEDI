@@ -14,27 +14,38 @@
         </div>
         {% endfor %}
     {% endif %}
-    <h1> Cadastrar equipe </h1>
-    {% if quantidade == 0 %}
-    <form action="{% url 'cadastro_equipe' %}" method="get">{% csrf_token %}
-        <p>qual a quantidade de funcionarios <input type="number" name="quantidade" id="quantidade"></p>
-        <input type="submit" value="confirmar">
-    </form>
-    {% elif quantidade > 0 %}
-    <form action="{% url 'cadastro_equipe' %}" method="post">{% csrf_token %}
-        <p> matricula estudante
-            <select name="matricula" id="matricula">
-                {% for estudante in estudantes %}
-                <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
+    <div class="container d-flex justify-content-center align-items-center vw-100">
+        <div class="box p-4">
+            <h1> Cadastrar equipe </h1>
+            {% if quantidade == 0 %}
+            <form action="{% url 'cadastro_equipe' %}" method="get">{% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="quantidade" class="form-label">qual a quantidade de funcionarios</label>
+                    <input class="form-control" type="number" name="quantidade" id="quantidade">
+                </div>
+                <input class="btn btn-success" type="submit" value="confirmar">
+            </form>
+            {% elif quantidade > 0 %}
+            <form action="{% url 'cadastro_equipe' %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    <label for="matricula" class="form-label">matricula</label>
+                    <select class="form-select" name="matricula" id="matricula">
+                        {% for estudante in estudantes %}
+                        <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% for i in lista %}
+                <div class="mb-3"><label for="cpf_{{i}}" class="form-label">cpf funcionario</label>
+                    <input class="form-control  " type="number" name="cpf_{{i}}" id="cpf_{{i}}">
+                </div>
                 {% endfor %}
-            </select>
-        </p>
-        {% for i in lista %}
-        <p>cpf do funcionario <input type="number" name="cpf_{{i}}" id="cpf_{{i}}"></p>
-        {% endfor %}
-        <input type="hidden" name="quantidade" value="{{quantidade}}">
-        <input type="submit" value="cadastrar">
-    </form>
-    {% endif %}
+                <input type="hidden" name="quantidade" value="{{quantidade}}">
+                <input class="btn btn-success" type="submit" value="cadastrar">
+            </form>
+            {% endif %}
+        </div>
+    </div>
 </body>
 </html>

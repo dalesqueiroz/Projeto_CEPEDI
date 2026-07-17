@@ -14,18 +14,29 @@
         </div>
         {% endfor %}
     {% endif %}
-    <h1>historico escolar</h1>
-    <form action="{% url 'historico_escolar' %}" method="post">{% csrf_token %}
-        <p> matricula estudante
-            <select name="matricula" id="matricula">
-                {% for estudante in estudantes %}
-                <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
-                {% endfor %}
-            </select>
-        </p>
-        <p>texto <input type="text" name="texto" id="texto"></p>
-        <p>procedimentos metodologicos <input type="text" name="texto2" id="texto2"></p>
-        <input type="submit" value="confirmar">
-    </form>
+    <div class="container d-flex justify-content-center align-items-center vw-100">
+        <div class="box p-4">
+            <h1>historico escolar</h1>
+            <form action="{% url 'historico_escolar' %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    <label for="matricula" class="form-label">matricula</label>
+                    <select class="form-select" name="matricula" id="matricula">
+                        {% for estudante in estudantes %}
+                        <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="texto" class="form-label">texto</label>
+                    <input class="form-control" type="text" name="texto" id="texto">
+                </div>
+                <div class="mb-3">
+                    <label for="texto2" class="form-label">procedimentos metodologicos</label>
+                    <input class="form-control" type="text" name="texto2" id="texto2">
+                </div>
+                <input class="btn btn-success" type="submit" value="confirmar">
+            </form>
+        </div>
+    </div>
 </body>
 </html>

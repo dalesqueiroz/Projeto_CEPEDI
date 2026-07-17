@@ -14,12 +14,25 @@
         </div>
         {% endfor %}
     {% endif %}
-    <h1>cadastro funcionario</h1>
-    <form action="{% url 'cadastro_funcionario' %}" method="post">{% csrf_token %}
-        <p>cpf <input type="number" name="cpf" id="cpf"></p>
-        <p>nome <input type="text" name="nome" id="nome"></p>
-        <p>funcao <input type="text" name="funcao" id="funcao"></p>
-        <input type="submit" value="cadastrar">
-    </form>
+    <div class="d-flex container justify-content-center align-items-center flex-direction-row  vw-100">
+        <div class="box p-4">
+            <h1>cadastro funcionario</h1>
+            <form action="{% url 'cadastro_funcionario' %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    <label for="cpf" class="form-label">cpf</label>
+                    <input class="form-control" type="number" name="cpf" id="cpf">
+                </div>
+                <div class="mb-3">
+                    <label for="nome" class="form-label">nome</label>
+                    <input class="form-control" type="text" name="nome" id="nome">
+                </div>
+                <div class="mb-3">
+                    <label for="funcao" class="form-label">funcao</label>
+                    <input class="form-control" type="text" name="funcao" id="funcao">
+                </div>
+                <input class="btn btn-success" type="submit" value="cadastrar">
+            </form>
+        </div>
+    </div>
 </body>
 </html>

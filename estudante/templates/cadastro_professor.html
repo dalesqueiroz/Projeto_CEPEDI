@@ -14,15 +14,43 @@
         </div>
         {% endfor %}
     {% endif %}
-    <h1>Cadastro professor</h1>
-    <form action="{% url 'cadastro_professor' %}" method="post">{% csrf_token %}
-        <p>cpf <input type="number" name="cpf" id="cpf"></p>
-        <p>nome <input type="text" name="nome" id="nome"></p>
-        <p>matricula <input type="number" name="matricula" id="matricula"></p>
-        <p>data de nascimento <input type="date" name="data_de_nascimento" id="data_de_nascimento"></p>
-        <p>email <input type="email" name="email" id="email"></p>
-        <p>telefone <input type="text" name="telefone" id="telefone"></p>
-        <input type="submit" value="cadastrar">
-    </form>
+    <div class="d-flex container justify-content-center align-items-center flex-direction-row vw-100">
+        <div class="box p-4">
+            <h1>Cadastro professor</h1>
+            <form action="{% url 'cadastro_professor' %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">
+                        cpf <input class="form-control" type="number" name="cpf" id="cpf">
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">
+                        nome <input class="form-control" type="text" name="nome" id="nome">
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">
+                        matricula <input class="form-control" type="number" name="matricula" id="matricula">
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">
+                        data de nascimento <input class="form-control" type="date" name="data_de_nascimento" id="data_de_nascimento">
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">
+                        email <input class="form-control" type="email" name="email" id="email">
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">
+                        telefone <input class="form-control" type="text" name="telefone" id="telefone">
+                    </label>
+                </div>
+                <input class="btn btn-success" type="submit" value="cadastrar">
+            </form>
+        </div>
+    </div>
 </body>
 </html>

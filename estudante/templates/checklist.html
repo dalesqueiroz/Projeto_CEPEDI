@@ -14,30 +14,36 @@
         </div>
         {% endfor %}
     {% endif %}
-    <h1>Checklist</h1>
-    {% for item in lista %}
-    <h1>{{item.tipo}}</h1>
-    <form action="{% url 'checklist2' %}" method="post">{% csrf_token %}
-        <p> matricula estudante
-            <select name="matricula" id="matricula">
-                {% for estudante in estudantes %}
-                <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
-                {% endfor %}
-            </select>
-        </p>
-        <input type="hidden" name="tipo" value="{{item.tipo}}">
-        {% for adaptacao in item.checklist %}
-        <p>
-            <label>
-                <input type="checkbox" name="checklist" id="" value="{{adaptacao}}">
-                {{adaptacao}}
-            </label>
-        </p>
-        {%endfor%}
-        <p>texto <input type="text" name="texto" id="texto"></p>
-        <input class="btn btn-success" type="submit" value="confirmar">
-    </form>
-    <hr>
-    {% endfor %}
+    <div class="container d-flex justify-content-center align-items-center vw-100">
+        <div class="box p-4">
+            <h1>Checklist</h1>
+            {% for item in lista %}
+            <h1>{{item.tipo}}</h1>
+            <form action="{% url 'checklist2' %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    <label for="matricula" class="form-label">matricula estudante</label>
+                    <select class="form-select" name="matricula" id="matricula">
+                        {% for estudante in estudantes %}
+                        <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="hidden" name="tipo" value="{{item.tipo}}">
+                    {% for adaptacao in item.checklist %}
+                    <div class="mb-3">
+                        <input class="form-check-input" type="checkbox" name="checklist" id="checklist" value="{{adaptacao}}">
+                        <label for="checklist" class="form-check-label"> {{adaptacao}} </label>
+                    </div>
+                    {%endfor%}
+                <div class="mb-3">
+                    <label for="texto" class="form-label">texto</label>
+                    <input class="form-control" type="text" name="texto" id="texto">
+                </div>
+                <input class="btn btn-success" type="submit" value="confirmar">
+            </form>
+            <hr>
+            {% endfor %}
+        </div>
+    </div>
 </body>
 </html>

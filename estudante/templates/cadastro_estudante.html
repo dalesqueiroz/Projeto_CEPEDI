@@ -14,24 +14,73 @@
         </div>
         {% endfor %}
     {% endif %}
-    <h1>Cadastro de estudante</h1>
-    <form action="{% url 'cadastro_estudante' %}" method="post">{% csrf_token %}
-        <p>cpf <input type="number" name="cpf" id="cpf"></p>
-        <p>matricula <input type="number" name="matricula" id="matricula"></p>
-        <p>nome <input type="text" name="nome" id="nome"></p>
-        <p>data de nascimento <input type="date" name="data_de_nascimento" id="data_de_nascimento"></p>
-        <p>curso <input type="text" name="curso" id="curso"></p>
-        <p>periodo <input type="number" name="periodo" id="periodo"></p>
-        <p>turma <input type="text" name="turma" id="turma"></p>
-        <p>ingresso <input type="date" name="ingresso" id="ingresso"></p>
-        <p>nota <input type="number" name="nota" id="nota"></p>
-        <p>telefone <input type="text" name="telefone" id="telefone"></p>
-        <p>email <input type="email" name="email" id="email"></p>
-        <p>pai <input type="text" name="pai" id="pai"></p>
-        <p>mae <input type="text" name="mae" id="mae"></p>
-        <p>telefone responsavel <input type="text" name="telefone_responsavel" id="telefone_responsavel"></p>
-        <p>email responsavel <input type="email" name="email_responsavel" id="email_responsavel"></p>
-        <input type="submit" value="cadastrar">
-    </form>
+        <div class="d-flex container justify-content-center align-items-center flex-direction-row vw-100">
+            <div class="box">
+            <h1>Cadastro de estudante</h1>
+            <form action="{% url 'cadastro_estudante' %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    <label for="cpf" class="form-label">cpf</label>
+                    <input class="form-control" type="number" name="cpf" id="cpf">
+                </div>
+                <div class="mb-3">
+                    <label for="matricula" class="form-label">matricula</label>
+                    <input class="form-control" type="number" name="matricula" id="matricula">
+                </div>
+                <div class="mb-3">
+                    <label for="nome" class="form-label">nome</label>
+                    <input class="form-control" type="text" name="nome" id="nome">
+                </div>
+                <div class="mb-3">
+                    <label for="data_de_nascimento" class="form-label">data de nascimento</label>
+                    <input class="form-control" type="date" name="data_de_nascimento" id="data_de_nascimento">
+                </div>
+                <div class="mb-3">
+                    <label for="curso" class="form-label">curso</label>
+                    <input class="form-control" type="text" name="curso" id="curso">
+                </div>
+                <div class="mb-3">
+                    <label for="periodo" class="form-label">periodo</label>
+                    <input class="form-control" type="number" name="periodo" id="periodo">
+                </div>
+                <div class="mb-3">
+                    <label for="turma" class="form-label">turma</label>
+                    <input class="form-control" type="text" name="turma" id="turma">
+                </div>
+                <div class="mb-3">
+                    <label for="ingresso" class="form-label">ingresso</label>
+                    <input class="form-control" type="date" name="ingresso" id="ingresso">
+                </div>
+                <div class="mb-3">
+                    <label for="nota" class="form-label">nota</label>
+                    <input class="form-control" type="number" name="nota" id="nota">
+                </div>
+                <div class="mb-3">
+                    <label for="telefone" class="form-label">telefone</label>
+                    <input class="form-control" type="text" name="telefone" id="telefone">
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">email</label>
+                    <input class="form-control" type="email" name="email" id="email">
+                </div>
+                <div class="mb-3">
+                    <label for="pai" class="form-label">pai</label>
+                    <input class="form-control" type="text" name="pai" id="pai">
+                </div>
+                <div class="mb-3">
+                    <label for="mae" class="form-label">mae</label>
+                    <input class="form-control" type="text" name="mae" id="mae">
+                </div>
+                <div class="mb-3">
+                    <label for="telefone_responsavel" class="form-label">telefone responsavel</label>
+                    <input class="form-control" type="text" name="telefone_responsavel" id="telefone_responsavel">
+                </div>
+                <div class="mb-3">
+                    <label for="email_responsavel" class="form-label">email responsavel</label>
+                    <input class="form-control" type="email" name="email_responsavel" id="email_responsavel">
+                </div>
+                <input class="btn btn-success" type="submit" value="cadastrar">
+            </form>
+        </div>
+    </div>
 </body>
 </html>

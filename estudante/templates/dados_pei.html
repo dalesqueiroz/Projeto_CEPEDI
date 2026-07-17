@@ -14,149 +14,248 @@
     {% endfor %}
     {% endif %}
 
-    <h1>dados pei</h1>
-    <h1>Estudante</h1>
-    <p>cpf do estudante: {{estudante.cpf}}</p>
-    <p>matricula do estudante: {{estudante.matricula}}</p>
-    <p>nome do estudante: {{estudante.nome}}</p>
-    <hr>
-    <h1>pei</h1>
-    <form action="{% url 'editar_pei' matricula %}" method="post">{% csrf_token %}
-        {% if pei %}
-        <table>
-            {{pei.as_table}}
-        </table>
-        <p><input type="submit" value="confirmar" class="btn btn-success"></p>
-        {% else %}
-        <p>pei nao encontrado</p>
-        {% endif %}
-    </form>
-    {% if pei %}
-    <p><a class="btn btn-danger" href="{% url 'remover_pei' estudante.matricula %}">remover pei</a></p>
-    {% endif %}
-    <hr>
-    <h1>equipe pei</h1>
-        <form action="{% url 'editar_equipe_pei' matricula %}" method="post">{% csrf_token %}
-        {% if equipe_pei %}
-        <table>
-            {{equipe_pei.as_table}}
-        </table>
-        <p><input type="submit" value="confirmar" class="btn btn-success"></p>
-        {% else %}
-        <p>equipe pei nao encontrado</p>
-        {% endif %}
-    </form>
-    {% if equipe_pei %}
-    <a class="btn btn-danger" href="{% url 'remover_equipe_pei' estudante.matricula %}">remover equipe pei</a>
-    {% endif %}
+    <div class="container d-flex justify-content-center align-items-center vw-100">
+        <div class="box p-4 w-50">
+            <h1 class="text-center">dados pei</h1>
+            <h1 class="text-center">Estudante</h1>
+            <p class="text-center">cpf do estudante: {{estudante.cpf}}</p>
+            <p class="text-center">matricula do estudante: {{estudante.matricula}}</p>
+            <p class="text-center">nome do estudante: {{estudante.nome}}</p>
+            <hr>
+            <h1>pei</h1>
+            <form action="{% url 'editar_pei' matricula %}" method="post">{% csrf_token %}
+                {% if pei %}
+                <div class="mb-3">
+                    <label class="form-label" for="id_professor">{{pei.professor.label}}</label>
+                    {{pei.professor}}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="id_tempo">{{pei.tempo.label}}</label>
+                    {{pei.tempo}}
+                </div>
 
-    <hr>
-    <h1>diagnostico</h1>
-    <form action="{% url 'editar_diagnostico' matricula %}" method="post">{% csrf_token %}
-        {% if diagnostico %}
-        <table>
-            {{diagnostico.as_table}}
-        </table>
-        <p><input type="submit" value="confirmar" class="btn btn-success"></p>
-        {% else %}
-        <p>diagnostico nao encontrado</p>
-        {% endif %}
-    </form>
-    {% if diagnostico %}
-    <a class="btn btn-danger" href="{% url 'remover_diagnostico' estudante.matricula%}">remover diagnostico</a>
-    {% endif %}
-    <hr>
-    <h1>breve historico escolar</h1>
-    <form action="{% url 'editar_historico_escolar' matricula %}" method="post">{% csrf_token %}
-        {% if historico_escolar %}
-        <table>
-            {{historico_escolar.as_table}}
-        </table>
-        <p><input type="submit" value="confirmar" class="btn btn-success"></p>
-        {% else %}
-        <p>historico escolar nao encontrado</p>
-        {% endif %}
-    </form>
-    {% if historico_escolar %}
-    <a class="btn btn-danger" href="{% url 'remover_historico_escolar' estudante.matricula %}">remover historico escolar</a>
-    {% endif %}
-    <hr>
-    <h1>perfil do estudante</h1>
-    <form action="{% url 'editar_perfil_estudante' matricula %}" method="post">{% csrf_token %}
-        {% if perfil_estudante %}
-        <table>
-            {{perfil_estudante.as_table}}
-        </table>
-        <p><input type="submit" value="confirmar" class="btn btn-success"></p>
-        {% else %}
-        <p>perfil estudante nao encontrado</p>
-        {% endif %}
-    </form>
-    {% if perfil_estudante %}
-    <a class="btn btn-danger" href="{% url 'remover_perfil_estudante' estudante.matricula %}">remover perfil estudante</a>
-    {% endif %}
-    <hr>
-    <h1>adaptacoes</h1>
-    {% if checklist  %}
-    {% for adaptacao in checklist %}
-    <h1>{{adaptacao.checklist.value}}</h1>
-    <form action="{% url 'editar_checklist' matricula adaptacao.instance.id %}" method="post">{% csrf_token %}
-        <table>
-            {{adaptacao.as_table}}
-        </table>
-        <p><input type="submit" value="confirmar" class="btn btn-success"></p>
-    </form>
-    <a class="btn btn-danger" href="{% url 'remover_checklist' estudante.matricula adaptacao.instance.id %}">remover checklist</a>
-    <hr>
-    {% endfor %}
-    {% else %}
-    <p>checklist nao encontrada</p>
-    {% endif %}
-    <hr>
-    <h1>outras atividades</h1>
-    <form action="{% url 'editar_atividade' matricula %}" method="post">{% csrf_token %}
-        {% if atividade %}
-        <table>
-            {{atividade.as_table}}
-        </table>
-        <p><input type="submit" value="confirmar" class="btn btn-success"></p>
-        {% else %}
-        <p>atividade nao encontrada</p>
-        {% endif %}
-    </form>
-    {% if atividade %}
-    <a class="btn btn-danger" href="{% url 'remover_atividade' estudante.matricula %}">remover atividades</a>
-    {% endif %}
-    <hr>
-    <h1>planejamento</h1>
-    <form action="{% url 'editar_planejamento' matricula %}" method="post">{% csrf_token %}
-        {% if planejamento %}
-        <table>
-            {{planejamento.as_table}}
-        </table>
-        <p><input type="submit" value="confirmar" class="btn btn-success"></p>
-        {% else %}
-        <p>planejamento nao encontrado</p>
-        {% endif %}
-    </form>
-    {% if planejamento %}
-    <a class="btn btn-danger" href="{% url 'remover_planejamento' estudante.matricula %}">remover planejamento</a>
-    {% endif %}
-    <hr>
-    <h1>habilidades academicas</h1>
-    <form action="{% url 'editar_habilidade_academica' matricula %}" method="post">{% csrf_token %}
-        {% if habilidade_academica %}
-        <table>
-            {{habilidade_academica.as_table}}
-        </table>
-        <p><input type="submit" value="confirmar" class="btn btn-success"></p>
-        {% else %}
-        <p>habilidade academica nao encontrado</p>
-        {% endif %}
-    </form>
-    {% if habilidade_academica %}
-    <a class="btn btn-danger" href="{% url 'remover_habilidade_academica' estudante.matricula %}">remover habilidade academica</a>
-    {% endif %}
-    <hr>
+                <input type="submit" value="confirmar" class="btn btn-success">
+                <a class="btn btn-danger" href="{% url 'remover_pei' estudante.matricula %}">remover pei</a>
+                {% else %}
+                <p>pei nao encontrado</p>
+                {% endif %}
+            </form>
+            <hr>
+            <h1>equipe pei</h1>
+            <form action="{% url 'editar_equipe_pei' matricula %}" method="post">{% csrf_token %}
+                {% if equipe_pei %}
+
+                <div class="mb-3">
+                    <label class="form-label" for="id_funcionario">{{equipe_pei.funcionario.label}}</label>
+                    {{equipe_pei.funcionario}}
+                </div>
+                <input type="submit" value="confirmar" class="btn btn-success">
+                <a class="btn btn-danger" href="{% url 'remover_equipe_pei' estudante.matricula %}">remover equipe pei</a>
+                {% else %}
+                <p>equipe pei nao encontrado</p>
+                {% endif %}
+            </form>
+
+            <hr>
+            <h1>diagnostico</h1>
+            <form action="{% url 'editar_diagnostico' matricula %}" method="post">{% csrf_token %}
+                {% if diagnostico %}
+
+                <div class="mb-3">
+                    <label for="id_laudo" class="form-label">{{diagnostico.laudo.label}}</label>
+                    {{diagnostico.laudo}}
+                </div>
+                <div class="mb-3">
+                    <label for="id_texto" class="form-label">{{diagnostico.texto.label}}</label>
+                    {{diagnostico.texto}}
+                </div>
+                <div class="mb-3">
+                    <label for="id_ano_diagnostico" class="form-label">{{diagnostico.ano_diagnostico.label}}</label>
+                    {{diagnostico.ano_diagnostico}}
+                </div>
+                <div class="mb-3">
+                    <label for="id_atendimento_fora_da_escola" class="form-label">{{diagnostico.atendimento_fora_da_escola.label}}</label>
+                    {{diagnostico.atendimento_fora_da_escola}}
+                </div>
+                <div class="mb-3">
+                    <label for="id_texto_atendimento" class="form-label">{{diagnostico.texto_atendimento.label}}</label>
+                    {{diagnostico.texto_atendimento}}
+                </div>
+                <input type="submit" value="confirmar" class="btn btn-success">
+                <a class="btn btn-danger" href="{% url 'remover_diagnostico' estudante.matricula%}">remover diagnostico</a>
+                {% else %}
+                <p>diagnostico nao encontrado</p>
+                {% endif %}
+            </form>
+            <hr>
+            <h1>breve historico escolar</h1>
+            <form action="{% url 'editar_historico_escolar' matricula %}" method="post">{% csrf_token %}
+                {% if historico_escolar %}
+                <div class="mb-3">
+                    <label for="id_texto1" class="form-label">{{historico_escolar.texto.label}}</label>
+                    {{historico_escolar.texto}}
+                </div>
+                <div class="mb-3">
+                    <label for="id_texto2" class="form-label">{{historico_escolar.texto2.label}}</label>
+                    {{historico_escolar.texto2}}
+                </div>
+                <input type="submit" value="confirmar" class="btn btn-success">
+                <a class="btn btn-danger" href="{% url 'remover_historico_escolar' estudante.matricula %}">remover historico </a>
+                {% else %}
+                <p>historico escolar nao encontrado</p>
+                {% endif %}
+            </form>
+            <hr>
+            <h1>perfil do estudante</h1>
+            <form action="{% url 'editar_perfil_estudante' matricula %}" method="post">{% csrf_token %}
+                {% if perfil_estudante %}
+                <div class="mb-3">
+                    <label for="id_interesse" class="form-label">{{perfil_estudante.interesse.label}}</label>
+                    {{perfil_estudante.interesse}}
+                </div>
+                <div class="mb-3">
+                    <label for="id_habilidade" class="form-label">{{perfil_estudante.habilidade.label}}</label>
+                    {{perfil_estudante.habilidade}}
+                </div>
+                <div class="mb-3">
+                    <label for="id_nao_gosta" class="form-label">{{perfil_estudante.nao_gosta.label}}</label>
+                    {{perfil_estudante.nao_gosta}}
+                </div>
+                <div class="mb-3">
+                    <label for="id_dificuldade" class="form-label">{{perfil_estudante.dificuldade.label}}</label>
+                    {{perfil_estudante.dificuldade}}
+                </div>
+                <div class="mb-3">
+                    <label for="id_informacao" class="form-label">{{perfil_estudante.informacao.label}}</label>
+                    {{perfil_estudante.informacao}}
+                </div>
+                <input type="submit" value="confirmar" class="btn btn-success">
+                <a class="btn btn-danger" href="{% url 'remover_perfil_estudante' estudante.matricula %}">remover perfil
+                estudante</a>                {% else %}
+                <p>perfil estudante nao encontrado</p>
+                {% endif %}
+            </form>
+            <hr>
+            <h1>adaptacoes</h1>
+            {% if checklist %}
+            {% for adaptacao in checklist %}
+            <h1>{{adaptacao.checklist.value}}</h1>
+            <form action="{% url 'editar_checklist' matricula adaptacao.instance.id %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    <label for="{{adaptacao.checklist.id_for_label}}" class="form-label">{{adaptacao.checklist.label}}</label>
+                    {{adaptacao.checklist}}
+                </div>
+                <div class="mb-3">
+                    <label for="{{adaptacao.pergunta.id_for_label}}" class="form-label">{{adaptacao.pergunta.label}}</label>
+                    {{adaptacao.pergunta}}
+                </div>
+                <div class="mb-3">
+                    <label for="{{adaptacao.texto.id_for_label}}" class="form-label">{{adaptacao.texto.label}}</label>
+                    {{adaptacao.texto}}
+                </div>
+                <input type="submit" value="confirmar" class="btn btn-success">
+                <a class="btn btn-danger" href="{% url 'remover_checklist' estudante.matricula adaptacao.instance.id %}">remover
+                checklist</a>
+
+            </form>
+            <hr>
+            {% endfor %}
+            {% else %}
+            <p>checklist nao encontrada</p>
+            {% endif %}
+            <hr>
+            <h1>outras atividades</h1>
+            <form action="{% url 'editar_atividade' matricula %}" method="post">{% csrf_token %}
+                {% if atividade %}
+                <div class="mb-3">
+                    <label for="{{atividade.atividade.id_for_label}}" class="form-label">{{atividade.atividade.label}}</label>
+                    {{atividade.atividade}}
+                </div>
+                <div class="mb-3">
+                    <label for="{{atividade.descricao.id_for_label}}" class="form-label">{{atividade.descricao.label}}</label>
+                    {{atividade.descricao}}
+                </div>
+                <input type="submit" value="confirmar" class="btn btn-success">
+                <a class="btn btn-danger" href="{% url 'remover_atividade' estudante.matricula %}">remover atividades</a>
+                {% else %}
+                <p>atividade nao encontrada</p>
+                {% endif %}
+            </form>
+            <hr>
+            <h1>planejamento</h1>
+            <form action="{% url 'editar_planejamento' matricula %}" method="post">{% csrf_token %}
+                {% if planejamento %}
+                <div class="mb-3">
+                    <label for="{{planejamento.habilidade.id_for_label}}" class="form-label">{{planejamento.habilidade.label}}</label>
+                    {{planejamento.habilidade}}
+                </div>
+                <div class="mb-3">
+                    <label for="{{planejamento.metas_curto_prazo.id_for_label}}" class="form-label">{{planejamento.metas_curto_prazo.label}}</label>
+                    {{planejamento.metas_curto_prazo}}
+                </div>
+                <div class="mb-3">
+                    <label for="{{planejamento.metas_medio_prazo.id_for_label}}" class="form-label">{{planejamento.metas_medio_prazo.label}}</label>
+                    {{planejamento.metas_medio_prazo}}
+                </div>
+                <div class="mb-3">
+                    <label for="{{planejamento.metas_longo_prazo.id_for_label}}" class="form-label">{{planejamento.metas_longo_prazo.label}}</label>
+                    {{planejamento.metas_longo_prazo}}
+                </div>
+                <input type="submit" value="confirmar" class="btn btn-success">
+                <a class="btn btn-danger" href="{% url 'remover_planejamento' estudante.matricula %}">remover
+                planejamento</a>
+                {% else %}
+                <p>planejamento nao encontrado</p>
+                {% endif %}
+            </form>
+
+            <hr>
+            <h1>habilidades academicas</h1>
+            <form action="{% url 'editar_habilidade_academica' matricula %}" method="post">{% csrf_token %}
+                {% if habilidade_academica %}
+                <div class="mb-3">
+                    <label for={{"habilidade_academica.componente_curricular.id_for_label"}} class="form label">{{habilidade_academica.componente_curricular.label}}</label>
+                    {{habilidade_academica.componente_curricular}}
+                </div>
+                <div class="mb-3">
+                    <label for={{"habilidade_academica.adaptacao_curricular.id_for_label"}} class="form label">{{habilidade_academica.adaptacao_curricular.label}}</label>
+                    {{habilidade_academica.adaptacao_curricular}}
+                </div>
+                <div class="mb-3">
+                    <label for={{"habilidade_academica.habilidade.id_for_label"}} class="form label">{{habilidade_academica.habilidade.label}}</label>
+                    {{habilidade_academica.habilidade}}
+                </div>
+                <div class="mb-3">
+                    <label for={{"habilidade_academica.facilidade_dificuladade.id_for_label"}} class="form label">{{habilidade_academica.facilidade_dificuladade.label}}</label>
+                    {{habilidade_academica.facilidade_dificuladade}}
+                </div>
+                <div class="mb-3">
+                    <label for={{"habilidade_academica.metas_turma.id_for_label"}} class="form label">{{habilidade_academica.metas_turma.label}}</label>
+                    {{habilidade_academica.metas_turma}}
+                </div>
+                <div class="mb-3">
+                    <label for={{"habilidade_academica.metas_especificas.id_for_label"}} class="form label">{{habilidade_academica.metas_especificas.label}}</label>
+                    {{habilidade_academica.metas_especificas}}
+                </div>
+                <div class="mb-3">
+                    <label for={{"habilidade_academica.procedimento_metodologico.id_for_label"}} class="form label">{{habilidade_academica.procedimento_metodologico.label}}</label>
+                    {{habilidade_academica.procedimento_metodologico}}
+                </div>
+                <div class="mb-3">
+                    <label for={{"habilidade_academica.avaliacao.id_for_label"}} class="form label">{{habilidade_academica.avaliacao.label}}</label>
+                    {{habilidade_academica.avaliacao}}
+                </div>
+                <input type="submit" value="confirmar" class="btn btn-success">
+                <a class="btn btn-danger" href="{% url 'remover_habilidade_academica' estudante.matricula %}">remover
+                habilidade
+                academica</a>
+                {% else %}
+                <p>habilidade academica nao encontrado</p>
+                {% endif %}
+            </form>
+
+            <hr>
+        </div>
+    </div>
 </body>
 </html>

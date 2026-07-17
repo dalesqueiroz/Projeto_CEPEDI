@@ -781,31 +781,71 @@ def dados_pei(request, matricula):
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o login")
         return redirect("login")
+    checklist_id = []
     lista = []
+    numero = 0
     estudante = Estudante.objects.filter(matricula=matricula).first()
     pei1 = PEI.objects.filter(estudante=estudante).first()
     formulario_pei = verificar_formulario(Pei, pei1)
+    if formulario_pei:
+        for formulario in formulario_pei.fields.keys():
+            if formulario == "professor":
+                formulario_pei.fields[formulario].widget.attrs["class"] = "form-select"
+            if formulario == "tempo":
+                formulario_pei.fields[formulario].widget.attrs["class"] = "form-control"
     funcionario_estudante = FuncionarioEstudante.objects.filter(estudante=estudante).first()
     equipe_pei = verificar_formulario(EquipePei, funcionario_estudante)
+    if equipe_pei:
+        for formulario in equipe_pei.fields.keys():
+            if formulario == "funcionario":
+                equipe_pei.fields[formulario].widget.attrs["class"] = "form-select"
     diagnostico1 = Diagnostico.objects.filter(estudante=estudante).first()
     formulario_diagnostico1 = verificar_formulario(FormularioDiagnostico, diagnostico1)
+    if formulario_diagnostico1:
+        for formulario in formulario_diagnostico1.fields.keys():
+            formulario_diagnostico1.fields[formulario].widget.attrs["class"] = "form-control"
     historico_escolar1 = HistoricoEscolar.objects.filter(estudante=estudante).first()
     formulario_historico_escolar = verificar_formulario(FormularioHistoricoEscolar,
                                                         historico_escolar1)
+    if formulario_historico_escolar:
+        for formulario in formulario_historico_escolar.fields.keys():
+            formulario_historico_escolar.fields[formulario].widget.attrs["class"] = "form-control"
+            formulario_historico_escolar.fields["texto"].widget.attrs["id"] = "id_texto1"
     perfil_estudante1 = PerfilEstudante.objects.filter(estudante=estudante).first()
     formulario_perfil_estudante = verificar_formulario(FormularioPerfilEstudante,
                                                        perfil_estudante1)
-
+    if formulario_perfil_estudante:
+        for formulario in formulario_perfil_estudante.fields.keys():
+            formulario_perfil_estudante.fields[formulario].widget.attrs["class"] = "form-control"
     checklist1 = Checklist.objects.filter(estudante=estudante)
     for checklist in checklist1:
         formulario_checklist = verificar_formulario(FormularioChecklist, checklist)
-        lista.append(formulario_checklist)
+        if formulario_checklist:
+            for formulario in formulario_checklist.fields.keys():
+                formulario_checklist.fields[formulario].widget.attrs["class"] = "form-control"
+            lista.append(formulario_checklist)
+    for checklist3 in lista:
+        numero += 1
+        for formulario in checklist3.fields.keys():
+            checklist3.fields[formulario].widget.attrs["id"] = f"{formulario}{numero}"
+            checklist_id.append(f"{formulario}{numero}")
     atividade1 = Atividade.objects.filter(estudante=estudante).first()
     formulario_atividade = verificar_formulario(FormularioAtividade, atividade1)
+    if formulario_atividade:
+        for formulario in formulario_atividade.fields.keys():
+            formulario_atividade.fields[formulario].widget.attrs["class"] = "form-control"
     planejamento1 = Planejamento.objects.filter(estudante=estudante).first()
     formulario_planejamento = verificar_formulario(FormularioPlanejamento, planejamento1)
+    if formulario_planejamento:
+        formulario_planejamento.fields["habilidade"].widget.attrs["id"] = "habilidade1"
+        for formulario in formulario_planejamento.fields.keys():
+            formulario_planejamento.fields[formulario].widget.attrs["class"] = "form-control"
     habilidade_academica1 = HabilidadeAcademica.objects.filter(estudante=estudante).first()
     formulario_habilidade_academica = verificar_formulario(FormularioHabilidadeAcademica, habilidade_academica1)
+    if formulario_habilidade_academica:
+        formulario_habilidade_academica.fields["habilidade"].widget.attrs["id"] = "habilidade2"
+        for formulario in formulario_habilidade_academica.fields.keys():
+            formulario_habilidade_academica.fields[formulario].widget.attrs["class"] = "form-control"
     dicionario = {"pei":formulario_pei, "equipe_pei":equipe_pei,
                   "diagnostico":formulario_diagnostico1,
                   "historico_escolar":formulario_historico_escolar,
@@ -813,7 +853,7 @@ def dados_pei(request, matricula):
                   "checklist":lista, "atividade":formulario_atividade,
                   "planejamento":formulario_planejamento,
                   "habilidade_academica":formulario_habilidade_academica,
-                  "matricula":matricula, "estudante":estudante}
+                  "matricula":matricula, "estudante":estudante, "checklist_id":checklist_id}
     return render(request, "dados_pei.html", dicionario)
 
 def editar_pei(request, matricula):

@@ -14,25 +14,33 @@
         </div>
         {% endfor %}
     {% endif %}
-    <h1>PEI</h1>
-    <form action="{% url 'pei' %}" method="post">{% csrf_token %}
-        <p> matricula estudante
-            <select name="matricula_estudante" id="matricula_estudante">
-                {% for estudante in estudantes %}
-                <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
-                {% endfor %}
-            </select>
-        </p>
-        <p> matricula professor
-            <select name="matricula_professor" id="matricula_professor">
-                {% for professor in professores %}
-                <option value="{{professor.matricula}}">{{professor.matricula}} - {{professor.nome}}</option>
-                {% endfor %}
-            </select>
-        </p>
-        <p>data de validade do PEI <input type="date" name="validade" id="validade"></p>
-        <input class="btn btn-success" type="submit" value="cadastrar">
-    </form>
+    <div class="container d-flex justify-content-center align-items-center vw-100">
+        <div class="box p-4">
+            <h1>PEI</h1>
+            <form action="{% url 'pei' %}" method="post">{% csrf_token %}
+                <div class="mb-3"><label for="matricula_estudante" class="form-label">matricula estudante</label>
+                    <select class="form-select" name="matricula_estudante" id="matricula_estudante">
+                        {% for estudante in estudantes %}
+                        <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="matricula_professor" class="form-label">matricula professor</label>
+                    <select class="form-select" name="matricula_professor" id="matricula_professor">
+                        {% for professor in professores %}
+                        <option value="{{professor.matricula}}">{{professor.matricula}} - {{professor.nome}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                        <label for="validade" class="form-label">validade</label>
+                        <input class="form-control" type="date" name="validade" id="validade">
+                </div>
+                <input class="btn btn-success" type="submit" value="cadastrar">
+            </form>
+        </div>
+    </div>
 
 </body>
 </html>

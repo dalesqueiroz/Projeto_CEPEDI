@@ -14,48 +14,83 @@
         </div>
         {% endfor %}
     {% endif %}
-    <h1>habilidade academica</h1>
-    <form action="{% url 'habilidade_academica' %}" method="post">{% csrf_token %}
-        <p> matricula estudante
-            <select name="matricula" id="matricula">
-                {% for estudante in estudantes %}
-                <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
-                {% endfor %}
-            </select>
-        </p>
-        <p>componente curricular <input type="text" name="componente" id="componente"></p>
-        <p>adaptacao curricular</p>
-        <label>
-            <input type="checkbox" name="adaptacao" id="item1" value="acesso ao curriculo">
-            acesso ao curriculo
-        </label>
-        <label>
-            <input type="checkbox" name="adaptacao" id="item2" value="conteudo">
-            conteudo
-        </label>
-        <label>
-            <input type="checkbox" name="adaptacao" id="item3" value="objetivos">
-            objetivos
-        </label>
-        <label>
-            <input type="checkbox" name="adaptacao" id="item4" value="metodologia e org didatica">
-            metodologia e org didatica
-        </label>
-        <label>
-            <input type="checkbox" name="adaptacao" id="item5" value="temporalidade">
-            temporalidade
-        </label>
-        <label>
-            <input type="checkbox" name="adaptacao" id="item6" value="Avaliação">
-            Avaliação
-        </label>
-        <p>habilidade <input type="text" name="habilidade" id="habilidade"></p>
-        <p>facilidade e dificuldade <input type="text" name="facilidade_dificuldade" id="facilidade_dificuldade"></p>
-        <p>metas para turma <input type="text" name="meta_turma" id="meta_turma"></p>
-        <p>metas especifica <input type="text" name="meta_especifica" id="meta_especifica"></p>
-        <p>procedimento metodologico <input type="text" name="procedimento" id="procedimento"></p>
-        <p>avaliacao <input type="text" name="avaliacao" id="avaliacao"></p>
-        <input type="submit" value="confirmar">
-    </>
+    <div class="container d-flex justify-content-center align-items-center vw-100">
+        <div class="box p-4">
+            <h1>habilidade academica</h1>
+            <form action="{% url 'habilidade_academica' %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    <select class="form-select" name="matricula" id="matricula">
+                        {% for estudante in estudantes %}
+                        <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="componente" class="form-label">componente curricular</label>
+                    <input class="form-control" type="text" name="componente" id="componente">
+                </div>
+                <div class="mb-3">
+                    <input class="form-check-input" type="checkbox" name="adaptacao" id="item1" value="acesso ao curriculo">
+                    <label for="item1" class="form-check-label">acesso ao curriculo</label>
+                </div>
+
+
+                <div class="mb-3">
+                    <input class="form-check-input" type="checkbox" name="adaptacao" id="item2" value="conteudo">
+                    <label for="item2" class="form-check-label">conteudo</label>
+                </div>
+
+
+                <div class="mb-3">
+                    <input class="form-check-input" type="checkbox" name="adaptacao" id="item3" value="objetivos">
+                    <label for="item3" class="form-check-label">objetivos</label>
+                </div>
+
+
+                <div class="mb-3">
+                    <input class="form-check-input" type="checkbox" name="adaptacao" id="item4" value="metodologia e org didatica">
+                    <label for="item4" class="form-check-label">metodologia e organizacao didatica</label>
+                </div>
+
+                <div class="mb-3">
+                    <input class="form-check-input" type="checkbox" name="adaptacao" id="item5" value="temporalidade">
+                    <label for="item5" class="form-check-label">temporalidade</label>
+                </div>
+
+
+                <div class="mb-3">
+                    <input class="form-check-input" type="checkbox" name="adaptacao" id="item6" value="Avaliação">
+                    <label for="item6" class="form-check-label">avaliacao<div class="mb-3"></div></label>
+                </div>
+
+                <div class="mb-3">
+                    <label for="habilidade" class="form-label">habilidade</label>
+                    <input class="form-control" type="text" name="habilidade" id="habilidade">
+                </div>
+                <div class="mb-3">
+                    <label for="facilidade_dificuldade" class="form-label">facilidade e dificuldade</label>
+                    <input class="form-control" type="text" name="facilidade_dificuldade" id="facilidade_dificuldade">
+                </div>
+                <div class="mb-3">
+                    <label for="meta_turma" class="form-label">meta para turma</label>
+                    <input class="form-control" type="text" name="meta_turma" id="meta_turma">
+                </div>
+                <div class="mb-3">
+                    <label for="meta_especifica" class="form-label">meta especifica</label>
+                    <input class="form-control" type="text" name="meta_especifica" id="meta_especifica">
+                </div>
+                <div class="mb-3">
+                    <label for="procedimento" class="form-label">procedimento metodologicos</label>
+                    <input class="form-control" type="text" name="procedimento" id="procedimento">
+                </div>
+                <div class="mb-3">
+                    <label for="avaliacao" class="form-label">avaliacao</label>
+                    <input class="form-control" type="text" name="avaliacao" id="avaliacao">
+                </div>
+                <input class="btn btn-success" type="submit" value="confirmar">
+
+            </form>
+        </div>
+    </div>
 </body>
 </html>

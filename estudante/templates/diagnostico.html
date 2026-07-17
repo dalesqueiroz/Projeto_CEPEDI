@@ -14,30 +14,48 @@
         </div>
         {% endfor %}
     {% endif %}
-    <h1>diagnostico</h1>
-    <form action="{% url 'diagnostico' %}" method="post">{% csrf_token %}
-        <p> matricula estudante
-            <select name="estudante" id="estudante">
-                {% for estudante in estudantes %}
-                <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
-                {% endfor %}
-            </select>
-        </p>
-        <p>O estudante possui laudo</p>
-        <select name="laudo" id="laudo">
-            <option value="sim">sim</option>
-            <option value="nao">nao</option>
-            <option value="em fase de avaliacao">em fase de avaliacao</option>
-        </select>
-        <p>Qual o diagnostico <input type="text" name="texto_diagnostico" id="texto_diagnostico"></p>
-        <p>Ano que foi descoberto o diagnostico <input type="number" name="ano" id="ano"></p>
-        <p>Realiza algum atendimento fora da escola</p>
-        <select name="atendimento" id="atendimento">
-            <option value="sim">sim</option>
-            <option value="nao">nao</option>
-        </select>
-        <p>Qual tipo de atendimento e periodicidade <input type="text" name="texto_atendimento" id="texto_atendimento"></p>
-        <input type="submit" value="confirmar">
-    </form>
+    <div class="container d-flex justify-content-center align-items-center vw-100">
+        <div class="box p-4">
+            <h1>diagnostico</h1>
+            <form action="{% url 'diagnostico' %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label" for="estudante">matricula estudante</label>
+                    <select class="form-select" name="estudante" id="estudante">
+                        {% for estudante in estudantes %}
+                        <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="laudo" class="form-label">o estudante possui laudo </label>
+                    <select class="form-select" name="laudo" id="laudo">
+                        <option value="sim">sim</option>
+                        <option value="nao">nao</option>
+                        <option value="em fase de avaliacao">em fase de avaliacao</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="texto_diagnostico" class="form-label">qual o diagnostico</label>
+                    <input class="form-control" type="text" name="texto_diagnostico" id="texto_diagnostico">
+                </div>
+                <div class="mb-3">
+                    <label for="ano" class="form-label">ano que o diagnostico foi descoberto</label>
+                    <input class="form-control" type="number" name="ano" id="ano">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="atendimento">realiza algum atendimento fora da escola</label>
+                    <select class="form-select" name="atendimento" id="atendimento">
+                        <option value="sim">sim</option>
+                        <option value="nao">nao</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="texto_atendimento">texto</label>
+                    <input class="form-control" type="text" name="texto_atendimento" id="texto_atendimento">
+                </div>
+                <input class="btn btn-success" type="submit" value="confirmar">
+            </form>
+        </div>
+    </div>
 </body>
 </html>
