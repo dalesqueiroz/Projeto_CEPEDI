@@ -22,54 +22,93 @@ def cadastro(request):
     return render(request, 'index.html')
 
 def cadastro_sistema(request):
+    # verifica se o metodo da requisicao e GET, se for GET renderiza a pagina sistema cadastro
     if request.method == "GET":
         return render(request, 'sistema_cadastro.html')
+    #verifica se o metodo da requisicao e POST
     if request.method == "POST":
+        #pega os dados da requisicao
         cpf  = request.POST.get("cpf")
         nome = request.POST.get("nome")
         email = request.POST.get("email")
         senha = request.POST.get("senha")
+        #gera o hash da senha
         senha = make_password(senha)
+        #cria um objeto sistema professor passando os dados e cria a tabela no banco de dados
         SistemaProfessor.objects.create(cpf=cpf, nome=nome, email=email, senha=senha)
+        #filtra sistema professor pelo cpf e pega o primeiro objeto
         professor = SistemaProfessor.objects.filter(cpf=cpf).first()
+        #verifica se o sistema professor foi cadastrado
         if professor:
+            #envia mensagem de usuario cadastrado e redireciona para pagina de login
             messages.success(request, "O usuario foi cadastrado")
             redirect("login")
+        #se o sistema professor nao foi cadastrado, envia mensagem de usuario nao cadastro,
+        #com a tag danger para ser usada pelo bootstrap e redireciona para pagina de cadastro
         messages.error(request, "O usuario não foi cadastrado", extra_tags="danger")
         return redirect("cadastro_sistema")
 
 def login(request):
+    # verifica se o metodo da requisicao e GET, se for GET renderiza a pagina sistema cadastro
     if request.method == "GET":
         return render(request, 'login.html')
+     # verifica se o metodo da requisicao e POST
     if request.method == "POST":
+        #pega os dados da requisicao
         email = request.POST.get("email")
         senha = request.POST.get("senha")
+        #pega o primeiro sistema professor no banco de dados filtrando pelo email
         sistema_professor = SistemaProfessor.objects.filter(email=email).first()
+        #verifica se tem sistema professor
         if sistema_professor:
+            #verifica se o hash da senha é igual ao hash da senha do sistema professor
+            #as senhas no banco de dados estam armazenadas em hash
+            #essa funcao pega senha, transforma em hash e verifica se o hash da senha
+            #e o mesmo do banco de dados
             if check_password(senha, sistema_professor.senha):
+                #cria uma sessao com nome sistema_professor_cpf e armazena o cpf do professor
+                #a sessao ela armazena dados em dicionario, esta criando a chave do dicionario
+                #e armazenando valor, os dados da sessao sao armazenados do lado do servidor
+                #o cliente recebe os coockies que representam os dados da sessao
                 request.session["sistema_professor_cpf"] = sistema_professor.cpf
                 request.session["sistema_professor_nome"] = sistema_professor.nome
+                #redireciona para a pagina do painel do administrador
                 return redirect("painel_administrador")
+        #se o email nao for encontrado ou a senha for invalida, envia mensagem de error
+        #login nao realizado com a tag danger para o bootstrap
         messages.error(request, "login não realizado", extra_tags="danger")
+        #redireciona para pagina de login
         return redirect("login")
 
+#apaga os dados armazenados na sessao e redireciona para a pagina de login
 def sair(request):
     request.session.flush()
     return redirect("login")
 
 def painel_administrador(request):
+    #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
     return render(request, "painel_administrador.html")
 
 def cadastro_estudante(request):
+    #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         return render(request, 'cadastro_estudante.html')
     if request.method == "POST":
+        # pega os dados da requisicao
         cpf = request.POST.get("cpf")
         matricula = request.POST.get("matricula")
         nome = request.POST.get("nome")
@@ -85,137 +124,244 @@ def cadastro_estudante(request):
         mae = request.POST.get("mae")
         telefone_responsavel = request.POST.get("telefone_responsavel")
         email_responsavel = request.POST.get("email_responsavel")
+        #filtra o estudante pela matricula e pega o primeiro estudante
         estudante = Estudante.objects.filter(matricula=matricula).first()
+        #verifica se tem estudante
         if estudante:
+            #se o estudante estiver cadastrado
+            #envia uma mensagem de error e redireciona para pagina de cadastro
             messages.error(request, "estudante ja cadastrado", extra_tags="danger")
             return redirect("cadastro_estudante")
+        #se o estudante não estiver cadastrado, cadastra o estudante
         Estudante.objects.create(cpf=cpf, matricula=matricula, nome=nome,
                                  data_de_nascimento=data_de_nascimento, curso=curso,
                                  periodo=periodo, turma=turma, ingresso=ingresso,
                                  nota=nota, telefone=telefone, email=email, pai=pai, mae=mae,
                                  telefone_responsavel=telefone_responsavel,
                                  email_responsavel=email_responsavel)
+        #filtra o estudante pela matricula e pega o primeiro estudante
         estudante = Estudante.objects.filter(matricula=matricula).first()
+        #verifica se o estudante foi cadastrado
         if estudante:
+            #envia mensagem de sucesso e redireciona para pagina de cadastro
             messages.success(request, "estudante cadastrado")
             return redirect("cadastro_estudante")
+        #envia uma mensagem de error e redireciona para pagina de cadastro
         messages.error(request, "estudante não cadastrado", extra_tags="danger")
         return redirect("cadastro_estudante")
 
+
 def cadastro_professor(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
         return render(request, 'cadastro_professor.html')
     if request.method == "POST":
+        # pega os dados da requisicao
         cpf = request.POST.get("cpf")
         nome = request.POST.get("nome")
         matricula = request.POST.get("matricula")
         data_de_nascimento = request.POST.get("data_de_nascimento")
         email = request.POST.get("email")
         telefone = request.POST.get("telefone")
-        professor = Professor.objects.filter(matricula=matricula).first()
+        #filtra o professor pela matricula
+        professor = Professor.objects.filter(matricula=matricula)
+        #filtra os professores retornados pelo cpf e pega o primeiro
+        professor = professor.filter(cpf=cpf).first()
+        #verifica se tem professor
         if professor:
+            #se ja tem professor cadastrado envia mensagem de error e redireciona para
+            #pagina de cadastro
             messages.error(request, "professor ja cadastrado", extra_tags="danger")
             return redirect("cadastro_professor")
+        #senao tem professor cadastrador, cadastra o professor
         Professor.objects.create(cpf=cpf, nome=nome, matricula=matricula,
                                  data_de_nascimento=data_de_nascimento, email=email,
                                  telefone=telefone)
+        #filtra o professor pela matricula e pega o primeiro
         professor = Professor.objects.filter(matricula=matricula).first()
-
+        #verifica se tem um professor
         if professor:
+            #se o professor foi cadastrrado, envia mensagem de sucesso e redireciona para
+            #pagina de cadastro
             messages.success(request, "professor cadastrado")
             return redirect("cadastro_professor")
+        #senao tem professor cadastrado envia mensagem de error e redireciona para
+        #pagina de cadastro
         messages.error(request, "professor não foi cadastrado", extra_tags="danger")
         return redirect("cadastro_professor")
 
 def cadastro_funcionario(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o login")
         return redirect("login")
     if request.method == "GET":
         return render(request, 'cadastro_funcionario.html')
     if request.method == "POST":
+        # pega os dados da requisicao
         cpf = request.POST.get("cpf")
         nome = request.POST.get("nome")
         funcao = request.POST.get("funcao")
+        #filtra o funcionario pelo cpf e pega o primeiro
         funcionario = Funcionario.objects.filter(cpf=cpf).first()
+        #verifica se tem o funcionario
         if funcionario:
+            #se tem um funcionario, envia mensagem de error de funcionario ja cadastrado
             messages.error(request, "o funcionario ja cadastrado", extra_tags="danger")
             return redirect("cadastro_funcionario")
+        #cria um funcionario
         Funcionario.objects.create(cpf=cpf, nome=nome, funcao=funcao)
+        #filtra o funcionario pelo cpf e pega o primeiro
         funcionario = Funcionario.objects.filter(cpf=cpf).first()
+        #verifica se tem funcionario
         if funcionario:
+            #se o funcionario foi cadastrado envia mensagem de funcionario cadastrado
+            #e redireciona para pagina de cadastro
             messages.success(request, "o funcionario foi cadastrado")
             return redirect("cadastro_funcionario")
-        messages.warning(request, "o funcionario não foi cadastrado", extra_tags="danger")
+        #se o funcionario nao foi cadastrado envia mensagem de funcionario nao cadastrado
+        #e redireciona para pagina de cadastro
+        messages.error(request, "o funcionario não foi cadastrado", extra_tags="danger")
         return redirect("cadastro_funcionario")
 
 def pei(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
+    #verifica se o metodo da requisicao e GET
     if request.method == "GET":
+        #pega todos os estudantes do banco de dados
         estudante = Estudante.objects.all()
+        #pega todos os professores do banco de dados
         professor = Professor.objects.all()
+        #cria um dicionario com os estudantes e professores
         dicionario = {"estudantes":estudante, "professores":professor}
+        #renderiza a pagina e envia o dicionario para a pagina
         return render(request, 'PEI.html', dicionario)
     if request.method == "POST":
+        #pega a matricula 1 da requisicao
         matricula1 = request.POST.get("matricula1")
+        #verifica se tem dado na matricula 1
         if matricula1:
+            #se tiver renderiza a pagina enviando a matricula 1, para ser usada na pagina
+            #como value da matricula do estudante, para ficar preenchida
             dicionario = {"matricula1":matricula1}
             return render(request, "PEI.html", dicionario)
+        # pega os dados da requisicao
         matricula_estudante = request.POST.get("matricula_estudante")
         matricula_professor = request.POST.get("matricula_professor")
         validade = request.POST.get("validade")
+        #filtra professor e estudante pela matricula e pega o primeiro
         estudante = Estudante.objects.filter(matricula = matricula_estudante).first()
         professor = Professor.objects.filter(matricula = matricula_professor).first()
+        #verifica se tem professor e estudante
         if estudante and professor:
+            #filtra o pei pelo estudante e pega o primeiro
             pei1 = PEI.objects.filter(estudante=estudante).first()
+            #verifica se tem pei
             if pei1:
+                #se o pei estiver cadastrado envia mensagem de error e
+                #redireciona para pagina do pei
                 messages.error(request, "o pei ja cadastrado", extra_tags="danger")
                 return redirect("pei")
+            #cria o pei com o dados da requisicao, envia mensagem de pei cadastrado e
+            # redireciona para pagina do pei
             PEI.objects.create(estudante=estudante, professor=professor, tempo=validade)
             messages.success(request, "o pei foi cadastrado")
             return redirect("pei")
+        #envia mensagem de error e redireciona para pagina do pei
         messages.error(request, "o pei não foi cadastrado", extra_tags="danger")
         return redirect("pei")
 
 def cadastro_equipe(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
     if request.method == "GET":
+        #pega todos os estudantes do banco de dados
         estudante = Estudante.objects.all()
+        #pega quantidade da requisicao, se nao tiver dados na requisicao, retorna 0
         quantidade = request.GET.get("quantidade", 0)
+        #transforma quantidade em int
         quantidade = int(quantidade)
+        #cria uma lista com a quantidade
+        #a lista com a quantidade e usada para redenrizar a pagina com a quantidade
+        #de funcionarios informados pelo usuario, e usado o for para percorrer a lista
+        #e criar os inputs
         lista = range(quantidade)
+        #renderiza a pagina enviando a quantidade, a lista e os estudantes
         dicionario = {"quantidade":quantidade, "lista":lista, "estudantes":estudante}
         return render(request, 'cadastro_equipe.html', dicionario)
     if request.method == "POST":
+        #pega a quantidade da requisicao, senao tiver quantidade retorna 0
         quantidade = request.POST.get("quantidade", 0)
+        #trabsforma quantidade em inteiro
         quantidade = int(quantidade)
         quantidade1 = 0
+        #pega matricula da requisicao
         matricula = request.POST.get("matricula")
+        #filtra o estudante por matricula e pega o primeiro estudante
         estudante = Estudante.objects.filter(matricula=matricula).first()
+        #cadastra os funcionarios e estudante em funcionario estudante
         for i in range(quantidade):
+            # pega os cpf da requisicao de cada funcionario
             cpf = request.POST.get(f"cpf_{i}")
+            #filtra o funcionario pelo cpf e pega o primeiro funcionario
             funcionario = Funcionario.objects.filter(cpf=cpf).first()
+            #filtra funcionario estudante por estudante
             funcionario_estudante = FuncionarioEstudante.objects.filter(estudante=estudante)
+            #filtra funcionario estudante retornado pelo funcionario e pega o primeiro
             funcionario_estudante = funcionario_estudante.filter(funcionario=funcionario).first()
+            #verifica se tem funcionario estudante
             if funcionario_estudante:
+                #se o estudante e o funcionario estiver cadastrado
+                # envia mensagem de error e redireciona para pagina de cadastro
                 messages.error(request, "equipe pei ja cadastrado", extra_tags="danger")
                 return redirect("cadastro_equipe")
+            #verifica se tem funcionario e estudante
             if estudante and funcionario:
+                #cadastra o funcionario e o estudante
                 FuncionarioEstudante.objects.create(estudante=estudante, funcionario=funcionario)
+                #soma mais um a quantidade de funcionario estudante cadastrado
                 quantidade1 += 1
+        #verifica se a quantidade de funcionarios e
+        #a mesma de funcionarios estudantes cadastrado
         if quantidade == quantidade1:
+            #se todos os funcionarios foram cadastrados envia mensagem de sucesso
+            # e redireciona para pagina de cadastro
             messages.success(request, "funcionario cadastrado")
             return redirect("cadastro_equipe")
+        #se todos os funcionarios nao foram cadastrados envia mensagem de error e redireciona para pagina de login
         messages.error(request, f'{quantidade1} funcionario cadastrado', extra_tags="danger")
+        return redirect("cadastro_equipe")
 
 def diagnostico(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -224,10 +370,13 @@ def diagnostico(request):
         dicionario = {"estudantes":estudante}
         return render(request, 'diagnostico.html', dicionario)
     if request.method == "POST":
+        # se tiver renderiza a pagina enviando a matricula 1, para ser usada na pagina
+        # como value da matricula do estudante, para ficar preenchida
         matricula1 = request.POST.get("matricula1")
         if matricula1:
             dicionario = {"matricula1":matricula1}
             return render(request, "diagnostico.html", dicionario)
+        # pega os dados da requisicao
         estudante = request.POST.get("estudante")
         laudo = request.POST.get("laudo")
         texto_diagnostico = request.POST.get("texto_diagnostico")
@@ -251,6 +400,11 @@ def diagnostico(request):
         return redirect("diagnostico")
 
 def historico_escolar(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -263,6 +417,7 @@ def historico_escolar(request):
         if matricula1:
             dicionario = {"matricula1":matricula1}
             return render(request, "diagnostico.html", dicionario)
+        # pega os dados da requisicao
         matricula = request.POST.get("matricula")
         texto = request.POST.get("texto")
         texto2 = request.POST.get("texto2")
@@ -279,6 +434,11 @@ def historico_escolar(request):
         return redirect("historico_escolar")
 
 def perfil_estudante(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -287,6 +447,7 @@ def perfil_estudante(request):
         dicionario = {"estudantes":estudante}
         return render(request, 'perfil_estudante.html', dicionario)
     if request.method == "POST":
+        # pega os dados da requisicao
         matricula = request.POST.get("matricula")
         interesse = request.POST.get("interesse")
         habilidade = request.POST.get("habilidade")
@@ -309,6 +470,11 @@ def perfil_estudante(request):
         return redirect("perfil_estudante")
 
 def atividade(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -317,6 +483,7 @@ def atividade(request):
         dicionario = {"estudantes":estudante}
         return render(request, "atividade.html", dicionario)
     if request.method == "POST":
+        # pega os dados da requisicao
         matricula = request.POST.get("matricula")
         atividade1 = request.POST.get("atividade")
         descricao = request.POST.get("descricao")
@@ -334,6 +501,11 @@ def atividade(request):
         return redirect("atividade")
 
 def planejamento(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -342,6 +514,7 @@ def planejamento(request):
         dicionario = {"estudantes":estudante}
         return render(request, "planejamento.html", dicionario)
     if request.method == "POST":
+        # pega os dados da requisicao
         matricula = request.POST.get("matricula")
         habilidade = request.POST.get("habilidade")
         metas_curto_prazo = request.POST.get("meta_curto_prazo")
@@ -363,6 +536,11 @@ def planejamento(request):
         return redirect("planejamento")
 
 def habilidade_academica(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -371,6 +549,7 @@ def habilidade_academica(request):
         dicionario = {"estudantes":estudante}
         return render(request, 'habilidade_academica.html', dicionario)
     if request.method == "POST":
+        # pega os dados da requisicao
         matricula = request.POST.get("matricula")
         componente = request.POST.get("componente")
         adaptacao = request.POST.getlist("adaptacao")
@@ -401,6 +580,11 @@ def habilidade_academica(request):
         return redirect("habilidade_academica")
 
 def checklist2(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -467,6 +651,11 @@ def checklist2(request):
         return redirect("checklist2")
 
 def gerar_pdf(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -500,6 +689,11 @@ def gerar_pdf(request):
         return HttpResponse(pdf, content_type="application/pdf")
 
 def estudante_cadastrado(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -508,6 +702,11 @@ def estudante_cadastrado(request):
     return render(request, "estudantes_cadastrados.html", dicionario)
 
 def remover_estudante(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -516,6 +715,7 @@ def remover_estudante(request):
         dicionario = {"estudantes":estudantes}
         return render(request, "remover_estudante.html", dicionario)
     if request.method == "POST":
+        # pega os dados da requisicao
         matricula = request.POST.get("estudante")
         if matricula.isdigit():
             matricula = int(matricula)
@@ -528,6 +728,11 @@ def remover_estudante(request):
             return redirect("remover_estudante")
 
 def remover_professor(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -536,6 +741,7 @@ def remover_professor(request):
         dicionario = {"professores":professor}
         return render(request, "remover_professor.html", dicionario)
     if request.method == "POST":
+        # pega os dados da requisicao
         matricula = request.POST.get("matricula")
         if matricula.isdigit():
             matricula = int(matricula)
@@ -548,6 +754,11 @@ def remover_professor(request):
             return redirect("remover_profesoor")
 
 def remover_funcionario(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -556,6 +767,7 @@ def remover_funcionario(request):
         dicionario = {"funcionarios":funcionario}
         return render(request, "remover_funcionario.html", dicionario)
     if request.method == "POST":
+        # pega os dados da requisicao
         cpf = request.POST.get("cpf")
         if cpf.isdigit():
             cpf = int(cpf)
@@ -568,6 +780,11 @@ def remover_funcionario(request):
             return redirect("remover_funcionario")
 
 def professor_cadastrado(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -576,6 +793,11 @@ def professor_cadastrado(request):
     return render(request, "professores_cadastrados.html", dicionario)
 
 def funcionario_cadastrado(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -584,30 +806,55 @@ def funcionario_cadastrado(request):
     return render(request, "funcionarios_cadastrados.html", dicionario)
 
 def gerenciar_professor(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
     return render(request, "gerenciar_professor.html")
 
 def gerenciar_estudante(request):
+    #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
     return render(request, "gerenciar_estudante.html")
 
 def gerenciar_funcionario(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
     return render(request, "gerenciar_funcionario.html")
 
 def cadastrar_pei(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
     return render(request, "cadastrar_pei.html")
 
 def remover_pei(request, matricula):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -626,6 +873,11 @@ def remover_pei(request, matricula):
         return redirect("dados_pei", matricula=matricula)
 
 def remover_diagnostico(request, matricula):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -645,6 +897,11 @@ def remover_diagnostico(request, matricula):
 
 
 def remover_historico_escolar(request, matricula):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -663,6 +920,11 @@ def remover_historico_escolar(request, matricula):
         return redirect("dados_pei", matricula=matricula)
 
 def remover_perfil_estudante(request, matricula):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -681,6 +943,11 @@ def remover_perfil_estudante(request, matricula):
         return redirect("dados_pei", matricula=matricula)
 
 def remover_checklist(request, matricula, id1):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -699,6 +966,11 @@ def remover_checklist(request, matricula, id1):
         return redirect("dados_pei", matricula=matricula)
 
 def remover_atividade(request, matricula):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -717,10 +989,16 @@ def remover_atividade(request, matricula):
         return redirect("dados_pei", matricula=matricula)
 
 def remover_planejamento(request, matricula):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
     estudante = Estudante.objects.filter(matricula=matricula).first()
+
     if estudante:
         planejamento1 = Planejamento.objects.filter(estudante=estudante).first()
         if planejamento1:
@@ -735,6 +1013,11 @@ def remover_planejamento(request, matricula):
         return redirect("dados_pei", matricula=matricula)
 
 def remover_equipe_pei(request, matricula):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -753,6 +1036,11 @@ def remover_equipe_pei(request, matricula):
         return redirect("dados_pei", matricula=matricula)
 
 def remover_habilidade_academica(request, matricula):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
@@ -778,10 +1066,14 @@ def verificar_formulario(formulario, modelo):
     return formulario1
 
 def dados_pei(request, matricula):
+    #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o login")
         return redirect("login")
-    checklist_id = []
     lista = []
     numero = 0
     estudante = Estudante.objects.filter(matricula=matricula).first()
@@ -828,7 +1120,6 @@ def dados_pei(request, matricula):
         numero += 1
         for formulario in checklist3.fields.keys():
             checklist3.fields[formulario].widget.attrs["id"] = f"{formulario}{numero}"
-            checklist_id.append(f"{formulario}{numero}")
     atividade1 = Atividade.objects.filter(estudante=estudante).first()
     formulario_atividade = verificar_formulario(FormularioAtividade, atividade1)
     if formulario_atividade:
@@ -853,10 +1144,15 @@ def dados_pei(request, matricula):
                   "checklist":lista, "atividade":formulario_atividade,
                   "planejamento":formulario_planejamento,
                   "habilidade_academica":formulario_habilidade_academica,
-                  "matricula":matricula, "estudante":estudante, "checklist_id":checklist_id}
+                  "matricula":matricula, "estudante":estudante}
     return render(request, "dados_pei.html", dicionario)
 
 def editar_pei(request, matricula):
+    #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o login")
         return redirect("login")
@@ -875,6 +1171,11 @@ def editar_pei(request, matricula):
             return redirect("dados_pei", matricula)
 
 def editar_equipe_pei(request, matricula):
+    #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o login")
         return redirect("login")
@@ -893,6 +1194,11 @@ def editar_equipe_pei(request, matricula):
             return redirect("dados_pei", matricula)
 
 def editar_diagnostico(request, matricula):
+    #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o login")
         return redirect("login")
@@ -911,6 +1217,11 @@ def editar_diagnostico(request, matricula):
             return redirect("dados_pei", matricula)
 
 def editar_historico_escolar(request, matricula):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o login")
         return redirect("login")
@@ -929,6 +1240,11 @@ def editar_historico_escolar(request, matricula):
             return redirect("dados_pei", matricula)
 
 def editar_perfil_estudante(request, matricula):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o login")
         return redirect("login")
@@ -947,6 +1263,11 @@ def editar_perfil_estudante(request, matricula):
             return redirect("dados_pei", matricula)
 
 def editar_checklist(request, matricula, id1):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o login")
         return redirect("login")
@@ -964,6 +1285,11 @@ def editar_checklist(request, matricula, id1):
             return redirect("dados_pei", matricula)
 
 def editar_atividade(request, matricula):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o login")
         return redirect("login")
@@ -1000,6 +1326,11 @@ def editar_planejamento(request, matricula):
             return redirect("dados_pei", matricula)
 
 def editar_habilidade_academica(request, matricula):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o login")
         return redirect("login")
@@ -1018,6 +1349,11 @@ def editar_habilidade_academica(request, matricula):
             return redirect("dados_pei", matricula)
 
 def gerenciar_pei(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o login")
         return redirect("login")
@@ -1025,6 +1361,11 @@ def gerenciar_pei(request):
         return render(request, "gerenciar_pei.html")
 
 def gerenciar_pei_matricula(request):
+     #verifica se tem uma chave chamada sistema_professor_cpf na sessao
+    #se nao tiver envia a mensagem de faça o login e redireciona para pagina de login
+    #se tiver renderiza a pagina do painel do administrador
+    #a chave sistema_professor_cpf da sessao e criada no login, se nao tem a chave, e porque
+    #o login nao foi feito
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o login")
         return redirect("login")
