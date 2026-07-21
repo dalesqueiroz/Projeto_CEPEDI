@@ -1,6 +1,7 @@
 from django import forms
 from .models import (PEI, FuncionarioEstudante, Diagnostico, HistoricoEscolar, PerfilEstudante,
-                     Checklist, Atividade, Planejamento, HabilidadeAcademica)
+                     Checklist, Atividade, Planejamento, HabilidadeAcademica,
+                     Professor, Estudante, Funcionario)
 
 class Pei(forms.ModelForm):
     class Meta:
@@ -47,3 +48,18 @@ class FormularioHabilidadeAcademica(forms.ModelForm):
     class Meta:
         model = HabilidadeAcademica
         exclude = ["estudante"]
+
+class FormularioProfessor(forms.ModelForm):
+    class Meta:
+        model = Professor
+        exclude = ["matricula"]
+
+class FormularioFuncionario(forms.ModelForm):
+    class Meta:
+        model = Funcionario
+        exclude = ["cpf"]
+
+class FormularioEstudante(forms.ModelForm):
+    class Meta:
+        model = Estudante
+        exclude = ["matricula"]

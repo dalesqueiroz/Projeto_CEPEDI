@@ -50,6 +50,12 @@ urlpatterns = [
     path("editar_planejamento/<int:matricula>/", views.editar_planejamento, name="editar_planejamento"),
     path("editar_habilidade_academica/<int:matricula>/", views.editar_habilidade_academica, name="editar_habilidade_academica"),
     path("gerenciar_pei/", views.gerenciar_pei, name="gerenciar_pei"),
-    path("gerenciar_pei_matricula/", views.gerenciar_pei_matricula, name="gerenciar_pei_matricula")
+    path("gerenciar_pei_matricula/", views.gerenciar_pei_matricula, name="gerenciar_pei_matricula"),
+    path("editar_professor/<int:matricula>/", views.editar_professor, name="editar_professor"),
+    path("editar_funcionario/<int:cpf>/", views.editar_funcionario, name="editar_funcionario"),
+    path("editar_estudante/<int:matricula>/", views.editar_estudante, name="editar_estudante"),
+    path("editar_professor_matricula/", views.editar_professor_matricula, name="editar_professor_matricula"),
+    path("editar_funcionario_cpf/", views.editar_funcionario_cpf, name="editar_funcionario_cpf"),
+    path("editar_estudante_matricula/", views.editar_estudante_matricula, name="editar_estudante_matricula")
 ]
 

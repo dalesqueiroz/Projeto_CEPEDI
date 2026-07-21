@@ -14,7 +14,8 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib import messages
 from .forms import (Pei, EquipePei, FormularioDiagnostico, FormularioHistoricoEscolar,
                     FormularioPerfilEstudante, FormularioChecklist, FormularioAtividade,
-                    FormularioPlanejamento, FormularioHabilidadeAcademica)
+                    FormularioPlanejamento, FormularioHabilidadeAcademica,
+                    FormularioProfessor, FormularioFuncionario, FormularioEstudante)
 
 # Create your views here.
 
@@ -518,14 +519,14 @@ def atividade(request):
     if not request.session.get("sistema_professor_cpf"):
         messages.warning(request, "faça o  login")
         return redirect("login")
-    #verifica se o metodo da requisicao e get
+    #verifica se o metodo da requisição e get
     if request.method == "GET":
         #pega todos os estudantes do banco de dados e envia para o template
         estudante = Estudante.objects.all()
         dicionario = {"estudantes":estudante}
         return render(request, "atividade.html", dicionario)
     if request.method == "POST":
-        # pega os dados da requisicao
+        # pega os dados da requisição
         matricula = request.POST.get("matricula")
         atividade1 = request.POST.get("atividade")
         descricao = request.POST.get("descricao")
@@ -571,7 +572,7 @@ def planejamento(request):
         metas_curto_prazo = request.POST.get("meta_curto_prazo")
         metas_medio_prazo = request.POST.get("meta_medio_prazo")
         metas_longo_prazo = request.POST.get("meta_longo_prazo")
-        #filtra os estudantes pela matricula e pega o primeiro
+        #filtra os estudantes pela matrícula e pega o primeiro
         estudante = Estudante.objects.filter(matricula=matricula).first()
         #verifica se tem estudante
         if estudante:
@@ -616,7 +617,7 @@ def habilidade_academica(request):
         matricula = request.POST.get("matricula")
         componente = request.POST.get("componente")
         adaptacao = request.POST.getlist("adaptacao")
-        #separa as adaptação por virgula
+        #separa as adaptação por vírgula
         adaptacao = ", ".join(adaptacao)
         habilidade = request.POST.get("habilidade")
         facilidade_dificuldade = request.POST.get("facilidade_dificuldade")
@@ -624,7 +625,7 @@ def habilidade_academica(request):
         meta_especifica = request.POST.get("meta_especifica")
         procedimento = request.POST.get("procedimento")
         avaliacao = request.POST.get("avaliacao")
-        #filtra os estudantes por matricula e pega o primeiro estudante
+        #filtra os estudantes por matrícula e pega o primeiro estudante
         estudante = Estudante.objects.filter(matricula=matricula).first()
         #verifica se tem estudante
         if estudante:
@@ -645,10 +646,10 @@ def habilidade_academica(request):
                                                metas_turma = meta_turma, metas_especifica = meta_especifica,
                                                procedimento_metodologico = procedimento,
                                                avaliacao = avaliacao)
-            #envia mensagem de sucesso e redireciona para pagina de habilidade academica
+            #envia mensagem de sucesso e redireciona para página de habilidade academica
             messages.success(request, "habilidade_academica cadastrado")
             return redirect("habilidade_academica")
-        #envia mensagem de error e redireciona para pagina de habilidade academica
+        #envia mensagem de error e redireciona para página de habilidade academica
         messages.error(request, "habilidade_academica não cadastrado", extra_tags="danger")
         return redirect("habilidade_academica")
 
@@ -757,7 +758,7 @@ def gerar_pdf(request):
     if request.method == "POST":
         #pega a matrícula da requisição
         matricula = request.POST.get("matricula")
-        #filtra o estudante pela matricula e pega o primeiro
+        #filtra o estudante pela matrícula e pega o primeiro
         estudante = Estudante.objects.filter(matricula=matricula).first()
         #filtra o pei pelo estudante e pega o primeiro
         pei1 = PEI.objects.filter(estudante=estudante).first()
@@ -821,9 +822,9 @@ def remover_estudante(request):
     if request.method == "POST":
         # pega os dados da requisicao
         matricula = request.POST.get("estudante")
-        # verifica se a matricula é numero inteiro
+        # verifica se a matrícula é numero inteiro
         if matricula.isdigit():
-            #converte a matricula para inteiro
+            #converte a matrícula para inteiro
             matricula = int(matricula)
             #filtra os estudantes pela matricula
             estudante = Estudante.objects.filter(matricula=matricula).first()
@@ -831,7 +832,7 @@ def remover_estudante(request):
             if estudante:
                 #exclui o estudante
                 estudante.delete()
-                #envia mensagem de sucesso e redireciona para pagina de remover estudante
+                #envia mensagem de sucesso e redireciona para página de remover estudante
                 messages.success(request, "estudante removido")
                 return redirect("remover_estudante")
             #envia mensagem de error e redireciona para pagina de remover estudante
@@ -854,22 +855,22 @@ def remover_professor(request):
     if request.method == "POST":
         # pega os dados da requisição
         matricula = request.POST.get("matricula")
-        #verifica se a matricula é numero inteiro
+        #verifica se a matrícula é numero inteiro
         if matricula.isdigit():
             #transforma matricula em numero inteiro
             matricula = int(matricula)
-            #filtra os professores por matricula e pega o primeiro
+            #filtra os professores por matrícula e pega o primeiro
             professor = Professor.objects.filter(matricula=matricula).first()
             #verifica se tem professor
             if professor:
                 #remove o professor
                 professor.delete()
                 #envia mensagem de sucesso e redireciona para pagina de remover professor
-                messages.success(request, "profesoor removido")
-                return redirect("remover_profesoor")
+                messages.success(request, "professor removido")
+                return redirect("remover_professor")
             #envia mensagem de error e redireciona para pagina de remover professor
-            messages.error(request, "profesoor não removido", extra_tags="danger")
-            return redirect("remover_profesoor")
+            messages.error(request, "professor não removido", extra_tags="danger")
+            return redirect("remover_professor")
 
 def remover_funcionario(request):
     # verifica se tem uma chave chamada sistema_professor_cpf na sessão
@@ -882,7 +883,7 @@ def remover_funcionario(request):
         return redirect("login")
     #verifica se o metodo da requisição é GET
     if request.method == "GET":
-        #pega todos os funcionarios do banco de dados e envia para o template
+        #pega todos os funcionários do banco de dados e envia para o template
         funcionario = Funcionario.objects.all()
         dicionario = {"funcionarios":funcionario}
         return render(request, "remover_funcionario.html", dicionario)
@@ -891,7 +892,7 @@ def remover_funcionario(request):
         cpf = request.POST.get("cpf")
         #verifica se cpf é numero inteiro
         if cpf.isdigit():
-            #transforma cpf em numero inteiro
+            #transforma cpf em número inteiro
             cpf = int(cpf)
             #filtra funcionario pelo cpf e pega o primeiro
             funcionario = Funcionario.objects.filter(cpf=cpf).first()
@@ -899,7 +900,7 @@ def remover_funcionario(request):
             if funcionario:
                 #remove o funcionario
                 funcionario.delete()
-                #envia mensagem de sucesso e redireciona para pagina de remover funcionario
+                #envia mensagem de sucesso e redireciona para página de remover funcionario
                 messages.success(request, "funcionario removido")
                 return redirect("remover_funcionario")
             #envia mensagem de error e redireciona para pagina de remover funcionario
@@ -936,6 +937,181 @@ def funcionario_cadastrado(request):
     funcionario = Funcionario.objects.all()
     dicionario = {"funcionarios":funcionario}
     return render(request, "funcionarios_cadastrados.html", dicionario)
+
+def editar_professor(request, matricula):
+    # verifica se tem uma chave chamada sistema_professor_cpf na sessão
+    # se não tiver envia a mensagem de faça o login e redireciona para página de login
+    # se tiver renderiza a pagina do painel do administrador
+    # a chave sistema_professor_cpf da sessão é criada no login, se não tem a chave, é porque
+    # o login não foi feito
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
+        return redirect("login")
+    #verifica se o metodo da requisição é GET
+    if request.method  == "GET":
+        #filtra o professor pela matrícula e pega o primeiro
+        professor = Professor.objects.filter(matricula=matricula).first()
+        #cria um formulario com os dados do professor
+        formulario = FormularioProfessor(instance=professor)
+        #percorre as chaves do dicionario de fields do formulario e adiciona
+        # a class form-control aos itens do formulario
+        for formulario1 in formulario.fields.keys():
+            formulario.fields[formulario1].widget.attrs["class"] = "form-control"
+        #envia o formulario para o template
+        dicionario = {"formulario":formulario, "matricula":matricula}
+        return render(request, "editar_professor.html", dicionario)
+    #verifica se o metodo da requisição é POST
+    if request.method == "POST":
+        #filtra o professor pela matrícula e pega o primeiro
+        professor = Professor.objects.filter(matricula=matricula).first()
+        #cria um formulario com os dados do professor e envia os dados da requisição
+        #para o formulario
+        formulario = FormularioProfessor(request.POST, instance=professor)
+        #verifica se o formulario é valido
+        if formulario.is_valid():
+            #envia os dados do formulario para o banco de dados
+            formulario.save()
+            #envia mensagem de sucesso e redireciona para página de editar professor
+            messages.success(request, "professor editado com sucesso")
+            return redirect("editar_professor", matricula=matricula)
+        messages.error(request, "professor não editado", extra_tags="danger")
+        return redirect("editar_professor", matricula=matricula)
+
+def editar_funcionario(request, cpf):
+    # verifica se tem uma chave chamada sistema_professor_cpf na sessão
+    # se não tiver envia a mensagem de faça o login e redireciona para página de login
+    # se tiver renderiza a pagina do painel do administrador
+    # a chave sistema_professor_cpf da sessão é criada no login, se não tem a chave, é porque
+    # o login não foi feito
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
+        return redirect("login")
+    #verifica se o metodo da requisição é GET
+    if request.method == "GET":
+        #filtra os funcionarios pelo cpf e pega o primeiro
+        funcionario = Funcionario.objects.filter(cpf=cpf).first()
+        #cria um formulario com as informações do funcionario
+        formulario = FormularioFuncionario(instance=funcionario)
+        # percorre as chaves do dicionario de fields do formulario e adiciona
+        # a class form-control aos itens do formulario
+        for formulario1 in formulario.fields.keys():
+            formulario.fields[formulario1].widget.attrs["class"] = "form-control"
+        # envia o formulario para o template
+        #envia o formulario para o template
+        dicionario = {"formulario":formulario, "cpf":cpf}
+        return render(request, "editar_funcionario.html", dicionario)
+    #verifica se o metodo da requisição é POST
+    if request.method == "POST":
+        #filtra os funcionários pelo cpf e pega o primeiro
+        funcionario = Funcionario.objects.filter(cpf=cpf).first()
+        #cria um formulario com os dados de funcionários e envia os dados da requisição
+        formulario = FormularioFuncionario(request.POST, instance=funcionario)
+        #verifica se o formulario é valido
+        if formulario.is_valid():
+            #salva o formulario
+            formulario.save()
+            #envia mensagem de sucesso
+            messages.success(request, "funcionario editado com sucesso")
+            return redirect("editar_funcionario", cpf=cpf)
+        messages.error(request, "funcioanrio não editado", extra_tags="danger")
+        return redirect("editar_funcionario", cpf=cpf)
+
+def editar_estudante(request, matricula):
+    # verifica se tem uma chave chamada sistema_professor_cpf na sessão
+    # se não tiver envia a mensagem de faça o login e redireciona para página de login
+    # se tiver renderiza a pagina do painel do administrador
+    # a chave sistema_professor_cpf da sessão é criada no login, se não tem a chave, é porque
+    # o login não foi feito
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
+        return redirect("login")
+    #verifica se o metodo da requisição é GET
+    if request.method == "GET":
+        #filtra o estudante pela matrícula e pega o primeiro
+        estudante = Estudante.objects.filter(matricula=matricula).first()
+        #cria um formulario com os dados do estudante e envia para o template
+        formulario = FormularioEstudante(instance=estudante)
+        # percorre as chaves do dicionario de fields do formulario e adiciona
+        # a class form-control aos itens do formulario
+        for formulario1 in formulario.fields.keys():
+            formulario.fields[formulario1].widget.attrs["class"] = "form-control"
+        # envia o formulario para o template
+        dicionario = {"formulario":formulario, "matricula":matricula}
+        return render(request, "editar_estudante.html", dicionario)
+    #verifica se o metodo é POST
+    if request.method == "POST":
+        #filtra o estudante pela matrícula e pega o primeiro
+        estudante = Estudante.objects.filter(matricula=matricula).first()
+        #cria um formulario com os dados do estudante e envia os dados da requisição
+        #para o formulario
+        formulario = FormularioEstudante(request.POST, instance=estudante)
+        #verifica se o formulario é valido
+        if formulario.is_valid():
+            #salva o formulario
+            formulario.save()
+            #envia mensagem de sucesso e redireciona para página de editar estudante
+            messages.success(request, "estudante editado com sucesso")
+            return redirect(editar_estudante, matricula=matricula)
+        #envia mensagem de error e redireciona para pagina de editar estudante
+        messages.error(request, "estudante não editado", extra_tags="danger")
+        return redirect(editar_estudante, matricula=matricula)
+
+def editar_professor_matricula(request):
+    # verifica se tem uma chave chamada sistema_professor_cpf na sessão
+    # se não tiver envia a mensagem de faça o login e redireciona para página de login
+    # se tiver renderiza a pagina do painel do administrador
+    # a chave sistema_professor_cpf da sessão é criada no login, se não tem a chave, é porque
+    # o login não foi feito
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
+        return redirect("login")
+    #verifica se o metodo da requisição é get
+    if request.method == "GET":
+        return render(request, "editar_professor_matricula.html")
+    #verifica se o metodo da requisição é post
+    if request.method == "POST":
+        #pega a matricula da requisição
+        matricula = request.POST.get("matricula")
+        #redireciona para pagina de editar professor
+        return redirect("editar_professor", matricula=matricula)
+
+def editar_funcionario_cpf(request):
+    # verifica se tem uma chave chamada sistema_professor_cpf na sessão
+    # se não tiver envia a mensagem de faça o login e redireciona para página de login
+    # se tiver renderiza a pagina do painel do administrador
+    # a chave sistema_professor_cpf da sessão é criada no login, se não tem a chave, é porque
+    # o login não foi feito
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
+        return redirect("login")
+    #verifica se o metodo da requisição é get
+    if request.method == "GET":
+        return render(request, "editar_funcionario_cpf.html")
+    #verifica se o metodo da requisição é post
+    if request.method == "POST":
+        #pega a matricula da requisição
+        cpf = request.POST.get("cpf")
+        #redireciona para pagina de editar professor
+        return redirect("editar_funcionario", cpf=cpf)
+
+def editar_estudante_matricula(request):
+    # verifica se tem uma chave chamada sistema_professor_cpf na sessão
+    # se não tiver envia a mensagem de faça o login e redireciona para página de login
+    # se tiver renderiza a pagina do painel do administrador
+    # a chave sistema_professor_cpf da sessão é criada no login, se não tem a chave, é porque
+    # o login não foi feito
+    if not request.session.get("sistema_professor_cpf"):
+        messages.warning(request, "faça o  login")
+        return redirect("login")
+    #verifica se o metodo da requisição é get
+    if request.method == "GET":
+        return render(request, "editar_estudante_matricula.html")
+    #verifica se o metodo da requisição é post
+    if request.method == "POST":
+        #pega a matricula da requisição
+        matricula = request.POST.get("matricula")
+        #redireciona para pagina de editar professor
+        return redirect("editar_estudante", matricula=matricula)
 
 def gerenciar_professor(request):
     # verifica se tem uma chave chamada sistema_professor_cpf na sessão
