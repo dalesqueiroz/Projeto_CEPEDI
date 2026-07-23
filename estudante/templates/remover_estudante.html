@@ -1,34 +1,37 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-bt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-
     <title>Document</title>
 </head>
 <body>
-    {% if messages %}
-        {% for msg in messages %}
-        <div class="alert alert-{{msg.tags}}">
-            {{msg}}
-        </div>
-        {% endfor %}
-    {% endif %}
-    <h1>remover estudante</h1>
-    <form action="{% url 'remover_estudante' %}" method="post">{% csrf_token %}
-        <label>
-            matricula
-            <input type="text" name="estudante" id="estudante" list="lista_estudante">
-        </label>
-        <datalist id="lista_estudante">
-            {% for estudante in estudantes %}
-            <option value="{{estudante.matricula}}">{{estudante.nome}}</option>
-            {% endfor %}
-        </datalist>
-        <input type="submit" value="confirmar">
+{% if messages %}
+    {% for msg in messages %}
+    <div class="alert alert-{{ msg.tags }}">
+        {{msg}}
+    </div>
+    {% endfor %}
+{% endif %}
 
-    </form>
+<div class="container d-flex justify-content-center align-items-center vw-100">
+    <div class="box p-4">
+        <form action="{% url 'remover_estudante' %}" method="post">{% csrf_token %}
+            <h1>editar estudante matricula</h1>
+            <div class="mb-3">
+                <label for="matricula" class="form-label">matricula </label>
+                <select class="form-select" name="matricula" id="matricula">
+                    {% for estudante in estudantes %}
+                    <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input class="btn btn-danger" type="submit" value="remover">
+        </form>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>

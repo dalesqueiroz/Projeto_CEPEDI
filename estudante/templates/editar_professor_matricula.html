@@ -19,8 +19,14 @@
     <div class="box p-4">
         <h1>editar professor matricula</h1>
         <form action="{% url 'editar_professor_matricula' %}" method="post">{% csrf_token %}
-            <label for="matricula" class="form_label">matricula </label>
-            <input type="number" name="matricula" id="matricula" class="form-control">
+            <div class="mb-3">
+                <label for="matricula" class="form-label">matricula </label>
+                <select class="form-select" name="matricula" id="matricula">
+                    {% for professor in professores %}
+                    <option value="{{professor.matricula}}">{{professor.matricula}} - {{professor.nome}}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <input class="btn btn-success" type="submit" value="confirmar">
         </form>
     </div>

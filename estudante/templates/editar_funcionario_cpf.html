@@ -19,8 +19,14 @@
     <div class="box p-4">
         <form action="{% url 'editar_funcionario_cpf' %}" method="post">{% csrf_token %}
             <h1>editar funcionario cpf</h1>
-            <label for="cpf" class="form_label">cpf </label>
-            <input type="number" name="cpf" id="cpf" class="form-control">
+            <div class="mb-3">
+                <label for="cpf" class="form-label">cpf </label>
+                <select class="form-select" name="cpf" id="cpf">
+                    {% for funcionario in funcionarios %}
+                    <option value="{{funcionario.cpf}}">{{funcionario.cpf}} - {{funcionario.nome}}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <input class="btn btn-success" type="submit" value="confirmar">
         </form>
     </div>

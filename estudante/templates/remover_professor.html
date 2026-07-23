@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,26 +7,30 @@
     <title>Document</title>
 </head>
 <body>
-    {% if messages %}
-        {% for msg in messages %}
-        <div class="alert alert-{{msg.tags}}">
-            {{msg}}
-        </div>
-        {% endfor %}
-    {% endif %}
-    <h1>remover professor</h1>
-    <form action="{% url 'remover_professor' %}" method="post">{% csrf_token %}
-        <label>
-            matricula
-            <input type="text" name="matricula" id="matricula" list="professor">
-        </label>
-        <datalist id="professor">
-            {% for professor in professores %}
-            <option value="{{professor.matricula}}">{{professor.nome}}</option>
-            {% endfor %}
-        </datalist>
-        <input type="submit" value="confirmar">
-    </form>
+{% if messages %}
+    {% for msg in messages %}
+    <div class="alert alert-{{ msg.tags }}">
+        {{msg}}
+    </div>
+    {% endfor %}
+{% endif %}
+
+<div class="container d-flex justify-content-center align-items-center vw-100">
+    <div class="box p-4">
+        <h1>remover professor matricula</h1>
+        <form action="{% url 'remover_professor' %}" method="post">{% csrf_token %}
+            <div class="mb-3">
+                <label for="matricula" class="form-label">matricula</label>
+                <select class="form-select" name="matricula" id="matricula">
+                    {% for professor in professores %}
+                    <option value="{{professor.matricula}}">{{professor.matricula}} - {{professor.nome}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input class="btn btn-danger" type="submit" value="remover">
+        </form>
+    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>

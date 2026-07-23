@@ -1,6 +1,7 @@
 import json
 
 from django.core.handlers.base import reset_urlconf
+from django.db.models import Model
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.template.loader import render_to_string
@@ -304,61 +305,63 @@ def cadastro_equipe(request):
     if request.method == "GET":
         #pega todos os estudantes do banco de dados
         estudante = Estudante.objects.all()
-        #pega quantidade da requisição, se não tiver dados na requisição, retorna 0
-        quantidade = request.GET.get("quantidade", 0)
-        #transforma quantidade em int
-        quantidade = int(quantidade)
-        #cria uma lista com a quantidade
-        #a lista com a quantidade é usada para renderizar a pagina com a quantidade
-        #de funcionários informados pelo usuário, e usado o for para percorrer a lista
-        #e criar os inputs
-        lista = range(quantidade)
-        #renderiza a pagina enviando a quantidade, a lista e os estudantes
-        dicionario = {"quantidade":quantidade, "lista":lista, "estudantes":estudante}
+        #pega todos os funcioanrios do banco de dados
+        funcionario = Funcionario.objects.all()
+        dicionario = {"estudantes":estudante, "funcionarios":funcionario}
         return render(request, 'cadastro_equipe.html', dicionario)
     #verifica se o método da requisição é post
     if request.method == "POST":
-        #pega a quantidade da requisição, senão tiver quantidade retorna 0
-        quantidade = request.POST.get("quantidade", 0)
-        #transforma quantidade em inteiro
-        quantidade = int(quantidade)
-        quantidade1 = 0
-        #pega matricula da requisição
+        quantidade = 0
+        #pega os dados da requisição
         matricula = request.POST.get("matricula")
+        lista = request.POST.getlist("cpf")
+        #verifica se não tem matricula ou se nao tem lista, senao tiver
+        #envia mensagem de error e redireciona para pagina de cadastro equipe
+        if not matricula or not lista:
+            messages.error(request,  "funcionario cadastrado nao cadastrado",
+                           extra_tags="danger")
+            return redirect("cadastro_equipe")
+        #verifica se a matricula e cpf não é um numero inteiro,
+        #senão for envia mensagem de error
+        #e redireciona para pagina de cadastro equipe
+        if not matricula.isdigit():
+            messages.error(request,  "funcionario cadastrado nao cadastrado",
+                           extra_tags="danger")
+            return redirect("cadastro_equipe")
+        for cpf in lista:
+            if not cpf.isdigit():
+                messages.error(request, "funcionario cadastrado nao cadastrado", extra_tags="danger")
+                return redirect("cadastro_equipe")
+        #transforma matricula e cpf em inteiro
+        matricula = int(matricula)
+        quantidade1 = len(lista)
+        for i in range(quantidade1):
+            lista[i] = int(lista[i])
         #filtra o estudante por matrícula e pega o primeiro estudante
         estudante = Estudante.objects.filter(matricula=matricula).first()
-        #cadastra os funcionários e estudante em funcionario estudante
-        for i in range(quantidade):
-            # pega os cpf da requisição de cada funcionario
-            cpf = request.POST.get(f"cpf_{i}")
-            #filtra o funcionario pelo cpf e pega o primeiro funcionario
+        #percorre a lista de cpf
+        for cpf in lista:
+            #filtra funcionario por cpf e pega o primeiro
             funcionario = Funcionario.objects.filter(cpf=cpf).first()
-            #filtra funcionario estudante por estudante
-            funcionario_estudante = FuncionarioEstudante.objects.filter(estudante=estudante)
-            #filtra funcionario estudante retornado pelo funcionario e pega o primeiro
-            funcionario_estudante = funcionario_estudante.filter(funcionario=funcionario).first()
-            #verifica se tem funcionario estudante
-            if funcionario_estudante:
-                #se o estudante e o funcionario estiver cadastrado
-                # envia mensagem de error e redireciona para pagina de cadastro
-                messages.error(request, "equipe pei ja cadastrado", extra_tags="danger")
-                return redirect("cadastro_equipe")
             #verifica se tem funcionario e estudante
-            if estudante and funcionario:
-                #cadastra o funcionario e o estudante
-                FuncionarioEstudante.objects.create(estudante=estudante, funcionario=funcionario)
-                #soma mais um a quantidade de funcionario estudante cadastrado
-                quantidade1 += 1
-        #verifica se a quantidade de funcionários é
-        #a mesma de funcionários estudantes cadastrado
-        if quantidade == quantidade1:
-            #se todos os funcionários foram cadastrados envia mensagem de sucesso
-            # e redireciona para página de cadastro
+            if funcionario and estudante:
+                #filtra funcionario estudante pelo estudante
+                funcionario_estudante = FuncionarioEstudante.objects.filter(estudante=estudante)
+                #filtra funcionario estudante pelo funcionario e pega o primeiro
+                funcionario_estudante = funcionario_estudante.filter(funcionario=funcionario).first()
+                #verifica se tem funcionario estudante
+                if not funcionario_estudante:
+                    #cadastra o estudante e o funcionario
+                    FuncionarioEstudante.objects.create(estudante=estudante, funcionario=funcionario)
+                    quantidade += 1
+        #verifica se todos os funcionarios foram cadastrados, envia mensagem de sucesso
+        #e redireciona para pagina de cadastro equipe
+        if quantidade == len(lista):
             messages.success(request, "funcionario cadastrado")
             return redirect("cadastro_equipe")
         #se todos os funcionários não foram cadastrados envia mensagem de error
         # e redireciona para página de login
-        messages.error(request, f'{quantidade1} funcionario cadastrado', extra_tags="danger")
+        messages.error(request, f'{quantidade} funcionario cadastrado', extra_tags="danger")
         return redirect("cadastro_equipe")
 
 def diagnostico(request):
@@ -821,7 +824,7 @@ def remover_estudante(request):
         return render(request, "remover_estudante.html", dicionario)
     if request.method == "POST":
         # pega os dados da requisicao
-        matricula = request.POST.get("estudante")
+        matricula = request.POST.get("matricula")
         # verifica se a matrícula é numero inteiro
         if matricula.isdigit():
             #converte a matrícula para inteiro
@@ -1067,7 +1070,9 @@ def editar_professor_matricula(request):
         return redirect("login")
     #verifica se o metodo da requisição é get
     if request.method == "GET":
-        return render(request, "editar_professor_matricula.html")
+        professor = Professor.objects.all()
+        dicionario = {"professores":professor}
+        return render(request, "editar_professor_matricula.html", dicionario)
     #verifica se o metodo da requisição é post
     if request.method == "POST":
         #pega a matricula da requisição
@@ -1086,7 +1091,9 @@ def editar_funcionario_cpf(request):
         return redirect("login")
     #verifica se o metodo da requisição é get
     if request.method == "GET":
-        return render(request, "editar_funcionario_cpf.html")
+        funcionario = Funcionario.objects.all()
+        dicionario = {"funcionarios":funcionario}
+        return render(request, "editar_funcionario_cpf.html", dicionario)
     #verifica se o metodo da requisição é post
     if request.method == "POST":
         #pega a matricula da requisição
@@ -1105,7 +1112,9 @@ def editar_estudante_matricula(request):
         return redirect("login")
     #verifica se o metodo da requisição é get
     if request.method == "GET":
-        return render(request, "editar_estudante_matricula.html")
+        estudante = Estudante.objects.all()
+        dicionario = {"estudantes":estudante}
+        return render(request, "editar_estudante_matricula.html", dicionario)
     #verifica se o metodo da requisição é post
     if request.method == "POST":
         #pega a matricula da requisição
