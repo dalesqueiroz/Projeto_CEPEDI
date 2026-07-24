@@ -20,6 +20,8 @@ class Estudante(models.Model):
     mae = models.CharField(max_length=255)
     telefone_responsavel = models.CharField(max_length=255)
     email_responsavel = models.CharField(max_length=255)
+    def __str__(self):
+        return f"{self.matricula} - {self.nome}"
 
 class Diagnostico(models.Model):
     laudo = models.CharField(max_length=255)
@@ -28,11 +30,15 @@ class Diagnostico(models.Model):
     atendimento_fora_da_escola = models.CharField()
     texto_atendimento = models.TextField()
     estudante = models.ForeignKey(Estudante, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.estudante.matricula} - {self.estudante.nome}"
 
 class HistoricoEscolar(models.Model):
     texto = models.TextField()
     texto2 = models.TextField()
     estudante = models.ForeignKey(Estudante, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.estudante.matricula} - {self.estudante.nome}"
 
 class PerfilEstudante(models.Model):
     interesse = models.TextField()
@@ -41,17 +47,23 @@ class PerfilEstudante(models.Model):
     dificuldade = models.TextField()
     informacao = models.TextField()
     estudante = models.ForeignKey(Estudante, on_delete = models.CASCADE )
+    def __str__(self):
+        return f"{self.estudante.matricula} - {self.estudante.nome}"
 
 class Checklist(models.Model):
     checklist = models.TextField()
     pergunta = models.TextField()
     estudante = models.ForeignKey(Estudante, on_delete=models.CASCADE)
     texto = models.TextField()
+    def __str__(self):
+        return f"{self.estudante.matricula} - {self.estudante.nome}"
 
 class Atividade(models.Model):
     atividade = models.CharField()
     descricao = models.TextField()
     estudante = models.ForeignKey(Estudante, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.estudante.matricula} - {self.estudante.nome}"
 
 class Planejamento(models.Model):
     habilidade = models.TextField()
@@ -59,10 +71,14 @@ class Planejamento(models.Model):
     metas_medio_prazo = models.TextField()
     metas_longo_prazo = models.TextField()
     estudante = models.ForeignKey(Estudante, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.estudante.matricula} - {self.estudante.nome}"
 
 class AvaliacaoPedagogica(models.Model):
     texto = models.TextField()
     estudante = models.ForeignKey(Estudante, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.estudante.matricula} - {self.estudante.nome}"
 
 class HabilidadeAcademica(models.Model):
     componente_curricular = models.TextField()
@@ -74,6 +90,8 @@ class HabilidadeAcademica(models.Model):
     procedimento_metodologico = models.TextField()
     avaliacao = models.TextField()
     estudante =  models.ForeignKey(Estudante, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.estudante.matricula} - {self.estudante.nome}"
 
 class Professor(models.Model):
     cpf = models.BigIntegerField()
@@ -82,11 +100,15 @@ class Professor(models.Model):
     data_de_nascimento = models.DateField()
     email = models.EmailField()
     telefone = models.CharField(max_length=255)
+    def __str__(self):
+        return f"{self.matricula} - {self.nome}"
 
 class Funcionario(models.Model):
     cpf = models.IntegerField(primary_key=True)
     nome = models.CharField(max_length=255)
     funcao = models.CharField(max_length=255)
+    def __str__(self):
+        return f"{self.cpf} - {self.nome}"
 
 class FuncionarioEstudante(models.Model):
     funcionario = models.ForeignKey(Funcionario, on_delete=models.CASCADE)
@@ -96,12 +118,16 @@ class PEI(models.Model):
     estudante =  models.ForeignKey(Estudante, on_delete=models.CASCADE)
     professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
     tempo = models.DateField()
+    def __str__(self):
+        return f"{self.estudante.matricula} - {self.estudante.nome}"
 
 class SistemaProfessor(models.Model):
     cpf = models.IntegerField(primary_key=True)
     nome = models.CharField(max_length=255)
     email = models.EmailField()
     senha = models.CharField(max_length=255)
+    def __str__(self):
+        return f"{self.cpf} - {self.nome}"
 
 class RegistroPedagogico(models.Model):
     professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
