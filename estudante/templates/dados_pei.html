@@ -46,8 +46,7 @@
                 {% if equipe_pei %}
 
                 <div class="mb-3">
-                    <label class="form-label" for="id_funcionario">{{equipe_pei.funcionario.label}}</label>
-                    {{equipe_pei.funcionario}}
+                    {{equipe_pei}}
                 </div>
                 <input type="submit" value="confirmar" class="btn btn-success">
                 <a class="btn btn-danger" href="{% url 'remover_equipe_pei' estudante.matricula %}">remover equipe pei</a>

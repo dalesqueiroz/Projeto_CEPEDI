@@ -13,6 +13,11 @@ class EquipePei(forms.ModelForm):
         model = FuncionarioEstudante
         exclude = ["estudante"]
 
+class EquipePei1(forms.Form):
+    funcionarios = forms.ModelMultipleChoiceField(queryset=Funcionario.objects.all(),
+                                                  widget=forms.SelectMultiple(attrs={"class":"form-select"}),
+                                                  required=False)
+
 class FormularioDiagnostico(forms.ModelForm):
     class Meta:
         model = Diagnostico

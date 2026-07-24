@@ -16,7 +16,8 @@ from django.contrib import messages
 from .forms import (Pei, EquipePei, FormularioDiagnostico, FormularioHistoricoEscolar,
                     FormularioPerfilEstudante, FormularioChecklist, FormularioAtividade,
                     FormularioPlanejamento, FormularioHabilidadeAcademica,
-                    FormularioProfessor, FormularioFuncionario, FormularioEstudante)
+                    FormularioProfessor, FormularioFuncionario, FormularioEstudante,
+                    EquipePei1)
 
 # Create your views here.
 
@@ -1434,12 +1435,11 @@ def dados_pei(request, matricula):
                 formulario_pei.fields[formulario].widget.attrs["class"] = "form-select"
             if formulario == "tempo":
                 formulario_pei.fields[formulario].widget.attrs["class"] = "form-control"
-    funcionario_estudante = FuncionarioEstudante.objects.filter(estudante=estudante).first()
-    equipe_pei = verificar_formulario(EquipePei, funcionario_estudante)
-    if equipe_pei:
-        for formulario in equipe_pei.fields.keys():
-            if formulario == "funcionario":
-                equipe_pei.fields[formulario].widget.attrs["class"] = "form-select"
+    funcionario_estudante = FuncionarioEstudante.objects.filter(estudante=estudante).values_list("funcionario_id", flat=True)
+    if funcionario_estudante:
+        equipe_pei = EquipePei1(initial={"funcionarios": funcionario_estudante})
+    else:
+        equipe_pei = None
     diagnostico1 = Diagnostico.objects.filter(estudante=estudante).first()
     formulario_diagnostico1 = verificar_formulario(FormularioDiagnostico, diagnostico1)
     if formulario_diagnostico1:
@@ -1532,15 +1532,16 @@ def editar_equipe_pei(request, matricula):
         return redirect("dados_pei", matricula=matricula)
     if request.method == "POST":
         estudante = Estudante.objects.filter(matricula=matricula).first()
-        funcionario_estudante = FuncionarioEstudante.objects.filter(estudante=estudante).first()
-        formulario = EquipePei(request.POST, instance=funcionario_estudante)
+        formulario = EquipePei1(request.POST)
         if formulario.is_valid():
-            formulario.save()
-            messages.success(request, "equipe pei editado com sucesso")
-            return redirect("dados_pei", matricula)
-        else:
-            messages.error(request, "funcionario não editado", extra_tags="danger")
-            return redirect("dados_pei", matricula)
+            FuncionarioEstudante.objects.filter(estudante=estudante).delete()
+            funcionarios = formulario.cleaned_data["funcionarios"]
+            for funcionario in funcionarios:
+                FuncionarioEstudante.objects.create(estudante=estudante, funcionario=funcionario)
+        messages.success(request, "a equipe pei foi editada com sucesso")
+        return redirect("dados_pei", matricula=matricula)
+    messages.error(request, "a equipe pei não foi editada")
+    return redirect("dados_pei", matricula=matricula)
 
 def editar_diagnostico(request, matricula):
     # verifica se tem uma chave chamada sistema_professor_cpf na sessão
