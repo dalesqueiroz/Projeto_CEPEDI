@@ -14,14 +14,30 @@
         </div>
         {% endfor %}
     {% endif %}
-    <h1>Cadastro </h1>
-    <form action="{% url 'cadastro_sistema' %}" method="post">{% csrf_token %}
-        <p>cpf <input type="text" name="cpf" id="cpf"></p>
-        <p>nome <input type="text" name="nome" id="nome"></p>
-        <p>email <input type="text" name="email" id="email"></p>
-        <p>senha <input type="password" name="senha" id="senha"></p>
-        <p><input type="submit" value="cadastrar"></p>
-    </form>
+    <div class="container d-flex justify-content-center align-items-center vw-100">
+        <div class="box p-4">
+            <h1>cadastro</h1>
+            <form action="{% url 'cadastro_sistema' %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    <label for="cpf" class="form-label">cpf</label>
+                    <input class="form-control" type="text" name="cpf" id="cpf">
+                </div>
+                <div class="mb-3">
+                    <label for="nome" class="form-label">nome</label>
+                    <input class="form-control" type="text" name="nome" id="nome">
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">email</label>
+                    <input class="form-control" type="text" name="email" id="email">
+                </div>
+                <div class="mb-3">
+                    <label for="senha" class="form-label">senha</label>
+                    <input class="form-control" type="password" name="senha" id="senha">
+                </div>
+               <input class="btn btn-success" type="submit" value="cadastrar">
+            </form>
+        </div>
+    </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>

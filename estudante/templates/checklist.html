@@ -21,8 +21,8 @@
             <h1>{{item.tipo}}</h1>
             <form action="{% url 'checklist2' %}" method="post">{% csrf_token %}
                 <div class="mb-3">
-                    <label for="matricula" class="form-label">matricula estudante</label>
-                    <select class="form-select" name="matricula" id="matricula">
+                    <label for="matricula{{ forloop.counter }}" class="form-label">matricula estudante</label>
+                    <select class="form-select" name="matricula" id="matricula{{ forloop.counter }}">
                         {% for estudante in estudantes %}
                         <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
                         {% endfor %}
@@ -31,13 +31,13 @@
                 <input type="hidden" name="tipo" value="{{item.tipo}}">
                     {% for adaptacao in item.checklist %}
                     <div class="mb-3">
-                        <input class="form-check-input" type="checkbox" name="checklist" id="checklist" value="{{adaptacao}}">
-                        <label for="checklist" class="form-check-label"> {{adaptacao}} </label>
+                        <input class="form-check-input" type="checkbox" name="checklist" id="checklist{{ forloop.parentloop.counter }} - {{ forloop.counter }}" value="{{adaptacao}}">
+                        <label for="checklist{{ forloop.parentloop.counter }} - {{ forloop.counter }}" class="form-check-label"> {{adaptacao}} </label>
                     </div>
                     {%endfor%}
                 <div class="mb-3">
-                    <label for="texto" class="form-label">texto</label>
-                    <input class="form-control" type="text" name="texto" id="texto">
+                    <label for="texto{{ forloop.counter }}" class="form-label">texto</label>
+                    <input class="form-control" type="text" name="texto" id="texto{{ forloop.counter }}">
                 </div>
                 <input class="btn btn-success" type="submit" value="confirmar">
             </form>

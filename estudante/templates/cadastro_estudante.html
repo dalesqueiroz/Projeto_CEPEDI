@@ -20,11 +20,11 @@
             <form action="{% url 'cadastro_estudante' %}" method="post">{% csrf_token %}
                 <div class="mb-3">
                     <label for="cpf" class="form-label">cpf</label>
-                    <input class="form-control" type="number" name="cpf" id="cpf">
+                    <input class="form-control" type="text" name="cpf" id="cpf">
                 </div>
                 <div class="mb-3">
                     <label for="matricula" class="form-label">matricula</label>
-                    <input class="form-control" type="number" name="matricula" id="matricula">
+                    <input class="form-control" type="text" name="matricula" id="matricula">
                 </div>
                 <div class="mb-3">
                     <label for="nome" class="form-label">nome</label>

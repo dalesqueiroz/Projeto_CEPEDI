@@ -1,12 +1,21 @@
 from tkinter.constants import CASCADE
+from typing import Any
 
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import IntegerField
+
 
 # Create your models here.
 
+class Usuario(AbstractUser):
+    cpf = models.CharField(max_length=255, unique=True)
+    def __str__(self):
+        return f"{self.cpf} - {self.first_name}"
+
 class Estudante(models.Model):
-    cpf = models.BigIntegerField()
-    matricula = models.BigIntegerField(primary_key=True)
+    cpf = models.CharField(max_length=255, unique=True)
+    matricula = models.CharField(max_length=255, primary_key=True)
     nome = models.CharField(max_length=255)
     data_de_nascimento = models.DateField()
     curso = models.CharField(max_length=255)
@@ -15,7 +24,7 @@ class Estudante(models.Model):
     ingresso = models.DateField()
     nota = models.FloatField()
     telefone = models.CharField(max_length=255)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     pai = models.CharField(max_length=255)
     mae = models.CharField(max_length=255)
     telefone_responsavel = models.CharField(max_length=255)
@@ -94,17 +103,17 @@ class HabilidadeAcademica(models.Model):
         return f"{self.estudante.matricula} - {self.estudante.nome}"
 
 class Professor(models.Model):
-    cpf = models.BigIntegerField()
+    cpf = models.CharField(max_length=255, unique=True)
     nome = models.CharField(max_length=255)
-    matricula = models.BigIntegerField(primary_key=True)
+    matricula = models.CharField(max_length=255, primary_key=True)
     data_de_nascimento = models.DateField()
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     telefone = models.CharField(max_length=255)
     def __str__(self):
         return f"{self.matricula} - {self.nome}"
 
 class Funcionario(models.Model):
-    cpf = models.IntegerField(primary_key=True)
+    cpf = models.CharField(max_length=255, primary_key=True)
     nome = models.CharField(max_length=255)
     funcao = models.CharField(max_length=255)
     def __str__(self):
@@ -122,12 +131,9 @@ class PEI(models.Model):
         return f"{self.estudante.matricula} - {self.estudante.nome}"
 
 class SistemaProfessor(models.Model):
-    cpf = models.IntegerField(primary_key=True)
-    nome = models.CharField(max_length=255)
-    email = models.EmailField()
-    senha = models.CharField(max_length=255)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     def __str__(self):
-        return f"{self.cpf} - {self.nome}"
+        return f"{self.usuario.cpf} - {self.usuario.first_name}"
 
 class RegistroPedagogico(models.Model):
     professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
