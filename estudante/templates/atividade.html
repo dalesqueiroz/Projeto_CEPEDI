@@ -27,24 +27,25 @@
         <div class="box p-4">
             <form action="{% url 'atividade' %}" method="post">{% csrf_token %}
                 <div class="d-flex flex-column container-branco p-5 flex-shrink-0 p-3">
-                    <div class="mb-3">
-                        <label for="matricula" class="form-label">matricula estudante</label>
-                        <select class="form-select" name="matricula" id="matricula">
-                            {% for estudante in estudantes %}
-                            <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="atividade" class="form-label">atividade complementares</label>
-                        <input class="form-control" type="text" name="atividade" id="atividade">
-                    </div>
-                    <div class="mb-3">
-                        <label for="descricao" class="form-label">trabalho com a turma</label>
-                        <input class="form-control" type="text" name="descricao" id="descricao">
-                    </div>
-                    <input class="btn btn-success p-1 w-100" type="submit" value="Confirmar">
+                <div class="mb-3">
+                    <label for="matricula" class="form-label">matricula estudante</label>
+                    <select class="form-select" name="matricula" id="matricula">
+                        {% for estudante in estudantes %}
+                        <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
+                        {% endfor %}
+                    </select>
                 </div>
+                <div class="mb-3">
+                    <label for="atividade" class="form-label">atividade complementares</label>
+                    <input class="form-control" type="text" name="atividade" id="atividade">
+                </div>
+                <div class="mb-3">
+                    <label for="descricao" class="form-label">trabalho com a turma</label>
+                    <input class="form-control" type="text" name="descricao" id="descricao">
+                </div>
+                </div>
+                <br>
+                <input class="btn btn-success p-1 w-100" type="submit" value="Confirmar">
             </form>
         </div>
     </main>

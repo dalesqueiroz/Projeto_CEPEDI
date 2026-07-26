@@ -20,41 +20,45 @@
             </div>
             {% endfor %}
         {% endif %}
-        <div class="display-6 p-2">
+         <div class="display-6 p-2">
             Cadastro professor
         </div>
+
         <form action="{% url 'cadastro_professor' %}" method="post">{% csrf_token %}
             <div class="d-flex flex-column container-branco p-5 flex-shrink-0 p-3 box p-4">
-                    <div class="mb-3">
+                <div class="row g-3">
+                    <div class="col-5">
                         <label class="form-label"> Nome </label>
                         <input class="form-control" type="text" name="nome" id="nome">
                     </div>
-                    <div class="mb-3">
+                    <div class="col-5">
                         <label class="p-1">CPF</label>
-                        <input class="form-control" type="text" name="cpf" id="cpf">
+                        <input class="form-control" type="number" name="cpf" id="cpf">
                     </div>
-                    <div class="mb-3">
+                    <div class="col-2">
                         <label class="p-1"> Data de nascimento</label>
                         <input class="form-control" type="date" name="data_de_nascimento" id="data_de_nascimento">
                     </div>
-
-                    <div class="mb-3">
+                </div>
+                <br>
+                <div class="row g-3">
+                    <div class="col-3">
                         <label class="p-1">Matricula</label>
-                        <input class="form-control" type="text" name="matricula" id="matricula">
+                        <input class="form-control" type="number" name="matricula" id="matricula">
                     </div>
-                    <div class="mb-3">
+                    <div class="col-4">
                         <label class="p-1">Telefone</label>
                         <input class="form-control" type="text" name="telefone" id="telefone">
                     </div>
-                    <div class="mb-3">
+                    <div class="col-5">
                         <label class="p-1">Email</label>
                         <input class="form-control" type="email" name="email" id="email">
                     </div>
-                    <input class="btn btn-success p-1 w-100" type="submit" value="Cadastrar">
-
                 </div>
+            </div>
                 <br>
-            </form>>
+                <input class="btn btn-success p-1 w-100" type="submit" value="Cadastrar">
+            </form>
     </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>

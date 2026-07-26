@@ -19,9 +19,9 @@ from .forms import (Pei, EquipePei, FormularioDiagnostico, FormularioHistoricoEs
                     FormularioPlanejamento, FormularioHabilidadeAcademica, FormularioPlanejamento, FormularioHabilidadeAcademica,
                     FormularioProfessor, FormularioFuncionario, FormularioEstudante,
                     EquipePei1)
-
 from django.core.paginator import Paginator
-                    
+from django.db.models import Q
+
 
 # Create your views here.
 
@@ -97,15 +97,13 @@ def sair(request):
 def painel_administrador(request):
     if request.method == "GET":
         estudantes = Estudante.objects.all().order_by("nome")
-        paginas = Paginator(estudantes,
-                            9)  # isso aqui faz a divisão da quantidade de estudantes em tabelas de 9 em 9, ou menos
-        pagina = request.GET.get(
-            "page")  # isso aqui é para saber qual paginas entre, as divisões feitas, foi pedida pelo user
+        paginas = Paginator(estudantes, 9)  # isso aqui faz a divisão da quantidade de estudantes em tabelas de 9 em 9, ou menos
+        pagina = request.GET.get("page")  # isso aqui é para saber qual paginas entre, as divisões feitas, foi pedida pelo user
 
         estudantes = paginas.get_page(pagina)  # coloca os estudantes divididos na variavel estudante
 
         return render(request, "painel_administrador.html", {
-            'nome': request.user.first_name,
+            'nome_usuario': request.user.first_name,
             "total_estudantes": Estudante.objects.count(),
             "total_peis": PEI.objects.count(),
             "estudantes": estudantes})
@@ -114,7 +112,7 @@ def painel_administrador(request):
 @login_required(login_url="login1")
 def cadastro_estudante(request):
     if request.method == "GET":
-        return render(request, 'cadastro_estudante.html')
+        return render(request, 'cadastro_estudante.html', {'nome_usuario': request.user.first_name})
     if request.method == "POST":
         # pega os dados da requisição
         cpf = request.POST.get("cpf")
@@ -168,7 +166,7 @@ def cadastro_estudante(request):
 @login_required(login_url="login1")
 def cadastro_professor(request):
     if request.method == "GET":
-        return render(request, 'cadastro_professor.html')
+        return render(request, 'cadastro_professor.html', {'nome_usuario': request.user.first_name})
     if request.method == "POST":
         # pega os dados da requisição
         cpf = request.POST.get("cpf")
@@ -212,7 +210,7 @@ def cadastro_professor(request):
 @login_required(login_url="login1")
 def cadastro_funcionario(request):
     if request.method == "GET":
-        return render(request, 'cadastro_funcionario.html')
+        return render(request, 'cadastro_funcionario.html', {'nome_usuario': request.user.first_name})
     if request.method == "POST":
         # pega os dados da requisição
         cpf = request.POST.get("cpf")
@@ -245,7 +243,7 @@ def pei(request):
         #pega todos os professores do banco de dados
         professor = Professor.objects.all()
         #cria um dicionário com os estudantes e professores
-        dicionario = {"estudantes":estudante, "professores":professor}
+        dicionario = {"estudantes":estudante, "professores":professor, 'nome_usuario': request.user.first_name}
         #renderiza a pagina e envia o dicionario para a pagina
         return render(request, 'PEI.html', dicionario)
     if request.method == "POST":
@@ -289,7 +287,7 @@ def cadastro_equipe(request):
         estudante = Estudante.objects.all()
         #pega todos os funcionarios do banco de dados
         funcionario = Funcionario.objects.all()
-        dicionario = {"estudantes":estudante, "funcionarios":funcionario}
+        dicionario = {"estudantes":estudante, "funcionarios":funcionario, 'nome_usuario': request.user.first_name}
         return render(request, 'cadastro_equipe.html', dicionario)
     #verifica se o método da requisição é post
     if request.method == "POST":
@@ -336,7 +334,7 @@ def diagnostico(request):
     if request.method == "GET":
         #pega todos os estudantes do banco de dados e envia para o template
         estudante = Estudante.objects.all()
-        dicionario = {"estudantes":estudante}
+        dicionario = {"estudantes":estudante, 'nome_usuario': request.user.first_name}
         return render(request, 'diagnostico.html', dicionario)
     if request.method == "POST":
         # se tiver renderiza a pagina enviando a matrícula 1, para ser usada na página
@@ -382,7 +380,7 @@ def historico_escolar(request):
     if request.method == "GET":
         #pega todos os estudantes do banco de dados e envia para o template
         estudante = Estudante.objects.all()
-        dicionario = {"estudantes":estudante}
+        dicionario = {"estudantes":estudante, 'nome_usuario': request.user.first_name}
         return render(request, 'historico_escolar.html', dicionario)
     #verifica se o metodo da requisição é post
     if request.method == "POST":
@@ -423,7 +421,7 @@ def perfil_estudante(request):
     if request.method == "GET":
         #pega todos os estudantes do banco de dados e envia para o template
         estudante = Estudante.objects.all()
-        dicionario = {"estudantes":estudante}
+        dicionario = {"estudantes":estudante, 'nome_usuario': request.user.first_name}
         return render(request, 'perfil_estudante.html', dicionario)
     #verifica se o método da requisição é igual a post
     if request.method == "POST":
@@ -463,7 +461,7 @@ def atividade(request):
     if request.method == "GET":
         #pega todos os estudantes do banco de dados e envia para o template
         estudante = Estudante.objects.all()
-        dicionario = {"estudantes":estudante}
+        dicionario = {"estudantes":estudante, 'nome_usuario': request.user.first_name}
         return render(request, "atividade.html", dicionario)
     if request.method == "POST":
         # pega os dados da requisição
@@ -495,7 +493,7 @@ def planejamento(request):
     #verifica se o metodo da requisição é GET
     if request.method == "GET":
         estudante = Estudante.objects.all()
-        dicionario = {"estudantes":estudante}
+        dicionario = {"estudantes":estudante, 'nome_usuario': request.user.first_name}
         return render(request, "planejamento.html", dicionario)
     if request.method == "POST":
         # pega os dados da requisição
@@ -533,7 +531,7 @@ def habilidade_academica(request):
     if request.method == "GET":
         #pega todos os estudantes do banco de dados e envia para o template
         estudante = Estudante.objects.all()
-        dicionario = {"estudantes":estudante}
+        dicionario = {"estudantes":estudante, 'nome_usuario': request.user.first_name}
         return render(request, 'habilidade_academica.html', dicionario)
     if request.method == "POST":
         # pega os dados da requisição
@@ -627,7 +625,7 @@ def checklist2(request):
         #envia estudante e a lista com tipo e checklist para o template,
         #no template vai percorrer a lista pegando o tipo e percorrer a checklist
         #para criar as opções
-        dicionario = {"lista":lista, "estudantes":estudante}
+        dicionario = {"lista":lista, "estudantes":estudante, 'nome_usuario': request.user.first_name}
         return render(request, 'checklist.html', dicionario)
     #verifica se o metodo da requisição é POST
     if request.method == "POST":
@@ -664,7 +662,7 @@ def gerar_pdf(request):
     if request.method == "GET":
         #pega todos os estudantes do banco de dados e envia para o template
         estudante = Estudante.objects.all()
-        dicionario = {"estudantes":estudante}
+        dicionario = {"estudantes":estudante, 'nome_usuario': request.user.first_name}
         return render(request, "gerar_pdf_matricula.html", dicionario)
     #verifica se o metodo da requisição é POST
     if request.method == "POST":
@@ -710,16 +708,29 @@ def estudante_cadastrado(request):
     #pega todos os estudantes do banco de dados e envia para o template
     #no template exibe os dados dos estudantes
     estudantes = Estudante.objects.all().order_by("nome")
-    matricula = request.GET.get("estudante")
-    paginas = Paginator(estudantes,9)  # isso aqui faz a divisão da quantidade de estudantes em tabelas de 9 em 9, ou menos
-    pagina = request.GET.get("page")  # isso aqui é para saber qual paginas entre, as divisões feitas, foi pedida pelo user
 
+    # Filtro
+    filtro = request.GET.get("filtro", "").strip()
+    if filtro:
+        # abaixo é o filtro feito
+        # o uso do Q é nescessario já que sem ele seria considerado que o filtro deve aparecer no nome e matricula ao mesmo tempo
+        estudantes = estudantes.filter(Q(nome__icontains=filtro) | Q(matricula__icontains=filtro))
+
+    # Divisão por paginas
+    paginas = Paginator(estudantes,
+                        9)  # isso aqui faz a divisão da quantidade de estudantes em tabelas de 9 em 9, ou menos
+    pagina = request.GET.get(
+        "page")  # isso aqui é para saber qual paginas entre, as divisões feitas, foi pedida pelo user
     estudantes = paginas.get_page(pagina)  # coloca os estudantes divididos na variavel estudante
-    estudante_selecionado = None
 
+    # pega o estudante que o usuario clicou no nome para mostrar as informações dele
+    estudante_selecionado = None
+    matricula = request.GET.get("estudante")
     if matricula:
         estudante_selecionado = Estudante.objects.get(matricula=matricula)
-    dicionario = {"estudantes": estudantes, 'nome': request.user.first_name,"estudante_selecionado": estudante_selecionado}
+
+    dicionario = {"estudantes": estudantes, 'nome_usuario': request.user.first_name,
+                  "estudante_selecionado": estudante_selecionado, "filtro": filtro}
     return render(request, "estudantes_cadastrados.html", dicionario)
 
 #verifica se o usuario esta logado
@@ -729,7 +740,7 @@ def remover_estudante(request):
     if request.method == "GET":
         #pega todos os estudantes do banco de dados e envia para o template
         estudantes = Estudante.objects.all()
-        dicionario = {"estudantes":estudantes}
+        dicionario = {"estudantes":estudantes, 'nome_usuario': request.user.first_name}
         return render(request, "remover_estudante.html", dicionario)
     if request.method == "POST":
         # pega os dados da requisicao
@@ -751,7 +762,7 @@ def remover_estudante(request):
 def remover_professor(request):
     if request.method == "GET":
         professor = Professor.objects.all()
-        dicionario = {"professores":professor}
+        dicionario = {"professores":professor, 'nome_usuario': request.user.first_name}
         return render(request, "remover_professor.html", dicionario)
     if request.method == "POST":
         # pega os dados da requisição
@@ -776,7 +787,7 @@ def remover_funcionario(request):
     if request.method == "GET":
         #pega todos os funcionários do banco de dados e envia para o template
         funcionario = Funcionario.objects.all()
-        dicionario = {"funcionarios":funcionario}
+        dicionario = {"funcionarios":funcionario, 'nome_usuario': request.user.first_name}
         return render(request, "remover_funcionario.html", dicionario)
     if request.method == "POST":
         # pega os dados da requisição
@@ -799,8 +810,29 @@ def remover_funcionario(request):
 def professor_cadastrado(request):
     # pega todos os professores do banco de dados e envia para o template
     # no template exibe os dados dos professores
-    professor = Professor.objects.all()
-    dicionario = {"professores":professor}
+    professor = Professor.objects.all().order_by("nome")
+
+    # Filtro
+    filtro = request.GET.get("filtro", "").strip()
+    if filtro:
+        # abaixo é o filtro feito
+        # o uso do Q é nescessario já que sem ele seria considerado que o filtro deve aparecer no nome e matricula ao mesmo tempo
+        professor = professor.filter(Q(nome__icontains=filtro) | Q(matricula__icontains=filtro))
+
+    # Divisão por paginas
+    matricula = request.GET.get("professor")
+    paginas = Paginator(professor,
+                        9)  # isso aqui faz a divisão da quantidade de professores em tabelas de 9 em 9, ou menos
+    pagina = request.GET.get(
+        "page")  # isso aqui é para saber qual paginas entre, as divisões feitas, foi pedida pelo user
+
+    # pega o professor que o usuario clicou no nome para mostrar as informações dele
+    professor = paginas.get_page(pagina)  # coloca os estudantes divididos na variavel estudante
+    professor_selecionado = None
+    if matricula:
+        professor_selecionado = Professor.objects.get(matricula=matricula)
+    dicionario = {"professores": professor, 'nome_usuario': request.user.first_name,
+                  "professor_selecionado": professor_selecionado, "filtro": filtro}
     return render(request, "professores_cadastrados.html", dicionario)
 
 #verifica se o usuario esta logado
@@ -808,8 +840,22 @@ def professor_cadastrado(request):
 def funcionario_cadastrado(request):
     # pega todos os funcionarios do banco de dados e envia para o template
     # no template exibe os dados dos funcionarios
-    funcionario = Funcionario.objects.all()
-    dicionario = {"funcionarios":funcionario}
+    funcionario = Funcionario.objects.all().order_by("nome")
+
+    # Filtro
+    filtro = request.GET.get("filtro", "").strip()
+    if filtro:
+        # abaixo é o filtro feito
+        # o uso do Q é nescessario já que sem ele seria considerado que o filtro deve aparecer no nome e matricula ao mesmo tempo
+        funcionario = funcionario.filter(Q(nome__icontains=filtro) | Q(funcao__icontains=filtro) | Q(cpf__icontains=filtro))
+
+    # Divisão por paginas
+    paginas = Paginator(funcionario, 9)  # isso aqui faz a divisão da quantidade de funcionarios em tabelas de 9 em 9, ou menos
+    pagina = request.GET.get(
+        "page")  # isso aqui é para saber qual paginas entre, as divisões feitas, foi pedida pelo user
+    funcionario = paginas.get_page(pagina)
+
+    dicionario = {"funcionarios": funcionario, 'nome_usuario': request.user.first_name, "filtro": filtro}
     return render(request, "funcionarios_cadastrados.html", dicionario)
 
 #verifica se o usuario esta logado
@@ -826,7 +872,7 @@ def editar_professor(request, matricula):
         for formulario1 in formulario.fields.keys():
             formulario.fields[formulario1].widget.attrs["class"] = "form-control"
         #envia o formulario para o template
-        dicionario = {"formulario":formulario, "matricula":matricula}
+        dicionario = {"formulario":formulario, "matricula":matricula, 'nome_usuario': request.user.first_name}
         return render(request, "editar_professor.html", dicionario)
     #verifica se o metodo da requisição é POST
     if request.method == "POST":
@@ -860,7 +906,7 @@ def editar_funcionario(request, cpf):
             formulario.fields[formulario1].widget.attrs["class"] = "form-control"
         # envia o formulario para o template
         #envia o formulario para o template
-        dicionario = {"formulario":formulario, "cpf":cpf}
+        dicionario = {"formulario":formulario, "cpf":cpf, 'nome_usuario': request.user.first_name}
         return render(request, "editar_funcionario.html", dicionario)
     #verifica se o metodo da requisição é POST
     if request.method == "POST":
@@ -892,7 +938,7 @@ def editar_estudante(request, matricula):
         for formulario1 in formulario.fields.keys():
             formulario.fields[formulario1].widget.attrs["class"] = "form-control"
         # envia o formulario para o template
-        dicionario = {"formulario":formulario, "matricula":matricula}
+        dicionario = {"formulario":formulario, "matricula":matricula, 'nome_usuario': request.user.first_name}
         return render(request, "editar_estudante.html", dicionario)
     #verifica se o metodo é POST
     if request.method == "POST":
@@ -918,7 +964,7 @@ def editar_professor_matricula(request):
     #verifica se o metodo da requisição é get
     if request.method == "GET":
         professor = Professor.objects.all()
-        dicionario = {"professores":professor}
+        dicionario = {"professores":professor, 'nome_usuario': request.user.first_name}
         return render(request, "editar_professor_matricula.html", dicionario)
     #verifica se o metodo da requisição é post
     if request.method == "POST":
@@ -933,7 +979,7 @@ def editar_funcionario_cpf(request):
     #verifica se o metodo da requisição é get
     if request.method == "GET":
         funcionario = Funcionario.objects.all()
-        dicionario = {"funcionarios":funcionario}
+        dicionario = {"funcionarios":funcionario, 'nome_usuario': request.user.first_name}
         return render(request, "editar_funcionario_cpf.html", dicionario)
     #verifica se o metodo da requisição é post
     if request.method == "POST":
@@ -948,7 +994,7 @@ def editar_estudante_matricula(request):
     #verifica se o metodo da requisição é get
     if request.method == "GET":
         estudante = Estudante.objects.all()
-        dicionario = {"estudantes":estudante}
+        dicionario = {"estudantes":estudante, 'nome_usuario': request.user.first_name}
         return render(request, "editar_estudante_matricula.html", dicionario)
     #verifica se o metodo da requisição é post
     if request.method == "POST":
@@ -960,17 +1006,17 @@ def editar_estudante_matricula(request):
 #verifica se o usuario esta logado
 @login_required(login_url="login1")
 def gerenciar_professor(request):
-    return render(request, "gerenciar_professor.html")
+    return render(request, "gerenciar_professor.html", {'nome_usuario': request.user.first_name})
 
 #verifica se o usuario esta logado
 @login_required(login_url="login1")
 def gerenciar_estudante(request):
-    return render(request, "gerenciar_estudante.html")
+    return render(request, "gerenciar_estudante.html", {'nome_usuario': request.user.first_name})
 
 #verifica se o usuario esta logado
 @login_required(login_url="login1")
 def gerenciar_funcionario(request):
-    return render(request, "gerenciar_funcionario.html")
+    return render(request, "gerenciar_funcionario.html", {'nome_usuario': request.user.first_name})
 
 #verifica se o usuario esta logado
 @login_required(login_url="login1")
@@ -1279,7 +1325,8 @@ def dados_pei(request, matricula):
                   "checklist":lista, "atividade":formulario_atividade,
                   "planejamento":formulario_planejamento,
                   "habilidade_academica":formulario_habilidade_academica,
-                  "matricula":matricula, "estudante":estudante}
+                  "matricula":matricula, "estudante":estudante,
+                  'nome_usuario': request.user.first_name}
     return render(request, "dados_pei.html", dicionario)
 
 #verifica se o usuario esta logado
@@ -1516,7 +1563,7 @@ def editar_habilidade_academica(request, matricula):
 @login_required(login_url="login1")
 def gerenciar_pei(request):
     if request.method == "GET":
-        return render(request, "gerenciar_pei.html")
+        return render(request, "gerenciar_pei.html", {'nome_usuario': request.user.first_name})
 
 #verifica se o usuario esta logado
 @login_required(login_url="login1")
@@ -1525,7 +1572,7 @@ def gerenciar_pei_matricula(request):
         #pega todos os estudantes do banco de dados
         estudante = Estudante.objects.all()
         #envia os estudantes para o template
-        dicionario = {"estudantes":estudante}
+        dicionario = {"estudantes":estudante, 'nome_usuario': request.user.first_name}
         return render(request, "gerenciar_pei_matricula.html", dicionario)
     if request.method == "POST":
         #pega a matricula da requisição e redireciona para dados pei

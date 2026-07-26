@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <title>Document</title>
+    <title>Gerenciar pei</title>
 </head>
 <body>
     {% include 'barra_lateral.html' %}
@@ -17,8 +17,27 @@
          </div>
         <hr class="w-100  m-0 p-0 border-dark">
         <br>
-        <p><a class="btn btn-secondary fs-5 w-100 py-3" href="{% url 'pei' %}">Cadastrar</a></p>
-        <p><a class="btn btn-secondary fs-5 w-100 py-3" href="{% url 'gerenciar_pei_matricula'%}">Visualizar PEI por estudante</a></p>
+        <p><a class="btn btn-secondary fs-5 w-100 py-3" href="{% url 'gerenciar_pei_matricula'%}">Gerenciar PEI por estudante</a></p>
+        <p><a class="btn btn-secondary fs-5 w-100 py-3" href="{% url 'gerar_pdf' %}">Baixar arquivo PEI</a></p>
+        <br>
+        <div class="text-secondary h3 p-3">Cadastrar </div>
+            <div class="row justify-content-center g-3 mb-3">
+                <div class="col-md-4"><a href="{% url 'pei' %}" class="btn btn-secondary fs-5 w-100 py-3"> PEI </a></div>
+                <div class="col-md-4"><a href="{% url 'checklist2' %}" class="btn btn-secondary fs-5 w-100 py-3">Adaptações</a></div>
+                <div class="col-md-4"><a href="{% url 'atividade' %}" class="btn btn-secondary fs-5 w-100 py-3">Atividade</a></div>
+            </div>
+
+            <div class="row justify-content-center g-3 mb-3">
+                <div class="col-md-4"><a href="{% url 'diagnostico' %}" class="btn btn-secondary fs-5 w-100 py-3">Diagnóstico</a></div>
+                <div class="col-md-4"><a href="{% url 'cadastro_equipe' %}" class="btn btn-secondary fs-5 w-100 py-3">Equipe</a></div>
+                <div class="col-md-4"><a href="{% url 'habilidade_academica' %}" class="btn btn-secondary fs-5 w-100 py-3">Habilidade Acadêmica</a></div>
+            </div>
+
+            <div class="row justify-content-center g-3 mb-3">
+                <div class="col-md-4"><a href="{% url 'historico_escolar' %}" class="btn btn-secondary fs-5 w-100 py-3">Histórico Escolar</a></div>
+                <div class="col-md-4"><a href="{% url 'perfil_estudante' %}" class="btn btn-secondary fs-5 w-100 py-3">Perfil Estudante</a></div>
+                <div class="col-md-4"><a href="{% url 'planejamento' %}" class="btn btn-secondary fs-5 w-100 py-3">Planejamento</a></div>
+            </div>
     </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>

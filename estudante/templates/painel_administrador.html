@@ -8,21 +8,21 @@
 </head>
 
 <body class="d-flex">
-    {% include 'barra_lateral.html' %}
-    <main class="flex-grow-1 p-5">
-        <div class="topbar fw-bold" style=" background-color: #00B612; color: #ffffff; font-size: 14px;">
-            Sistema de Gestão de PEI e Acompanhamento Pedagogico
-        </div>
-
-        <br>
-        {% if messages %}
+    {% if messages %}
             {% for msg in messages %}
             <div class="alert alert-{{ msg.tags }}">
                 {{msg}}
             </div>
             {% endfor %}
         {% endif %}
-        <div class="display-6 p-2">
+    {% include 'barra_lateral.html' %}
+
+    <main class="flex-grow-1 p-5">
+        <div class="topbar fw-bold" style=" background-color: #00B612; color: #ffffff; font-size: 14px;">
+            Sistema de Gestão de PEI e Acompanhamento Pedagogico
+        </div>
+        <br>
+       <div class="display-6 p-2">
             Painel Geral
         </div>
 
@@ -48,9 +48,17 @@
                 </div>
             </div>
         </div>
-
         <br>
+        <div class="d-flex justify-content-end">
 
+            <a class="btn btn-success p-1" href="{% url 'estudante_cadastrado' %}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+                  <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+                </svg>
+                Filtrar
+            </a>
+        </div>
+        <br>
         <table class="table w-100 mb-0 tabela-customizada">
             <thead>
                 <tr>
@@ -69,6 +77,12 @@
                     <td class="p-2">{{ estudante.curso }}</td>
                     <td class="p-2">{{ estudante.diagnostico.texto}}</td>
                 </tr>
+                {% empty %}
+                    <tr>
+                        <td>
+                            Nenhum estudante encontrado
+                        </td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -87,58 +101,6 @@
                         <a href="?page={{ estudantes.next_page_number }}" class="btn btn-paginacao pt-1 pe-4 pb-1 ps-4"> Proximo </a>
                    {% endif %}
                </div>
-
-            </div>
-        </div>
-
-        <br>
-        <div class="display-6 p-2">
-            Painel do administrador
-        </div>
-        <hr class="w-100  m-0 p-0 border-dark">
-        <br>
-
-        <div class="container w-100">
-
-            <div class="text-secondary h3 p-3">Gerenciar: </div>
-            <div class="row justify-content-center g-3 mb-3">
-
-                    <a href="{% url 'gerenciar_professor' %}" class="btn btn-secondary fs-5 w-100 py-3">
-                        Professores
-                    </a>
-
-                    <a href="{% url 'gerenciar_funcionario' %}" class="btn btn-secondary fs-5 w-100 py-3">
-                        Funcionários
-                    </a>
-
-                    <a href="{% url 'gerenciar_estudante' %}" class="btn btn-secondary fs-5 w-100 py-3">
-                        Estudantes
-                    </a>
-                 <a href="{% url 'gerenciar_pei' %}" class="btn btn-secondary fs-5 w-100 py-3">
-                        PEIs
-                 </a>
-            </div>
-
-            <br>
-
-            <div class="text-secondary h3 p-3">Controle das informações dos PEIs: </div>
-            <div class="row justify-content-center g-3 mb-3 w-100">
-                <div class="col-md-3"><a href="{% url 'pei' %}" class="btn btn-secondary fs-5 w-100 py-3">Cadastro PEI</a></div>
-                <div class="col-md-3"><a href="{% url 'cadastro_equipe' %}" class="btn btn-secondary fs-5 w-100 py-3">Cadastro Equipe</a></div>
-                <div class="col-md-3"><a href="{% url 'diagnostico' %}" class="btn btn-secondary fs-5 w-100 py-3">Diagnóstico</a></div>
-                <div class="col-md-3"><a href="{% url 'historico_escolar' %}" class="btn btn-secondary fs-5 w-100 py-3">Histórico Escolar</a></div>
-            </div>
-
-            <div class="row justify-content-center g-3 mb-3">
-                <div class="col-md-3"><a href="{% url 'atividade' %}" class="btn btn-secondary fs-5 w-100 py-3">Atividade</a></div>
-                <div class="col-md-3"><a href="{% url 'perfil_estudante' %}" class="btn btn-secondary fs-5 w-100 py-3">Perfil Estudante</a></div>
-                <div class="col-md-3"><a href="{% url 'planejamento' %}" class="btn btn-secondary fs-5 w-100 py-3">Planejamento</a></div>
-                <div class="col-md-3"><a href="{% url 'habilidade_academica' %}" class="btn btn-secondary fs-5 w-100 py-3">Habilidade Acadêmica</a></div>
-            </div>
-            <div class="row justify-content-center g-3 mb-3">
-                <div class="col-md-3"><a href="{% url 'checklist2' %}" class="btn btn-secondary fs-5 w-100 py-3">Adaptações</a></div>
-                <div class="col-md-3"><a href="{% url 'gerar_pdf' %}" class="btn btn-secondary fs-5 w-100 py-3">Baixar arquivo PEI</a></div>
-            </div>
 
         </div>
 

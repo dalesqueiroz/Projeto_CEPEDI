@@ -22,7 +22,7 @@ from django.views.generic.base import RedirectView
 
 urlpatterns = [
     # Isso serve para redirecionar a url "" para onde está o login, sendo de forma permanente,
-    path('', RedirectView.as_view(url="estudante/login1/")),
+    path('', RedirectView.as_view(url="estudante/login/")),
     path('admin/', admin.site.urls),
     path('estudante/', include('estudante.urls'))
 ]

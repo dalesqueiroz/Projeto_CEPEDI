@@ -7,24 +7,30 @@
     <title>Estudantes</title>
 </head>
 <body class="d-flex justify-content-center align-items-center min-vh-100">
-    {% if messages %}
-        {% for msg in messages %}
-        <div class="alert alert-{{ msg.tags }}">
-            {{msg}}
-        </div>
-        {% endfor %}
-    {% endif %}
     {% include 'barra_lateral.html' %}
     <main class="flex-grow-1 p-5">
         <div class="topbar fw-bold" style=" background-color: #00B612; color: #ffffff; font-size: 14px;">
             Sistema de Gestão de PEI e Acompanhamento Pedagogico
         </div>
-
+        {% if messages %}
+            {% for msg in messages %}
+            <div class="alert alert-{{ msg.tags }}">
+                {{msg}}
+            </div>
+            {% endfor %}
+        {% endif %}
         <div class="display-6 p-2">
             Estudantes Cadastrados
         </div>
         <hr class="w-100  m-0 p-0 border-dark">
-
+        <br>
+    <form method="get" class="bg-cinza w-100 p-4 rounded">
+        <div class="p-1">Nome/matricula</div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-4"><input name="filtro" value="{{ filtro }}"  class="form-control"></div>
+            <div class="col-md-3"><button type="submit" class="btn btn-success">Filtrar</button></div>
+        </div>
+    </form>
         <br>
         <table class="table w-100 mb-0 tabela-customizada">
             <thead>
@@ -37,9 +43,10 @@
             </thead>
 
             <tbody>
+             {% if estudantes %}
                 {% for estudante in estudantes %}
                 <tr>
-                    <td class="p-2"><a href="{% url 'estudante_cadastrado' %}?page={{ estudantes.number }}&estudante={{ estudante.matricula }}" class="link-dark text-decoration-none">
+                    <td class="p-2"><a href="{% url 'estudante_cadastrado' %}?page={{ estudantes.number }}&estudante={{ estudante.matricula }}&filtro={{ filtro }}" class="link-dark text-decoration-none">
                                         {{ estudante.nome }}
                                     </a></td>
                     <td class="text-center p-2">{{ estudante.matricula }}</td>
@@ -47,6 +54,13 @@
                     <td class="p-2">{{ estudante.diagnostico.texto}}</td>
                 </tr>
                 {% endfor %}
+            {% else %}
+                 <tr>
+                    <td>
+                    Nenhum estudante encontrado
+                    </td>
+                 </tr>
+            {% endif %}
             </tbody>
         </table>
         <div class="d-flex justify-content-between align-items-center p-3">
@@ -69,7 +83,7 @@
         <br>
         {% if estudante_selecionado %}
             <div class="display-6 p-2">
-                Estudante Selecionado
+                Informações estudante: {{ estudante_selecionado.nome }}
             </div>
             <hr class="w-100  m-0 p-0 border-dark">
 
