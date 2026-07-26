@@ -1,5 +1,4 @@
 import json
-
 from django.contrib.auth.decorators import login_required
 from django.core.handlers.base import reset_urlconf
 from django.db.models import Model
@@ -271,7 +270,7 @@ def cadastro_equipe(request):
     if request.method == "GET":
         #pega todos os estudantes do banco de dados
         estudante = Estudante.objects.all()
-        #pega todos os funcioanrios do banco de dados
+        #pega todos os funcionarios do banco de dados
         funcionario = Funcionario.objects.all()
         dicionario = {"estudantes":estudante, "funcionarios":funcionario}
         return render(request, 'cadastro_equipe.html', dicionario)
@@ -994,8 +993,11 @@ def remover_diagnostico(request, matricula):
 def remover_historico_escolar(request, matricula):
     # filtra estudante pela matricula, se não tiver estudante retorna error 404
     estudante = get_object_or_404(Estudante, matricula=matricula)
+    #filtra o historico escolar pelo estudante e pega o primeiro
     historico_escolar1 = HistoricoEscolar.objects.filter(estudante=estudante).first()
+    #verifica se tem historico escolar
     if historico_escolar1:
+        #remove o historico escolar
         historico_escolar1.delete()
         # envia mensagem de sucesso e redireciona para pagina de dados pei
         messages.success(request, "historico escolar removido")
@@ -1010,8 +1012,11 @@ def remover_historico_escolar(request, matricula):
 def remover_perfil_estudante(request, matricula):
     # filtra estudante pela matricula, se não tiver estudante retorna error 404
     estudante = get_object_or_404(Estudante, matricula=matricula)
+    #filtra o perfil estudante pelo estudante e pega o primeiro
     perfil_estudante1 = PerfilEstudante.objects.filter(estudante=estudante).first()
+    #verifica se tem perfil estudante
     if perfil_estudante1:
+        #remove o perfil do estudante
         perfil_estudante1.delete()
         # envia mensagem de sucesso e redireciona para pagina de dados pei
         messages.success(request, "perfil estudante removido")
@@ -1075,6 +1080,7 @@ def remover_planejamento(request, matricula):
         return redirect("dados_pei", matricula=matricula)
     # envia mensagem de error e redireciona para página de dados pei
     else:
+        # envia mensagem de error e redireciona para pagina de dados pei
         messages.error(request, "planejamento não encontrado", extra_tags="danger")
         return redirect("dados_pei", matricula=matricula)
 
@@ -1287,14 +1293,22 @@ def editar_equipe_pei(request, matricula):
         # filtra o estudante pela matricula
         # se o estudante não estiver cadastrado retorna error 404
         estudante = get_object_or_404(Estudante, matricula=matricula)
+        #cria um formulario com os dados da requisição
         formulario = EquipePei1(request.POST)
+        #verifica se o formulario é valido
         if formulario.is_valid():
+            #filtra os funcionarios estudantes pelo estudante e remove
             FuncionarioEstudante.objects.filter(estudante=estudante).delete()
+            #pega os funcionarios do formulario
             funcionarios = formulario.cleaned_data["funcionarios"]
+            #percorre a lista de funcionarios
             for funcionario in funcionarios:
+                #adiciona o estudante e o funcionario ao funcionario estudante
                 FuncionarioEstudante.objects.create(estudante=estudante, funcionario=funcionario)
+        #envia mensagem de sucesso e redireciona para pagina dados pei
         messages.success(request, "a equipe pei foi editada com sucesso")
         return redirect("dados_pei", matricula=matricula)
+    #envia mensagem de error e redireciona para pagina de dados pei
     messages.error(request, "a equipe pei não foi editada")
     return redirect("dados_pei", matricula=matricula)
 
@@ -1308,13 +1322,19 @@ def editar_diagnostico(request, matricula):
         # filtra o estudante pela matricula
         # se o estudante não estiver cadastrado retorna error 404
         estudante = get_object_or_404(Estudante, matricula=matricula)
+        #filtra os dados do formulario pelo estudante e pega o primeiro
         diagnostico1 = Diagnostico.objects.filter(estudante=estudante).first()
+        #cria um formulario com os dados do banco de dados e da requisição
         formulario = FormularioDiagnostico(request.POST, instance=diagnostico1)
+        #verifica se o formulario é valido
         if formulario.is_valid():
+            #salva o formulario
             formulario.save()
+            #envia mensagem de sucesso e redireciona para pagina dados pei
             messages.success(request, "diagnostico editado com sucesso")
             return redirect("dados_pei", matricula)
         else:
+            #envia mensagem de error e redireciona para pagina de dados pei
             messages.error(request, "diagnostico não editado", extra_tags="danger")
             return redirect("dados_pei", matricula)
 
@@ -1328,12 +1348,18 @@ def editar_historico_escolar(request, matricula):
         # filtra o estudante pela matricula
         # se o estudante não estiver cadastrado retorna error 404
         estudante = get_object_or_404(Estudante, matricula=matricula)
+        #filtra o historico escolar pelo estudante e pega o primeiro
         historico_escolar1 = HistoricoEscolar.objects.filter(estudante=estudante).first()
+        #cria um formulario com os dados do banco de dados e os dados da requisição
         formulario = FormularioHistoricoEscolar(request.POST, instance=historico_escolar1)
+        #verifica se o formulario é valido
         if formulario.is_valid():
+            #salva o formulario
             formulario.save()
+            #envia mensagem de sucesso e redireciona para pagina de sucesso
             messages.success(request, "historico escolar editado com sucesso")
             return redirect("dados_pei", matricula)
+        #envia mensagem de error e redireciona para pagina de error
         else:
             messages.error(request, "historico escolar não editado", extra_tags="danger")
             return redirect("dados_pei", matricula)
@@ -1348,13 +1374,19 @@ def editar_perfil_estudante(request, matricula):
         # filtra o estudante pela matricula
         # se o estudante não estiver cadastrado retorna error 404
         estudante = get_object_or_404(Estudante, matricula=matricula)
+        #filtra pelo estudante e pega o primeiro
         perfil_estudante1 = PerfilEstudante.objects.filter(estudante=estudante).first()
+        #cria um formulario com os dados da requisição e os dados do banco de dados
         formulario = FormularioPerfilEstudante(request.POST, instance=perfil_estudante1)
+        #verifica se o formulario é valido
         if formulario.is_valid():
+            #salva o formulario
             formulario.save()
+            #envia mensagem de sucesso e redireciona para pagina de dados pei
             messages.success(request, "perfil estudante editado com sucesso")
             return redirect("dados_pei", matricula)
         else:
+            #envia mensagem de error e redireciona para pagina de dados pei
             messages.error(request, "perfil estudante não editado", extra_tags="danger")
             return redirect("dados_pei", matricula)
 
@@ -1368,13 +1400,19 @@ def editar_checklist(request, matricula, id1):
         # filtra o estudante pela matricula
         # se o estudante não estiver cadastrado retorna error 404
         estudante = get_object_or_404(Estudante, matricula=matricula)
+        #filtra pelo estudante e pega o primeiro
         checklist1 = Checklist.objects.filter(id=id1).first()
+        #cria um formulario com os dados da requisição e os dados do banco de dados
         formulario = FormularioChecklist(request.POST, instance=checklist1)
+        #verifica se o formulario é valido
         if formulario.is_valid():
+            #salva o formulario
             formulario.save()
+            #envia mensagem de sucesso e redireciona para pagina de dados pei
             messages.success(request, "checklist editado com sucesso")
             return redirect("dados_pei", matricula)
         else:
+            #envia mensagem de error e redireciona para pagina de dados pei
             messages.error(request, "checklist não editado", extra_tags="danger")
             return redirect("dados_pei", matricula)
 
@@ -1385,13 +1423,19 @@ def editar_atividade(request, matricula):
         return redirect("dados_pei", matricula=matricula)
     if request.method == "POST":
         estudante = get_object_or_404(Estudante, matricula=matricula)
+        #filtra pelo estudante e pega o primeiro
         atividade1 = Atividade.objects.filter(estudante=estudante).first()
+        #cria um formulario com os dados da requisição e os dados do banco de dados
         formulario = FormularioAtividade(request.POST, instance=atividade1)
+        #verifica se o formulario é valido
         if formulario.is_valid():
+            #salva o formulario
             formulario.save()
+            #envia mensagem de sucesso e redireciona para pagina de dados pei
             messages.success(request, "atividade editada com sucesso")
             return redirect("dados_pei", matricula)
         else:
+            #envia mensagem de error e redireciona para pagina de dados pei
             messages.error(request, "atividade não editada", extra_tags="danger")
             return redirect("dados_pei", matricula)
 
@@ -1402,13 +1446,19 @@ def editar_planejamento(request, matricula):
         return redirect("dados_pei", matricula=matricula)
     if request.method == "POST":
         estudante = get_object_or_404(Estudante, matricula=matricula)
+        #filtra pelo estudante e pega o primeiro
         planejamento1 = Planejamento.objects.filter(estudante=estudante).first()
+        #cria um formulario com os dados da requisição e os dados do banco de dados
         formulario = FormularioPlanejamento(request.POST, instance=planejamento1)
+        #verifica se o formulario é valido
         if formulario.is_valid():
+            #salva o formulario
             formulario.save()
+            #envia mensagem de sucesso e redireciona para pagina de dados pei
             messages.success(request, "planejamento editado com sucesso")
             return redirect("dados_pei", matricula)
         else:
+            #envia mensagem de error e redireciona para pagina de dados pei
             messages.error(request, "planejamento não editado", extra_tags="danger")
             return redirect("dados_pei", matricula)
 
@@ -1419,13 +1469,19 @@ def editar_habilidade_academica(request, matricula):
         return redirect("dados_pei", matricula=matricula)
     if request.method == "POST":
         estudante = get_object_or_404(Estudante, matricula=matricula)
+        #filtra pelo estudante e pega o primeiro
         habilidade_academica1 = HabilidadeAcademica.objects.filter(estudante=estudante).first()
+        #cria um formulario com os dados da requisição e os dados do banco de dados
         formulario = FormularioHabilidadeAcademica(request.POST, instance=habilidade_academica1)
+        #verifica se o formulario é valido
         if formulario.is_valid():
+            #salva o formulario
             formulario.save()
+            #envia mensagem de sucesso e redireciona para pagina de dados pei
             messages.success(request, "habilidade academica editado com sucesso")
             return redirect("dados_pei", matricula)
         else:
+            #envia mensagem de error e redireciona para pagina de dados pei
             messages.error(request, "habilidade academica não editado", extra_tags="danger")
             return redirect("dados_pei", matricula)
 
@@ -1439,9 +1495,12 @@ def gerenciar_pei(request):
 @login_required(login_url="login1")
 def gerenciar_pei_matricula(request):
     if request.method == "GET":
+        #pega todos os estudantes do banco de dados
         estudante = Estudante.objects.all()
+        #envia os estudantes para o template
         dicionario = {"estudantes":estudante}
         return render(request, "gerenciar_pei_matricula.html", dicionario)
     if request.method == "POST":
+        #pega a matricula da requisição e redireciona para dados pei
         matricula = request.POST.get("matricula")
         return redirect("dados_pei", matricula=matricula)
