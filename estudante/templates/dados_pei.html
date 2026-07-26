@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+<body class="bg-cinza d-flex justify-content-center align-items-center min-vh-100">
+    {% include 'barra_lateral.html' %}
+    <main class="flex-grow-1 p-5">
+        <div class="topbar fw-bold" style=" background-color: #00B612; color: #ffffff; font-size: 14px;">
+            Sistema de Gestão de PEI e Acompanhamento Pedagogico
+        </div>
+
+        <br>
+        {% if messages %}
+        {% for msg in messages %}
+        <div class="alert alert-{{ msg.tags }}">
+            {{msg}}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+<div class="d-flex flex-column container-branco p-5 flex-shrink-0 p-3>
+    <div class="box p-4 w-50">
+        <div class="display-6 p-2">
+            Informações PEI
+        </div>
+        <br>
+        <table class="table w-100 mb-0 tabela-customizada">
+            <thead>
+                <tr>
+                    <th style="width: 180px;">Nome</th>
+                    <td>{{estudante.nome}}</td>
+                </tr>
+                <tr>
+                    <th style="width: 180px;">CPF</th>
+                    <td>{{estudante.cpf}}</td>
+                </tr>
+                <tr>
+                    <th style="width: 180px;">Matricula</th>
+                    <td>{{estudante.matricula}}</td>
+                </tr>
+            </thead>
+        </table>
+        <br>
+        <form action="{% url 'editar_pei' matricula %}" method="post">{% csrf_token %}
+            {% if pei %}
+            <div class="mb-3">
+                <label class="form-label" for="id_professor">{{pei.professor.label}}</label>
+                {{pei.professor}}
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="id_tempo">Validade</label>
+                {{pei.tempo}}
+            </div>
+            <div class="row g-3">
+                <div class="col-6">
+                    <input type="submit" value="confirmar" class="btn btn-success p-1 w-100">
+                </div>
+                <div class="col-6">
+                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_pei' estudante.matricula %}">Remover PEI</a>
+                </div>
+            </div>
+            {% else %}
+            <h1>pei</h1>
+            <p>PEI não cadastrado</p>
+            {% endif %}
+        </form>
+        <br>
+        <hr class="w-100  m-0 p-0 border-dark">
+        <div class="display-6 p-2">
+            Equipe PEI
+        </div>
+        <br>
+        <form action="{% url 'editar_equipe_pei' matricula %}" method="post">{% csrf_token %}
+            {% if equipe_pei %}
+
+            <div class="mb-3">
+                {{equipe_pei}}
+            </div>
+            <div class="row g-3">
+                <div class="col-6">
+                    <input type="submit" value="Confirmar" class="btn btn-success p-1 w-100">
+                </div>
+                <div class="col-6">
+                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_equipe_pei' estudante.matricula %}">Remover equipe PEI</a>
+                </div>
+            </div>
+            {% else %}
+            <p> Equipe não encontrada</p>
+            {% endif %}
+        </form>
+        <br>
+        <hr class="w-100  m-0 p-0 border-dark">
+        <div class="display-6 p-2">
+            Diagnostico
+        </div>
+        <form action="{% url 'editar_diagnostico' matricula %}" method="post">{% csrf_token %}
+            {% if diagnostico %}
+            <div class="mb-3">
+                <label for="id_laudo" class="form-label">{{diagnostico.laudo.label}}</label>
+                {{diagnostico.laudo}}
+            </div>
+            <div class="mb-3">
+                <label for="id_texto" class="form-label">Descrição</label>
+                {{diagnostico.texto}}
+            </div>
+            <div class="mb-3">
+                <label for="id_ano_diagnostico" class="form-label">{{diagnostico.ano_diagnostico.label}}</label>
+                {{diagnostico.ano_diagnostico}}
+            </div>
+            <div class="mb-3">
+                <label for="id_atendimento_fora_da_escola" class="form-label">{{diagnostico.atendimento_fora_da_escola.label}}</label>
+                {{diagnostico.atendimento_fora_da_escola}}
+            </div>
+            <div class="mb-3">
+                <label for="id_texto_atendimento" class="p-1">Caso tenha informado que sim em "atendimento fora da escola", identificar qual tipo de atendimento e periodicidade
+                (Exemplos: Fonoaudiólogo, Fisioterapeuta, Psicopedagoga, etc)</label>
+                {{diagnostico.texto_atendimento}}
+            </div>
+            <div class="row g-3">
+                <div class="col-6">
+                    <input type="submit" value="confirmar" class="btn btn-success p-1 w-100">
+                </div>
+                <div class="col-6">
+                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_diagnostico' estudante.matricula%}">remover diagnostico</a>
+                </div>
+            </div>
+            {% else %}
+                <p>Diagnostico não encontrado</p>
+            {% endif %}
+        </form>
+        <br>
+        <hr class="w-100  m-0 p-0 border-dark">
+        <div class="display-6 p-2">
+            Breve histórico escolar
+        </div>
+        <form action="{% url 'editar_historico_escolar' matricula %}" method="post">{% csrf_token %}
+            {% if historico_escolar %}
+            <div class="mb-3">
+                {{historico_escolar.texto}}
+            </div>
+            <div class="mb-3">
+                <label for="id_texto2" class="form-label">Adaptações, estratégias e procedimentos metodológicos já utilizados, que obtiveram êxito com o(a) estudante:</label>
+                {{historico_escolar.texto2}}
+            </div>
+            <div class="row g-3">
+                <div class="col-6">
+                    <input type="submit" value="confirmar" class="btn btn-success p-1 w-100">
+                </div>
+                <div class="col-6">
+                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_historico_escolar' estudante.matricula %}">Remover historico</a>
+                </div>
+            </div>
+            {% else %}
+            <p>Histórico escolar não encontrado</p>
+            {% endif %}
+        </form>
+        <br>
+        <hr class="w-100  m-0 p-0 border-dark">
+        <div class="display-6 p-2">
+            Perfil do estudante
+        </div>
+        <form action="{% url 'editar_perfil_estudante' matricula %}" method="post">{% csrf_token %}
+            {% if perfil_estudante %}
+            <div class="mb-3">
+                <label for="id_interesse" class="p-1">{{perfil_estudante.interesse.label}}</label>
+                {{perfil_estudante.interesse}}
+            </div>
+            <div class="mb-3">
+                <label for="id_habilidade" class="p-1">Habilidades</label>
+                {{perfil_estudante.habilidade}}
+            </div>
+            <div class="mb-3">
+                <label for="id_nao_gosta" class="p-1">Não Gosta</label>
+                {{perfil_estudante.nao_gosta}}
+            </div>
+            <div class="mb-3">
+                <label for="id_dificuldade" class="p-1">Dificuldades</label>
+                {{perfil_estudante.dificuldade}}
+            </div>
+            <div class="mb-3">
+                <label for="id_informacao" class="p-1">Outras informações relevantes (indicar de forma sucinta elementos de apoio oferecidos pela família, profissionais clínicos e outros atendimentos/tratamentos/encaminhamentos):</label>
+                {{perfil_estudante.informacao}}
+            </div>
+            <div class="row g-3">
+                <div class="col-6">
+                    <input type="submit" value="Confirmar" class="btn btn-success p-1 w-100">
+                </div>
+                <div class="col-6">
+                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_perfil_estudante' estudante.matricula %}">Remover perfil de estudante</a>
+                </div>
+            </div>
+            {% else %}
+            <p>Perfil do estudante não encontrado</p>
+            {% endif %}
+        </form>
+        <br>
+        <hr class="w-100  m-0 p-0 border-dark">
+        <br>
+        {% if checklist %}
+        {% for adaptacao in checklist %}
+         <div class="display-6 p-2">
+           {{adaptacao.checklist.value}}
+         </div>
+        <form action="{% url 'editar_checklist' matricula adaptacao.instance.id %}" method="post">{% csrf_token %}
+            <div class="mb-3">
+                <label for="{{adaptacao.checklist.id_for_label}}">{{adaptacao.checklist.label}}</label>
+                {{adaptacao.checklist}}
+            </div>
+            <div class="mb-3">
+                <label for="{{adaptacao.pergunta.id_for_label}}">{{adaptacao.pergunta.label}}</label>
+                {{adaptacao.pergunta}}
+            </div>
+            <div class="mb-3">
+                <label for="{{adaptacao.texto.id_for_label}}" class="form-label">Descrever/Especificar as adaptações selecionadas:</label>
+                {{adaptacao.texto}}
+            </div>
+            <div class="row g-3">
+                <div class="col-6">
+                    <input type="submit" value="confirmar" class="btn btn-success p-1 w-100">
+                </div>
+                <div class="col-6">
+                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_checklist' estudante.matricula adaptacao.instance.id %}">Remover checklist</a>
+                </div>
+            </div>
+        </form>
+        <hr>
+        {% endfor %}
+        {% else %}
+        <h1>checklist</h1>
+        <p>checklist nao encontrada</p>
+        {% endif %}
+        <br>
+        <hr class="w-100  m-0 p-0 border-dark">
+         <div class="display-6 p-2">
+            Outras atividades
+        </div>
+        <form action="{% url 'editar_atividade' matricula %}" method="post">{% csrf_token %}
+            {% if atividade %}
+            <div class="mb-3">
+                <label for="{{atividade.atividade.id_for_label}}" class="form-label">{{atividade.atividade.label}}</label>
+                {{atividade.atividade}}
+            </div>
+            <div class="mb-3">
+                <label for="{{atividade.descricao.id_for_label}}" class="form-label">{{atividade.descricao.label}}</label>
+                {{atividade.descricao}}
+            </div>
+            <div class="row g-3">
+                <div class="col-6">
+                    <input type="submit" value="Confirmar" class="btn btn-success p-1 w-100">
+                </div>
+                <div class="col-6">
+                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_atividade' estudante.matricula %}">Remover atividades</a>
+                </div>
+            </div>
+            {% else %}
+            <p>Atividades não encontradas</p>
+            {% endif %}
+        </form>
+        <br>
+        <hr class="w-100  m-0 p-0 border-dark">
+         <div class="display-6 p-2">
+            Planejamento
+        </div>
+        <form action="{% url 'editar_planejamento' matricula %}" method="post">{% csrf_token %}
+            {% if planejamento %}
+            <div class="mb-3">
+                <label for="{{planejamento.habilidade.id_for_label}}" class="form-label">{{planejamento.habilidade.label}}</label>
+                {{planejamento.habilidade}}
+            </div>
+            <div class="mb-3">
+                <label for="{{planejamento.metas_curto_prazo.id_for_label}}" class="form-label">{{planejamento.metas_curto_prazo.label}}</label>
+                {{planejamento.metas_curto_prazo}}
+            </div>
+            <div class="mb-3">
+                <label for="{{planejamento.metas_medio_prazo.id_for_label}}" class="form-label">{{planejamento.metas_medio_prazo.label}}</label>
+                {{planejamento.metas_medio_prazo}}
+            </div>
+            <div class="mb-3">
+                <label for="{{planejamento.metas_longo_prazo.id_for_label}}" class="form-label">{{planejamento.metas_longo_prazo.label}}</label>
+                {{planejamento.metas_longo_prazo}}
+            </div>
+            <div class="row g-3">
+                <div class="col-6">
+                    <input type="submit" value="Confirmar" class="btn btn-success p-1 w-100">
+                </div>
+                <div class="col-6">
+                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_planejamento' estudante.matricula %}">Remover planejamento</a>
+                </div>
+            </div>
+            {% else %}
+            <p>Planejamento não encontrado</p>
+            {% endif %}
+        </form>
+        <br>
+        <hr class="w-100  m-0 p-0 border-dark">
+         <div class="display-6 p-2">
+            Habilidades academicas
+        </div>
+        <form action="{% url 'editar_habilidade_academica' matricula %}" method="post">{% csrf_token %}
+            {% if habilidade_academica %}
+            <div class="mb-3">
+                <label for={{"habilidade_academica.componente_curricular.id_for_label"}} class="form label">{{habilidade_academica.componente_curricular.label}}</label>
+                {{habilidade_academica.componente_curricular}}
+            </div>
+            <div class="mb-3">
+                <label for={{"habilidade_academica.adaptacao_curricular.id_for_label"}} class="form label">{{habilidade_academica.adaptacao_curricular.label}}</label>
+                {{habilidade_academica.adaptacao_curricular}}
+            </div>
+            <div class="mb-3">
+                <label for={{"habilidade_academica.habilidade.id_for_label"}} class="form label">{{habilidade_academica.habilidade.label}}</label>
+                {{habilidade_academica.habilidade}}
+            </div>
+            <div class="mb-3">
+                <label for={{"habilidade_academica.facilidade_dificuldade.id_for_label"}} class="form label">{{habilidade_academica.facilidade_dificuldade.label}}</label>
+                {{habilidade_academica.facilidade_dificuldade}}
+            </div>
+            <div class="mb-3">
+                <label for={{"habilidade_academica.metas_turma.id_for_label"}} class="form label">{{habilidade_academica.metas_turma.label}}</label>
+                {{habilidade_academica.metas_turma}}
+            </div>
+            <div class="mb-3">
+                <label for={{"habilidade_academica.metas_especifica.id_for_label"}} class="form label">{{habilidade_academica.metas_especifica.label}}</label>
+                {{habilidade_academica.metas_especifica}}
+            </div>
+            <div class="mb-3">
+                <label for={{"habilidade_academica.procedimento_metodologico.id_for_label"}} class="form label">{{habilidade_academica.procedimento_metodologico.label}}</label>
+                {{habilidade_academica.procedimento_metodologico}}
+            </div>
+            <div class="mb-3">
+                <label for={{"habilidade_academica.avaliacao.id_for_label"}} class="form label">{{habilidade_academica.avaliacao.label}}</label>
+                {{habilidade_academica.avaliacao}}
+            </div>
+            <div class="row g-3">
+                <div class="col-6">
+                    <input type="submit" value="Confirmar" class="btn btn-success p-1 w-100">
+                </div>
+                <div class="col-6">
+                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_habilidade_academica' estudante.matricula %}">Remover habilidade academica</a>
+                </div>
+            </div>
+
+            {% else %}
+            <p>Habilidade academica não encontrado</p>
+            {% endif %}
+        </form>
+        <hr>
+    </main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>

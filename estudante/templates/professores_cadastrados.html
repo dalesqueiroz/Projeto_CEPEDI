@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+</head>
+<body>
+    {% if messages %}
+        {% for msg in messages %}
+        <div class="alert alert-{{ msg.tags }}">
+            {{msg}}
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% include 'barra_lateral.html' %}
+    <main class="flex-grow-1 p-5">
+        <div class="topbar fw-bold" style=" background-color: #00B612; color: #ffffff; font-size: 14px;">
+            Sistema de Gestão de PEI e Acompanhamento Pedagogico
+        </div>
+
+       <div class="container d-flex justify-content-center align-items-center vw-100">
+            <div class="box p-4">
+                <h1>professores cadastrados</h1>
+                {% for professor in professores %}
+                <div class="card border-primary mb-3 text-dark" >
+                    <div class="card-header">professor</div>
+                    <div class="card-body text-dark">
+                        <h5 class="card-title">nome: {{professor.nome}}</h5>
+                        <p class="card-text">matricula: {{professor.matricula}}</p>
+                        <p class="card-text">cpf: {{professor.cpf}}</p>
+                        <p class="card-text">data de nascimento: {{professor.data_de_nascimento}}</p>
+                        <p class="card-text">email: {{professor.email}}</p>
+                        <p class="card-text">telefone: {{professor.telefone}}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>

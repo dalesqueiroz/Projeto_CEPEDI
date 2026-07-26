@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <title>Painel</title>
+</head>
+
+<body class="d-flex">
+    {% include 'barra_lateral.html' %}
+    <main class="flex-grow-1 p-5">
+        <div class="topbar fw-bold" style=" background-color: #00B612; color: #ffffff; font-size: 14px;">
+            Sistema de Gestão de PEI e Acompanhamento Pedagogico
+        </div>
+
+        <br>
+        {% if messages %}
+            {% for msg in messages %}
+            <div class="alert alert-{{ msg.tags }}">
+                {{msg}}
+            </div>
+            {% endfor %}
+        {% endif %}
+        <div class="display-6 p-2">
+            Painel Geral
+        </div>
+
+        <hr class="w-100  m-0 p-0 border-dark">
+
+        <br>
+
+        <div class="d-flex flex-nowrap justify-content-center gap-5">
+            <div class=" border rounded" style="width: 400px;">
+                <div class="fw-bold pt-3 pe-0 pb-0 ps-3">
+                    Estudantes acompanhados
+                </div>
+                <div class="display-4 d-flex fw-bold justify-content-center p-5">
+                    {{ total_estudantes }}
+                </div>
+            </div>
+            <div class=" border rounded" style="width: 400px;">
+                <div class="fw-bold pt-3 pe-0 pb-0 ps-3">
+                    PEIs ativos
+                </div>
+                <div class="display-4 d-flex fw-bold justify-content-center p-5">
+                    {{ total_peis }}
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <table class="table w-100 mb-0 tabela-customizada">
+            <thead>
+                <tr>
+                    <th class="p-2">Aluno</th>
+                    <th class="p-2">Matrícula</th>
+                    <th class="p-2">Curso</th>
+                    <th class="p-2">Necessidade</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for estudante in estudantes %}
+                <tr>
+                    <td class="p-2">{{ estudante.nome }}</td>
+                    <td class="text-center p-2">{{ estudante.matricula }}</td>
+                    <td class="p-2">{{ estudante.curso }}</td>
+                    <td class="p-2">{{ estudante.diagnostico.texto}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-between align-items-center p-3">
+            <div class="text-secondary">
+                Mostrando {{estudantes.start_index}} a {{estudantes.end_index}} de {{ estudantes.paginator.count }} registros
+            </div>
+            <div class="d-flex gap-3">
+                <div>
+                    {% if estudantes.has_previous %}
+                        <a href="?page={{ estudantes.previous_page_number }}" class="btn btn-paginacao pt-1 pe-4 pb-1 ps-4"> Anterior </a>
+                    {% endif %}
+                </div>
+               <div>
+                   {% if estudantes.has_next %}
+                        <a href="?page={{ estudantes.next_page_number }}" class="btn btn-paginacao pt-1 pe-4 pb-1 ps-4"> Proximo </a>
+                   {% endif %}
+               </div>
+
+            </div>
+        </div>
+
+        <br>
+        <div class="display-6 p-2">
+            Painel do administrador
+        </div>
+        <hr class="w-100  m-0 p-0 border-dark">
+        <br>
+
+        <div class="container w-100">
+
+            <div class="text-secondary h3 p-3">Gerenciar: </div>
+            <div class="row justify-content-center g-3 mb-3">
+
+                    <a href="{% url 'gerenciar_professor' %}" class="btn btn-secondary fs-5 w-100 py-3">
+                        Professores
+                    </a>
+
+                    <a href="{% url 'gerenciar_funcionario' %}" class="btn btn-secondary fs-5 w-100 py-3">
+                        Funcionários
+                    </a>
+
+                    <a href="{% url 'gerenciar_estudante' %}" class="btn btn-secondary fs-5 w-100 py-3">
+                        Estudantes
+                    </a>
+                 <a href="{% url 'gerenciar_pei' %}" class="btn btn-secondary fs-5 w-100 py-3">
+                        PEIs
+                 </a>
+            </div>
+
+            <br>
+
+            <div class="text-secondary h3 p-3">Controle das informações dos PEIs: </div>
+            <div class="row justify-content-center g-3 mb-3 w-100">
+                <div class="col-md-3"><a href="{% url 'pei' %}" class="btn btn-secondary fs-5 w-100 py-3">Cadastro PEI</a></div>
+                <div class="col-md-3"><a href="{% url 'cadastro_equipe' %}" class="btn btn-secondary fs-5 w-100 py-3">Cadastro Equipe</a></div>
+                <div class="col-md-3"><a href="{% url 'diagnostico' %}" class="btn btn-secondary fs-5 w-100 py-3">Diagnóstico</a></div>
+                <div class="col-md-3"><a href="{% url 'historico_escolar' %}" class="btn btn-secondary fs-5 w-100 py-3">Histórico Escolar</a></div>
+            </div>
+
+            <div class="row justify-content-center g-3 mb-3">
+                <div class="col-md-3"><a href="{% url 'atividade' %}" class="btn btn-secondary fs-5 w-100 py-3">Atividade</a></div>
+                <div class="col-md-3"><a href="{% url 'perfil_estudante' %}" class="btn btn-secondary fs-5 w-100 py-3">Perfil Estudante</a></div>
+                <div class="col-md-3"><a href="{% url 'planejamento' %}" class="btn btn-secondary fs-5 w-100 py-3">Planejamento</a></div>
+                <div class="col-md-3"><a href="{% url 'habilidade_academica' %}" class="btn btn-secondary fs-5 w-100 py-3">Habilidade Acadêmica</a></div>
+            </div>
+            <div class="row justify-content-center g-3 mb-3">
+                <div class="col-md-3"><a href="{% url 'checklist2' %}" class="btn btn-secondary fs-5 w-100 py-3">Adaptações</a></div>
+                <div class="col-md-3"><a href="{% url 'gerar_pdf' %}" class="btn btn-secondary fs-5 w-100 py-3">Baixar arquivo PEI</a></div>
+            </div>
+
+        </div>
+
+    </main>
+</body>
+</html>
