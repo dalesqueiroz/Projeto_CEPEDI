@@ -59,6 +59,9 @@ def cadastro_sistema(request):
         return redirect("cadastro_sistema")
 
 def login1(request):
+    #verifica se o usuario esta autenticado e redireciona para o painel do admnistrador
+    if request.user.is_authenticated:
+        return redirect("painel_administrador")
     # verifica se o método da requisição é GET,
     # se for GET renderiza a pagina sistema cadastro
     if request.method == "GET":
@@ -309,7 +312,7 @@ def cadastro_equipe(request):
             messages.success(request, "funcionario cadastrado")
             return redirect("cadastro_equipe")
         #se todos os funcionários não foram cadastrados envia mensagem de error
-        # e redireciona para página de login
+        # e redireciona para página de cadastro equipe
         messages.error(request, f'{quantidade} funcionario cadastrado', extra_tags="danger")
         return redirect("cadastro_equipe")
 
@@ -686,6 +689,7 @@ def gerar_pdf(request):
         pdf = HTML(string=html).write_pdf()
         #carrega o pdf
         return HttpResponse(pdf, content_type="application/pdf")
+
 #verifica se o usuario esta logado
 @login_required(login_url="login1")
 def estudante_cadastrado(request):
