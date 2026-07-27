@@ -40,6 +40,7 @@ def cadastro_sistema(request):
         nome = request.POST.get("nome")
         email = request.POST.get("email")
         email = email.lower()
+        print(email)
         senha = request.POST.get("senha")
         #verifica se ja tem um usuario com cpf
         if Usuario.objects.filter(cpf=cpf).exists():

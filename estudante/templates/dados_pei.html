@@ -302,35 +302,35 @@
         <form action="{% url 'editar_habilidade_academica' matricula %}" method="post">{% csrf_token %}
             {% if habilidade_academica %}
             <div class="mb-3">
-                <label for={{"habilidade_academica.componente_curricular.id_for_label"}} class="form label">{{habilidade_academica.componente_curricular.label}}</label>
+                <label for="{{habilidade_academica.componente_curricular.id_for_label}}" class="form label">{{habilidade_academica.componente_curricular.label}}</label>
                 {{habilidade_academica.componente_curricular}}
             </div>
             <div class="mb-3">
-                <label for={{"habilidade_academica.adaptacao_curricular.id_for_label"}} class="form label">{{habilidade_academica.adaptacao_curricular.label}}</label>
+                <label for="{{habilidade_academica.adaptacao_curricular.id_for_label}}" class="form label">{{habilidade_academica.adaptacao_curricular.label}}</label>
                 {{habilidade_academica.adaptacao_curricular}}
             </div>
             <div class="mb-3">
-                <label for={{"habilidade_academica.habilidade.id_for_label"}} class="form label">{{habilidade_academica.habilidade.label}}</label>
+                <label for="{{habilidade_academica.habilidade.id_for_label}}" class="form label">{{habilidade_academica.habilidade.label}}</label>
                 {{habilidade_academica.habilidade}}
             </div>
             <div class="mb-3">
-                <label for={{"habilidade_academica.facilidade_dificuldade.id_for_label"}} class="form label">{{habilidade_academica.facilidade_dificuldade.label}}</label>
+                <label for="{{habilidade_academica.facilidade_dificuldade.id_for_label}}" class="form label">{{habilidade_academica.facilidade_dificuldade.label}}</label>
                 {{habilidade_academica.facilidade_dificuldade}}
             </div>
             <div class="mb-3">
-                <label for={{"habilidade_academica.metas_turma.id_for_label"}} class="form label">{{habilidade_academica.metas_turma.label}}</label>
+                <label for="{{habilidade_academica.metas_turma.id_for_label}}" class="form label">{{habilidade_academica.metas_turma.label}}</label>
                 {{habilidade_academica.metas_turma}}
             </div>
             <div class="mb-3">
-                <label for={{"habilidade_academica.metas_especifica.id_for_label"}} class="form label">{{habilidade_academica.metas_especifica.label}}</label>
+                <label for="{{habilidade_academica.metas_especifica.id_for_label}}" class="form label">{{habilidade_academica.metas_especifica.label}}</label>
                 {{habilidade_academica.metas_especifica}}
             </div>
             <div class="mb-3">
-                <label for={{"habilidade_academica.procedimento_metodologico.id_for_label"}} class="form label">{{habilidade_academica.procedimento_metodologico.label}}</label>
+                <label for="{{habilidade_academica.procedimento_metodologico.id_for_label}}" class="form label">{{habilidade_academica.procedimento_metodologico.label}}</label>
                 {{habilidade_academica.procedimento_metodologico}}
             </div>
             <div class="mb-3">
-                <label for={{"habilidade_academica.avaliacao.id_for_label"}} class="form label">{{habilidade_academica.avaliacao.label}}</label>
+                <label for="{{habilidade_academica.avaliacao.id_for_label}}" class="form label">{{habilidade_academica.avaliacao.label}}</label>
                 {{habilidade_academica.avaliacao}}
             </div>
             <div class="row g-3">
