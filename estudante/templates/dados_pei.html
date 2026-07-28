@@ -298,9 +298,15 @@
         <hr class="w-100  m-0 p-0 border-dark">
          <div class="display-6 p-2">
             Habilidades academicas
-        </div>
-        <form action="{% url 'editar_habilidade_academica' matricula %}" method="post">{% csrf_token %}
-            {% if habilidade_academica %}
+         </div>
+        {% if lista2 %}
+        {% for habilidade_academica in lista2 %}
+        <form action="{% url 'editar_habilidade_academica' matricula habilidade_academica.instance.id %}" method="post">{% csrf_token %}
+            <h2>habilidade academica {{forloop.counter}}</h2>
+            <div class="mb-3">
+                <label for="{{habilidade_academica.professor.id_for_label}}" class="form label">{{habilidade_academica.professor.label}}</label>
+                {{habilidade_academica.professor}}
+            </div>
             <div class="mb-3">
                 <label for="{{habilidade_academica.componente_curricular.id_for_label}}" class="form label">{{habilidade_academica.componente_curricular.label}}</label>
                 {{habilidade_academica.componente_curricular}}
@@ -314,20 +320,28 @@
                 {{habilidade_academica.habilidade}}
             </div>
             <div class="mb-3">
-                <label for="{{habilidade_academica.facilidade_dificuldade.id_for_label}}" class="form label">{{habilidade_academica.facilidade_dificuldade.label}}</label>
-                {{habilidade_academica.facilidade_dificuldade}}
+                <label for="{{habilidade_academica.objetivo.id_for_label}}" class="form label">{{habilidade_academica.objetivo.label}}</label>
+                {{habilidade_academica.objetivo}}
+            </div>
+            <div class="mb-3">
+                <label for="{{habilidade_academica.facilidade.id_for_label}}" class="form label">{{habilidade_academica.facilidade.label}}</label>
+                {{habilidade_academica.facilidade}}
+            </div>
+            <div class="mb-3">
+                <label for="{{habilidade_academica.dificuldade.id_for_label}}" class="form label">{{habilidade_academica.dificuldade.label}}</label>
+                {{habilidade_academica.dificuldade}}
             </div>
             <div class="mb-3">
                 <label for="{{habilidade_academica.metas_turma.id_for_label}}" class="form label">{{habilidade_academica.metas_turma.label}}</label>
                 {{habilidade_academica.metas_turma}}
             </div>
             <div class="mb-3">
-                <label for="{{habilidade_academica.metas_especifica.id_for_label}}" class="form label">{{habilidade_academica.metas_especifica.label}}</label>
-                {{habilidade_academica.metas_especifica}}
+                <label for="{{habilidade_academica.procedimento.id_for_label}}" class="form label">{{habilidade_academica.procedimento.label}}</label>
+                {{habilidade_academica.procedimento}}
             </div>
             <div class="mb-3">
-                <label for="{{habilidade_academica.procedimento_metodologico.id_for_label}}" class="form label">{{habilidade_academica.procedimento_metodologico.label}}</label>
-                {{habilidade_academica.procedimento_metodologico}}
+                <label for="{{habilidade_academica.adaptaco.id_for_label}}" class="form label">{{habilidade_academica.adaptacao.label}}</label>
+                {{habilidade_academica.adaptacao}}
             </div>
             <div class="mb-3">
                 <label for="{{habilidade_academica.avaliacao.id_for_label}}" class="form label">{{habilidade_academica.avaliacao.label}}</label>
@@ -338,14 +352,15 @@
                     <input type="submit" value="Confirmar" class="btn btn-success p-1 w-100">
                 </div>
                 <div class="col-6">
-                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_habilidade_academica' estudante.matricula %}">Remover habilidade academica</a>
+                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_habilidade_academica' estudante.matricula habilidade_academica.instance.id %}">Remover habilidade academica</a>
                 </div>
             </div>
-
+        </form>
+            <hr>
+            {% endfor %}
             {% else %}
             <p>Habilidade academica não encontrado</p>
             {% endif %}
-        </form>
         <hr>
     </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>

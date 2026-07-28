@@ -27,36 +27,44 @@
                     {{item.tipo}}
                 </div>
                 <hr class="w-100  m-0 p-0 border-dark">
-                <br>
-
+            <br>
+            <p><button class="btn btn-primary" commandfor="{{item.tipo}}" command="show-modal">{{item.tipo}}</button></p>
+            <dialog id="{{item.tipo}}">
                 <form action="{% url 'checklist2' %}" method="post">{% csrf_token %}
                     <div class="d-flex flex-column container-branco p-5 flex-shrink-0 p-3">
                         <div class="mb-3">
                             <label for="matricula" class="p-1">Matricula estudante</label>
                             <select class="form-select" name="matricula" id="matricula">
                                 {% for estudante in estudantes %}
-                                <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
+                                <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}
+                                </option>
                                 {% endfor %}
                             </select>
                         </div>
                         <input type="hidden" name="tipo" value="{{item.tipo}}">
-                            {% for adaptacao in item.checklist %}
-                            <div class="mb-3">
-                                <input class="form-check-input" type="checkbox" name="checklist" id="checklist{{ forloop.parentloop.counter }} - {{ forloop.counter }}" value="{{adaptacao}}">
-                                <label for="checklist{{ forloop.parentloop.counter }} - {{ forloop.counter }}" class="form-check-label"> {{adaptacao}} </label>
-                            </div>
-                            {%endfor%}
+                        {% for adaptacao in item.checklist %}
                         <div class="mb-3">
-                            <label for="texto{{ forloop.counter }}" class="form-label">Descrever/Especificar as adaptações selecionadas:</label>
+                            <input class="form-check-input" type="checkbox" name="checklist"
+                                   id="checklist{{ forloop.parentloop.counter }} - {{ forloop.counter }}"
+                                   value="{{adaptacao}}">
+                            <label for="checklist{{ forloop.parentloop.counter }} - {{ forloop.counter }}"
+                                   class="form-check-label"> {{adaptacao}} </label>
+                        </div>
+                        {%endfor%}
+                        <div class="mb-3">
+                            <label for="texto{{ forloop.counter }}" class="form-label">Descrever/Especificar as
+                                adaptações selecionadas:</label>
                             <input class="form-control" type="text" name="texto" id="texto{{ forloop.counter }}">
                         </div>
                     </div>
                     <br>
                     <p>
-                        <input class="btn btn-success p-1 w-100" type="submit" value="Confirmar">
+                        <input class="btn btn-success" type="submit" value="Confirmar">
+                        <button type="button" class="btn btn-danger" commandfor="{{item.tipo}}" command="close">fechar</button>
                     </p>
                 </form>
-                <br>
+            </dialog>
+
                 {% endfor %}
         </div>
     </main>

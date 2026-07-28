@@ -27,10 +27,18 @@
         <form action="{% url 'habilidade_academica' %}" method="post">{% csrf_token %}
             <div class="d-flex flex-column container-branco p-5 flex-shrink-0 p-3">
                 <div class="mb-3">
-                    <label for="matricula" class="p-1 fw-bold">Informe o estudante</label>
-                    <select class="form-select" name="matricula" id="matricula">
+                    <label for="matricula_estudante" class="p-1 fw-bold">Informe o estudante</label>
+                    <select class="form-select" name="matricula_estudante" id="matricula_estudante">
                         {% for estudante in estudantes %}
                             <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="matricula_professor" class="p-1 fw-bold">Informe o professor</label>
+                    <select class="form-select" name="matricula_professor" id="matricula_professor">
+                        {% for professor in professores %}
+                            <option value="{{professor.matricula}}">{{professor.matricula}} - {{professor.nome}}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -40,51 +48,75 @@
                 </div>
                     <label class="p-1 fw-bold">Necessidade de Adaptações Curriculares:</label>
                 <div class="mb-3">
-                    <input class="form-check-input" type="checkbox" name="adaptacao" id="item1" value="acesso ao curriculo">
+                    <input class="form-check-input" type="checkbox" name="adaptacao_curricular" id="item1" value="acesso ao curriculo">
                     <label for="item1" class="form-check-label">Acesso ao currículo</label>
                 </div>
                 <div class="mb-3">
-                    <input class="form-check-input" type="checkbox" name="adaptacao" id="item2" value="conteudo">
+                    <input class="form-check-input" type="checkbox" name="adaptacao_curricular" id="item2" value="conteudo">
                     <label for="item2" class="form-check-label">conteúdo</label>
                 </div>
                 <div class="mb-3">
-                    <input class="form-check-input" type="checkbox" name="adaptacao" id="item3" value="objetivos">
-                    <label for="item3" class="form-check-label">Objetivos</label>
+                    <input class="form-check-input" type="checkbox" name="adaptacao_curricular" id="item3" value="objetivos de aprendizagem">
+                    <label for="item3" class="form-check-label">Objetivos de aprendizagem</label>
                 </div>
                 <div class="mb-3">
-                    <input class="form-check-input" type="checkbox" name="adaptacao" id="item4" value="metodologia e org didatica">
+                    <input class="form-check-input" type="checkbox" name="adaptacao_curricular" id="item4" value="metodologia e org didatica">
                     <label for="item4" class="form-check-label">Metodologia e organização didática</label>
                 </div>
                 <div class="mb-3">
-                    <input class="form-check-input" type="checkbox" name="adaptacao" id="item5" value="temporalidade">
-                    <label for="item5" class="form-check-label">Temporalidade</label>
+                    <input class="form-check-input" type="checkbox" name="adaptacao_curricular" id="item5" value="Recursos e materiais pedagogicos">
+                    <label for="item5" class="form-check-label">Recursos e materiais pedagogicos</label>
                 </div>
                 <div class="mb-3">
-                    <input class="form-check-input" type="checkbox" name="adaptacao" id="item6" value="Avaliação">
-                    <label for="item6" class="form-check-label">Avaliação<div class="mb-3"></div></label>
+                    <input class="form-check-input" type="checkbox" name="adaptacao_curricular" id="item6" value="temporalidade">
+                    <label for="item6" class="form-check-label">Temporalidade</label>
+                </div>
+                <div class="mb-3">
+                    <input class="form-check-input" type="checkbox" name="adaptacao_curricular" id="item7" value="Atividades escolares">
+                    <label for="item7" class="form-check-label">Atividades escolares</label>
+                </div>
+                <div class="mb-3">
+                    <input class="form-check-input" type="checkbox" name="adaptacao_curricular" id="item8" value="Avaliação">
+                    <label for="item8" class="form-check-label">Avaliação</label>
+                </div>
+                <div class="mb-3">
+                    <input class="form-check-input" type="checkbox" name="adaptacao_curricular" id="item9" value="Comunicação e participação">
+                    <label for="item9" class="form-check-label">Comunicação e participação</label>
+                </div>
+                <div class="mb-3">
+                    <input class="form-check-input" type="checkbox" name="adaptacao_curricular" id="item10" value="Outras">
+                    <label for="item10" class="form-check-label">Outras</label>
+                </div>
+                <div class="mb-3">
+                    <label for="outras" class="p-1 fw-bold">Se marcou outras escreva quais</label>
+                    <input class="form-control" type="text" name="outras" id="outras">
                 </div>
                 <div class="mb-3">
                     <label for="habilidade" class="p-1 fw-bold">Habilidades Esperadas para o estudante com deficiência / necessidades específicas no componente curricular:</label>
                     <input class="form-control" type="text" name="habilidade" id="habilidade">
                 </div>
                 <div class="mb-3">
-                    <label for="facilidade_dificuldade" class="p-1 fw-bold">Facilidades e dificuldades do estudante com deficiência / necessidades específicas no componente curricular (Considerar Avaliação Diagnóstica, Contato com a Família e outros profissionais, quando houver)</label>
-                    <input class="form-control" type="text" name="facilidade_dificuldade" id="facilidade_dificuldade">
+                    <label for="objetivo" class="p-1 fw-bold">Descreva os objetivos de aprendizagem para o estudante na componente curricular</label>
+                    <input class="form-control" type="text" name="objetivo" id="objetivo">
                 </div>
                 <div class="mb-3">
-                    <label for="meta_turma" class="p-1 fw-bold">Metas para turma</label>
-                    <input class="form-control" type="text" name="meta_turma" id="meta_turma">
+                    <label for="facilidade" class="p-1 fw-bold">Descreva as potencilidades, interesses e facilidades apresentadas pelo estudante com deficiencia / necessidades especificas no componente curricular</label>
+                    <input class="form-control" type="text" name="facilidade" id="facilidade">
                 </div>
                 <div class="mb-3">
-                    <label for="meta_especifica" class="p-1 fw-bold">Metas específicas para o estudante com deficiência/necessidades específicas</label>
-                    <input class="form-control" type="text" name="meta_especifica" id="meta_especifica">
+                    <label for="dificuldade" class="p-1 fw-bold">Descreva dificuldades, barreiras ou necessidades especificas identificadas no componente curricular</label>
+                    <input class="form-control" type="text" name="dificuldade" id="dificuldade">
                 </div>
                 <div class="mb-3">
                     <label for="procedimento" class="p-1 fw-bold">Procedimentos Metodológicos e Estratégias a serem utilizadas</label>
                     <input class="form-control" type="text" name="procedimento" id="procedimento">
                 </div>
                 <div class="mb-3">
-                    <label for="avaliacao" class="p-1 fw-bold">Avaliação (Descrever como será e quais adaptações)</label>
+                    <label for="adaptacao" class="p-1 fw-bold">Descreva as adaptações nos conteudos, objetivos, atividades e materiais didaticos</label>
+                    <input class="form-control" type="text" name="adaptacao" id="adaptacao">
+                </div>
+                <div class="mb-3">
+                    <label for="avaliacao" class="p-1 fw-bold">Faça uma avaliação processual do estudante ate o momento</label>
                     <input class="form-control" type="text" name="avaliacao" id="avaliacao">
                 </div>
                     <input class="btn btn-success p-1 w-100" type="submit" value="cadastrar">

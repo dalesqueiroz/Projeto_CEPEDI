@@ -532,42 +532,57 @@ def habilidade_academica(request):
     if request.method == "GET":
         #pega todos os estudantes do banco de dados e envia para o template
         estudante = Estudante.objects.all()
-        dicionario = {"estudantes":estudante, 'nome_usuario': request.user.first_name}
+        professor = Professor.objects.all()
+        dicionario = {"estudantes":estudante, "professores":professor, 'nome_usuario': request.user.first_name}
         return render(request, 'habilidade_academica.html', dicionario)
     if request.method == "POST":
         # pega os dados da requisição
-        matricula = request.POST.get("matricula")
+        matricula_estudante = request.POST.get("matricula_estudante")
+        matricula_professor = request.POST.get("matricula_professor")
         componente = request.POST.get("componente")
-        adaptacao = request.POST.getlist("adaptacao")
+        componente = componente.capitalize()
+        adaptacao_curricular = request.POST.getlist("adaptacao_curricular")
+        outras = request.POST.get("outras")
+        if "Outras" in adaptacao_curricular:
+            adaptacao_curricular.append(outras)
         #separa as adaptação por vírgula
-        adaptacao = ", ".join(adaptacao)
+        adaptacao_curricular = ", ".join(adaptacao_curricular)
         habilidade = request.POST.get("habilidade")
-        facilidade_dificuldade = request.POST.get("facilidade_dificuldade")
-        meta_turma = request.POST.get("meta_turma")
-        meta_especifica = request.POST.get("meta_especifica")
+        objetivo = request.POST.get("objetivo")
+        facilidade = request.POST.get("facilidade")
+        dificuldade = request.POST.get("dificuldade")
         procedimento = request.POST.get("procedimento")
+        adaptacao = request.POST.get("adaptacao")
         avaliacao = request.POST.get("avaliacao")
         #filtra os estudantes por matrícula e pega o primeiro estudante
-        estudante = Estudante.objects.filter(matricula=matricula).first()
+        estudante = Estudante.objects.filter(matricula=matricula_estudante).first()
+        #filtra os professores por matricula e pega o primeiro professor
+        professor = Professor.objects.filter(matricula=matricula_professor).first()
         #verifica se tem estudante
         if estudante:
-            if HabilidadeAcademica.objects.filter(estudante=estudante).exists():
-                #se tiver habilidade academica envia mensagem de error e redireciona para
-                #pagina de habilidade academica
+            # verifica se tem uma habilidade academica com o estudante, professor
+            # e compenente curricular
+            if HabilidadeAcademica.objects.filter(estudante=estudante,
+                                                  professor=professor,
+                                                  componente_curricular=componente).exists():
                 messages.error(request, "habilidade academica ja cadastrado", extra_tags="danger")
                 return redirect("habilidade_academica")
             #cadastra habilidade academica no banco de dados
-            HabilidadeAcademica.objects.create(estudante=estudante,
-                                               componente_curricular=componente,
-                                               adaptacao_curricular = adaptacao,
-                                               habilidade = habilidade,
-                                               facilidade_dificuldade = facilidade_dificuldade,
-                                               metas_turma = meta_turma, metas_especifica = meta_especifica,
-                                               procedimento_metodologico = procedimento,
-                                               avaliacao = avaliacao)
-            #envia mensagem de sucesso e redireciona para página de habilidade academica
-            messages.success(request, "habilidade academica cadastrado")
-            return redirect("habilidade_academica")
+            habilidade_academica1 = HabilidadeAcademica.objects.create(estudante=estudante,
+                                                                     professor=professor,
+                                                                     componente_curricular=componente,
+                                                                     adaptacao_curricular=adaptacao_curricular,
+                                                                     habilidade = habilidade,
+                                                                     objetivo = objetivo,
+                                                                     facilidade = facilidade,
+                                                                     dificuldade =dificuldade,
+                                                                     procedimento = procedimento,
+                                                                     adaptacao = adaptacao,
+                                                                     avaliacao = avaliacao)
+            if habilidade_academica1:
+                #envia mensagem de sucesso e redireciona para página de habilidade academica
+                messages.success(request, "habilidade academica cadastrado")
+                return redirect("habilidade_academica")
         #envia mensagem de error e redireciona para página de habilidade academica
         messages.error(request, "habilidade academica não cadastrado", extra_tags="danger")
         return redirect("habilidade_academica")
@@ -1179,11 +1194,11 @@ def remover_equipe_pei(request, matricula):
 
 #verifica se o usuario esta logado
 @login_required(login_url="login1")
-def remover_habilidade_academica(request, matricula):
+def remover_habilidade_academica(request, matricula, id1):
     # filtra estudante pela matricula, se não tiver estudante retorna error 404
     estudante = get_object_or_404(Estudante, matricula=matricula)
     # filtra estudante pela habilidade academica
-    habilidade_academica1 = HabilidadeAcademica.objects.filter(estudante=estudante).first()
+    habilidade_academica1 = HabilidadeAcademica.objects.filter(id=id1).first()
     # verifica se tem habilidade academica
     if habilidade_academica1:
         # remove habilidade academica
@@ -1210,7 +1225,9 @@ def verificar_formulario(formulario, modelo):
 def dados_pei(request, matricula):
     #cria uma lista
     lista = []
+    lista2 = []
     numero = 0
+    numero1 = 0
     #verifica se tem estudante se não tiver retornar error 404
     estudante = get_object_or_404(Estudante, matricula=matricula)
     #filtra o pei pelo estudante e pega o primeiro
@@ -1308,24 +1325,30 @@ def dados_pei(request, matricula):
         for formulario in formulario_planejamento.fields.keys():
             formulario_planejamento.fields[formulario].widget.attrs["class"] = "form-control"
     # filtra o habilidade academica pelo estudante e pega o primeiro
-    habilidade_academica1 = HabilidadeAcademica.objects.filter(estudante=estudante).first()
-    # verifica se tem habilidade academica 1, se tiver preenche com os dados do banco de dados,
-    # senão tiver retorna None
-    formulario_habilidade_academica = verificar_formulario(FormularioHabilidadeAcademica, habilidade_academica1)
-    # verifica se tem formulario
-    if formulario_habilidade_academica:
-        #altera o id do formulario para habilidade academica2
-        formulario_habilidade_academica.fields["habilidade"].widget.attrs["id"] = "habilidade2"
-        #percorre o formulario e adiciona a classe do bootstrap
-        for formulario in formulario_habilidade_academica.fields.keys():
-            formulario_habilidade_academica.fields[formulario].widget.attrs["class"] = "form-control"
+    habilidade_academica1 = HabilidadeAcademica.objects.filter(estudante=estudante)
+    #verifica se tem habilidade academica
+    if habilidade_academica1:
+        #percorre habilidade academica
+        for habilidade_academica2 in habilidade_academica1:
+            #cria um formulario com os dados de habilidade academica
+            formulario_habilidade_academica = FormularioHabilidadeAcademica(instance=habilidade_academica2)
+            #adiciona as classe do bootstrap ao formulario e altera o id
+            for formulario in formulario_habilidade_academica.fields.keys():
+                if formulario == "professor":
+                    formulario_habilidade_academica.fields[formulario].widget.attrs["class"] = "form-select"
+                else:
+                    formulario_habilidade_academica.fields[formulario].widget.attrs["class"] = "form-control"
+                formulario_habilidade_academica.fields[formulario].widget.attrs["id"] = f"{formulario}{numero1}"
+            # adiciona o formulario na lista
+            lista2.append(formulario_habilidade_academica)
+
     dicionario = {"pei":formulario_pei, "equipe_pei":equipe_pei,
                   "diagnostico":formulario_diagnostico1,
                   "historico_escolar":formulario_historico_escolar,
                   "perfil_estudante":formulario_perfil_estudante,
                   "checklist":lista, "atividade":formulario_atividade,
                   "planejamento":formulario_planejamento,
-                  "habilidade_academica":formulario_habilidade_academica,
+                  "lista2":lista2,
                   "matricula":matricula, "estudante":estudante,
                   'nome_usuario': request.user.first_name}
     return render(request, "dados_pei.html", dicionario)
@@ -1539,13 +1562,13 @@ def editar_planejamento(request, matricula):
 
 #verifica se o usuario esta logado
 @login_required(login_url="login1")
-def editar_habilidade_academica(request, matricula):
+def editar_habilidade_academica(request, matricula, id1):
     if request.method == "GET":
         return redirect("dados_pei", matricula=matricula)
     if request.method == "POST":
         estudante = get_object_or_404(Estudante, matricula=matricula)
         #filtra pelo estudante e pega o primeiro
-        habilidade_academica1 = HabilidadeAcademica.objects.filter(estudante=estudante).first()
+        habilidade_academica1 = HabilidadeAcademica.objects.filter(id=id1).first()
         #cria um formulario com os dados da requisição e os dados do banco de dados
         formulario = FormularioHabilidadeAcademica(request.POST, instance=habilidade_academica1)
         #verifica se o formulario é valido

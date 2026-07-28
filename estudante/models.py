@@ -85,19 +85,6 @@ class AvaliacaoPedagogica(models.Model):
     def __str__(self):
         return f"{self.estudante.matricula} - {self.estudante.nome}"
 
-class HabilidadeAcademica(models.Model):
-    componente_curricular = models.TextField()
-    adaptacao_curricular = models.TextField()
-    habilidade = models.TextField()
-    facilidade_dificuldade = models.TextField()
-    metas_turma = models.TextField()
-    metas_especifica = models.TextField()
-    procedimento_metodologico = models.TextField()
-    avaliacao = models.TextField()
-    estudante =  models.ForeignKey(Estudante, on_delete=models.CASCADE)
-    def __str__(self):
-        return f"{self.estudante.matricula} - {self.estudante.nome}"
-
 class Professor(models.Model):
     cpf = models.CharField(max_length=255, unique=True)
     nome = models.CharField(max_length=255)
@@ -107,6 +94,21 @@ class Professor(models.Model):
     telefone = models.CharField(max_length=255)
     def __str__(self):
         return f"{self.matricula} - {self.nome}"
+
+class HabilidadeAcademica(models.Model):
+    componente_curricular = models.TextField()
+    adaptacao_curricular = models.TextField()
+    habilidade = models.TextField()
+    objetivo = models.TextField()
+    facilidade = models.TextField()
+    dificuldade = models.TextField()
+    procedimento = models.TextField()
+    adaptacao = models.TextField()
+    avaliacao = models.TextField()
+    estudante =  models.ForeignKey(Estudante, on_delete=models.CASCADE)
+    professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.estudante.matricula} - {self.estudante.nome}"
 
 class Funcionario(models.Model):
     cpf = models.CharField(max_length=255, primary_key=True)
