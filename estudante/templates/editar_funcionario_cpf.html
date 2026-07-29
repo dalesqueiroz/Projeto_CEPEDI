@@ -22,11 +22,11 @@
     {% endfor %}
 {% endif %}
         <div class="display-6 p-2">
-            Editar funcionario
+            Editar profissionais
         </div>
         <form action="{% url 'editar_funcionario_cpf' %}" method="post">{% csrf_token %}
             <div class="d-flex flex-column container-branco p-5 flex-shrink-0 p-3 box p-4">
-                <label for="cpf" class="form-label">Informe o funcionario </label>
+                <label for="cpf" class="form-label">Informe o profissional </label>
                 <select class="form-select" name="cpf" id="cpf">
                     {% for funcionario in funcionarios %}
                     <option value="{{funcionario.cpf}}">{{funcionario.cpf}} - {{funcionario.nome}}</option>

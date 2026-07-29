@@ -22,11 +22,11 @@
             {% endfor %}
         {% endif %}
         <div class="display-6 p-2">
-            Remover funcionario
+            Remover Profissionais
         </div>
         <form action="{% url 'remover_funcionario' %}" method="post">{% csrf_token %}
             <div class="d-flex flex-column container-branco p-5 flex-shrink-0 p-3 box p-4">
-                <label for="cpf" class="p-1">Informe o funcionario a ser removido</label>
+                <label for="cpf" class="p-1">Informe o profissional a ser removido</label>
                         <select class="form-select" name="cpf" id="cpf">
                             {% for funcionario in funcionarios %}
                                 <option value="{{funcionario.cpf}}">{{funcionario.cpf}} - {{funcionario.nome}}</option>

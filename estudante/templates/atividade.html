@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <title>Document</title>
+    <title>Atividade</title>
 </head>
 <body class="bg-cinza d-flex justify-content-center align-items-center min-vh-100">
     {% include 'barra_lateral.html' %}
@@ -28,7 +28,7 @@
             <form action="{% url 'atividade' %}" method="post">{% csrf_token %}
                 <div class="d-flex flex-column container-branco p-5 flex-shrink-0 p-3">
                     <div class="mb-3">
-                        <label for="matricula" class="form-label">matricula estudante</label>
+                        <label for="matricula" class="form-label">Informe o estudante</label>
                         <select class="form-select" name="matricula" id="matricula">
                             {% for estudante in estudantes %}
                             <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
@@ -36,11 +36,12 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="atividade" class="form-label">atividade complementares</label>
+                        <label for="atividade" class="form-label">  1. Atividades Complementares / Serviços a serem desenvolvidos dentro da escola, ou com encaminhamento (fora da escola)</label>
+                          <p class="ps-4 pl-4 fst-italic">Ex. Atendimento Educacional Especializado – AEE, Atendimento Individualizado pelo(a) professor(a) no contraturno, apoio pedagógico, monitoria, recuperação, profissional de apoio, outros.</p>
                         <input class="form-control" type="text" name="atividade" id="atividade">
                     </div>
                     <div class="mb-3">
-                        <label for="descricao" class="form-label">trabalho com a turma</label>
+                        <label for="descricao" class="form-label">2. Trabalho com a turma sobre respeito às diferenças e diversidade (quando necessário)</label>
                         <input class="form-control" type="text" name="descricao" id="descricao">
                     </div>
                     <input class="btn btn-success p-1 w-100" type="submit" value="Confirmar">

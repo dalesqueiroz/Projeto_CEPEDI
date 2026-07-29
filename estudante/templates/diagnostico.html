@@ -27,7 +27,7 @@
         <form action="{% url 'diagnostico' %}" method="post">{% csrf_token %}
             <div class="d-flex flex-column container-branco p-5 flex-shrink-0 p-3">
                 <div class="mb-3">
-                    <label class="p-1 fw-bold" for="estudante">Informe de que estudante é o diagnostico</label>
+                    <label class="p-1" for="estudante">Informe de que estudante é o diagnostico</label>
                     <select class="form-select" name="estudante" id="estudante">
                         {% for estudante in estudantes %}
                         <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
@@ -35,7 +35,7 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="laudo" class="p-1 fw-bold"> O estudante possui laudo? </label>
+                    <label for="laudo" class="p-1"> O estudante possui laudo? </label>
                     <select class="form-select" name="laudo" id="laudo">
                         <option value="sim">Sim</option>
                         <option value="nao">Não</option>
@@ -43,24 +43,24 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="texto_diagnostico" class="p-1 fw-bold">Qual o diagnostico?</label>
+                    <label for="texto_diagnostico" class="p-1">Qual o diagnostico?</label>
                     <p class="ps-4 pl-4 fst-italic">Identificar: a especificidade (deficiência e/ou transtorno funcional específico), CID (caso tenha laudo), descrição das características por conta do diagnóstico).
                     Caso esteja em avaliação ou não tenha laudo, descrever a suspeita, identificando o porquê.</p>
                     <input class="form-control" type="text" name="texto_diagnostico" id="texto_diagnostico">
                 </div>
                 <div class="mb-3">
-                    <label for="ano" class="p-1 fw-bold">Ano de descoberta do diagnostico</label>
+                    <label for="ano" class="p-1">Ano de descoberta do diagnostico</label>
                     <input class="form-control" type="number" name="ano" id="ano">
                 </div>
                 <div class="mb-3">
-                    <label class="p-1 fw-bold" for="atendimento">O estudante realiza algum atendimento fora da escola?</label>
+                    <label class="p-1" for="atendimento">O estudante realiza algum atendimento fora da escola?</label>
                     <select class="form-select" name="atendimento" id="atendimento">
                         <option value="sim">Sim</option>
                         <option value="nao">Não</option>
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="p-1 fw-bold" for="texto_atendimento">Caso tenha informado que sim em "atendimento fora da escola", identificar qual tipo de atendimento e periodicidade (Exemplos: Fonoaudiólogo, Fisioterapeuta, Psicopedagoga, etc)</label>
+                    <label class="p-1" for="texto_atendimento">Caso tenha informado que sim em "atendimento fora da escola", identificar qual tipo de atendimento e periodicidade (Exemplos: Fonoaudiólogo, Fisioterapeuta, Psicopedagoga, etc)</label>
                     <input class="form-control" type="text" name="texto_atendimento" id="texto_atendimento">
                 </div>
                 <input class="btn btn-success p-1 w-100" type="submit" value="cadastrar">

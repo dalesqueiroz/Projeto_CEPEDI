@@ -31,7 +31,7 @@
                     {% endfor %}
                 </select>
                 <br>
-                <label for="cpf" class="form-label">Selecione os funcionarios da equipe </label>
+                <label for="cpf" class="form-label">Selecione os membros da equipe </label>
                 <select class="form-select" name="cpf" id="cpf" multiple>
                 {% for funcionario in funcionarios %}
                     <option value="{{funcionario.cpf}}">{{funcionario.cpf}} - {{funcionario.nome}}</option>

@@ -22,12 +22,12 @@
             {% endfor %}
         {% endif %}
          <div class="display-6 p-2">
-            Cadastro de habilidade academica
+            Cadastro de habilidade acadêmica
         </div>
         <form action="{% url 'habilidade_academica' %}" method="post">{% csrf_token %}
             <div class="d-flex flex-column container-branco p-5 flex-shrink-0 p-3">
                 <div class="mb-3">
-                    <label for="matricula_estudante" class="p-1 fw-bold">Informe o estudante</label>
+                    <label for="matricula_estudante" class="p-2">Informe o estudante</label>
                     <select class="form-select" name="matricula_estudante" id="matricula_estudante">
                         {% for estudante in estudantes %}
                             <option value="{{estudante.matricula}}">{{estudante.matricula}} - {{estudante.nome}}</option>
@@ -35,7 +35,7 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="matricula_professor" class="p-1 fw-bold">Informe o professor</label>
+                    <label for="matricula_professor" class="p-2">Informe o professor</label>
                     <select class="form-select" name="matricula_professor" id="matricula_professor">
                         {% for professor in professores %}
                             <option value="{{professor.matricula}}">{{professor.matricula}} - {{professor.nome}}</option>
@@ -43,10 +43,10 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="componente" class="p-1 fw-bold">Componente curricular</label>
+                    <label for="componente" class="p-2">Componente curricular</label>
                     <input class="form-control" type="text" name="componente" id="componente">
                 </div>
-                    <label class="p-1 fw-bold">Necessidade de Adaptações Curriculares:</label>
+                    <label class="p-2">Necessidade de Adaptações Curriculares:</label>
                 <div class="mb-3">
                     <input class="form-check-input" type="checkbox" name="adaptacao_curricular" id="item1" value="acesso ao curriculo">
                     <label for="item1" class="form-check-label">Acesso ao currículo</label>
@@ -88,35 +88,35 @@
                     <label for="item10" class="form-check-label">Outras</label>
                 </div>
                 <div class="mb-3">
-                    <label for="outras" class="p-1 fw-bold">Se marcou outras escreva quais</label>
+                    <label for="outras" class="p-2">Se marcou outras escreva quais</label>
                     <input class="form-control" type="text" name="outras" id="outras">
                 </div>
                 <div class="mb-3">
-                    <label for="habilidade" class="p-1 fw-bold">Habilidades Esperadas para o estudante com deficiência / necessidades específicas no componente curricular:</label>
+                    <label for="habilidade" class="p-2">Habilidades Esperadas para o estudante com deficiência / necessidades específicas no componente curricular:</label>
                     <input class="form-control" type="text" name="habilidade" id="habilidade">
                 </div>
                 <div class="mb-3">
-                    <label for="objetivo" class="p-1 fw-bold">Descreva os objetivos de aprendizagem para o estudante na componente curricular</label>
+                    <label for="objetivo" class="p-2">Descreva os objetivos de aprendizagem para o estudante na componente curricular</label>
                     <input class="form-control" type="text" name="objetivo" id="objetivo">
                 </div>
                 <div class="mb-3">
-                    <label for="facilidade" class="p-1 fw-bold">Descreva as potencilidades, interesses e facilidades apresentadas pelo estudante com deficiencia / necessidades especificas no componente curricular</label>
+                    <label for="facilidade" class="p-2">Descreva as potencilidades, interesses e facilidades apresentadas pelo estudante com deficiencia / necessidades especificas no componente curricular</label>
                     <input class="form-control" type="text" name="facilidade" id="facilidade">
                 </div>
                 <div class="mb-3">
-                    <label for="dificuldade" class="p-1 fw-bold">Descreva dificuldades, barreiras ou necessidades especificas identificadas no componente curricular</label>
+                    <label for="dificuldade" class="p-2">Descreva dificuldades, barreiras ou necessidades especificas identificadas no componente curricular</label>
                     <input class="form-control" type="text" name="dificuldade" id="dificuldade">
                 </div>
                 <div class="mb-3">
-                    <label for="procedimento" class="p-1 fw-bold">Procedimentos Metodológicos e Estratégias a serem utilizadas</label>
+                    <label for="procedimento" class="p-2">Procedimentos Metodológicos e Estratégias a serem utilizadas</label>
                     <input class="form-control" type="text" name="procedimento" id="procedimento">
                 </div>
                 <div class="mb-3">
-                    <label for="adaptacao" class="p-1 fw-bold">Descreva as adaptações nos conteudos, objetivos, atividades e materiais didaticos</label>
+                    <label for="adaptacao" class="p-2">Descreva as adaptações nos conteudos, objetivos, atividades e materiais didaticos</label>
                     <input class="form-control" type="text" name="adaptacao" id="adaptacao">
                 </div>
                 <div class="mb-3">
-                    <label for="avaliacao" class="p-1 fw-bold">Faça uma avaliação processual do estudante ate o momento</label>
+                    <label for="avaliacao" class="p-2">Faça uma avaliação processual do estudante ate o momento</label>
                     <input class="form-control" type="text" name="avaliacao" id="avaliacao">
                 </div>
                     <input class="btn btn-success p-1 w-100" type="submit" value="cadastrar">

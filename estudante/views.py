@@ -45,21 +45,21 @@ def cadastro_sistema(request):
         #verifica se ja tem um usuario com cpf
         if Usuario.objects.filter(cpf=cpf).exists():
             #envia mensagem de error e redireciona para pagina de cadastro sistema
-            messages.error(request, "cpf ja cadastrado", extra_tags="danger")
+            messages.error(request, "Devido ao CPF informado já está cadastrado no sistema não foi possível finalizar o cadastro", extra_tags="danger")
             return redirect("cadastro_sistema")
         if Usuario.objects.filter(email=email).exists():
             # envia mensagem de error e redireciona para pagina de cadastro sistema
-            messages.error(request, "email ja cadastrado", extra_tags="danger")
+            messages.error(request, "Devido ao Email informado já está cadastrado no sistema não foi possível finalizar o cadastro", extra_tags="danger")
             return redirect("cadastro_sistema")
         usuario = Usuario.objects.create_superuser(username=email, email=email, first_name=nome , cpf=cpf, password=senha)
         professor = SistemaProfessor.objects.create(usuario=usuario)
         if professor:
             #envia mensagem de usuário cadastrado e redireciona para página de login
-            messages.success(request, "O usuario foi cadastrado")
+            messages.success(request, "O usuário foi cadastrado com sucesso")
             return redirect("login1")
         #se o sistema professor não foi cadastrado, envia mensagem de usuário não cadastrado,
         #com a tag danger para ser usada pelo bootstrap e redireciona para página de cadastro
-        messages.error(request, "O usuario não foi cadastrado", extra_tags="danger")
+        messages.error(request, "Não foi possível concluir o cadastro de usuário. Tente novamente", extra_tags="danger")
         return redirect("cadastro_sistema")
 
 def login1(request):
@@ -85,7 +85,7 @@ def login1(request):
             #redireciona para pagina painel administrador
             return redirect("painel_administrador")
         #envia mensagem de error e retornar para pagina de login
-        messages.error(request, "login não realizado", extra_tags="danger")
+        messages.error(request, "Erro ao realizar login, verifique se há algum erro no email ou senha", extra_tags="danger")
         return redirect("login1")
 
 #apaga os dados armazenados na sessão e redireciona para a página de login
@@ -135,17 +135,17 @@ def cadastro_estudante(request):
         #verifica se o email ja esta cadastrado
         if Estudante.objects.filter(matricula=matricula).exists():
             #envia mensagem de error e redireciona para pagina de cadastro
-            messages.error(request, "matricula ja cadastrado", extra_tags="danger")
+            messages.error(request, "Não foi possível finalizar cadastro. A matrícula informada já foi cadastrada no sistema", extra_tags="danger")
             return redirect("cadastro_estudante")
         #verifica se o cpf ja esta cadastrado
         if Estudante.objects.filter(cpf=cpf).exists():
             #envia mensagem de error e redireciona para pagina de cadastro
-            messages.error(request, "cpf ja cadastrado", extra_tags="danger")
+            messages.error(request, "Não foi possível finalizar cadastro. O CPF informado já foi cadastrado no sistema", extra_tags="danger")
             return redirect("cadastro_estudante")
         #verifica se o email ja esta cadastrado
         if Estudante.objects.filter(email=email).exists():
             #envia mensagem de error e redireciona para pagina de cadastro
-            messages.error(request, "email ja cadastrado", extra_tags="danger")
+            messages.error(request, "Não foi possível finalizar cadastro. O Email informado já foi cadastrado no sistema", extra_tags="danger")
             return redirect("cadastro_estudante")
         #cadastra o estudante
         estudante = Estudante.objects.create(cpf=cpf, matricula=matricula, nome=nome,
@@ -157,10 +157,10 @@ def cadastro_estudante(request):
         #verifica se o estudante foi cadastrado
         if estudante:
             #envia mensagem de sucesso e redireciona para página de cadastro
-            messages.success(request, "estudante cadastrado")
+            messages.success(request, "O estudante cadastrado com sucesso")
             return redirect("cadastro_estudante")
         #envia uma mensagem de error e redireciona para página de cadastro
-        messages.error(request, "estudante não cadastrado", extra_tags="danger")
+        messages.error(request, "Não foi possível concluir cadastro do estudante. Tente novamente", extra_tags="danger")
         return redirect("cadastro_estudante")
 
 #verifica se o usuario esta logado
@@ -180,17 +180,17 @@ def cadastro_professor(request):
         #verifica se a matricula ja esta cadastrado
         if Professor.objects.filter(matricula=matricula).exists():
             #envia mensagem de error e redireciona para pagina de cadastro professor
-            messages.error(request, "matricula ja cadastrada", extra_tags="danger")
+            messages.error(request, "Não foi possível finalizar cadastro. A matrícula informada já foi cadastrada no sistema", extra_tags="danger")
             return redirect("cadastro_professor")
         # verifica se a cpf ja esta cadastrado
         if Professor.objects.filter(cpf=cpf).exists():
             # envia mensagem de error e redireciona para pagina de cadastro professor
-            messages.error(request, "cpf ja cadastrado", extra_tags="danger")
+            messages.error(request, "Não foi possível finalizar cadastro. O CPF informado já foi cadastrado no sistema", extra_tags="danger")
             return redirect("cadastro_professor")
         # verifica se a email ja esta cadastrado
         if Professor.objects.filter(email=email).exists():
             # envia mensagem de error e redireciona para pagina de cadastro professor
-            messages.error(request, "email ja cadastrado", extra_tags="danger")
+            messages.error(request, "Não foi possível finalizar cadastro. O email informado já foi cadastrado no sistema", extra_tags="danger")
             return redirect("cadastro_professor")
         # senao tem professor cadastrado, cadastra o professor
         professor = Professor.objects.create(cpf=cpf, nome=nome, matricula=matricula,
@@ -200,11 +200,11 @@ def cadastro_professor(request):
         if professor:
             # se o professor foi cadastrado, envia mensagem de sucesso e redireciona para
             # página de cadastro
-            messages.success(request, "professor cadastrado")
+            messages.success(request, "Professor cadastrado com sucesso")
             return redirect("cadastro_professor")
         # senão tem professor cadastrado envia mensagem de error e redireciona para
         # página de cadastro
-        messages.error(request, "professor não foi cadastrado", extra_tags="danger")
+        messages.error(request, "Não foi possível concluir o cadastro do professor. Tente novamente", extra_tags="danger")
         return redirect("cadastro_professor")
 
 #verifica se o usuario esta logado
@@ -219,7 +219,7 @@ def cadastro_funcionario(request):
         funcao = request.POST.get("funcao")
         if Funcionario.objects.filter(cpf=cpf).exists():
             #se tem um funcionario, envia mensagem de error de funcionario ja cadastrado
-            messages.error(request, "o funcionario ja cadastrado", extra_tags="danger")
+            messages.error(request, "Não foi possível finalizar cadastro. O profissional informado já foi cadastrado no sistema", extra_tags="danger")
             return redirect("cadastro_funcionario")
         #cria um funcionario
         funcionario = Funcionario.objects.create(cpf=cpf, nome=nome, funcao=funcao)
@@ -227,11 +227,11 @@ def cadastro_funcionario(request):
         if funcionario:
             #se o funcionario foi cadastrado envia mensagem de funcionario cadastrado
             #e redireciona para página de cadastro
-            messages.success(request, "o funcionario foi cadastrado")
+            messages.success(request, "Profissional foi cadastrado com sucesso")
             return redirect("cadastro_funcionario")
         #se o funcionario não foi cadastrado envia mensagem de funcionario não cadastrado
         #e redireciona para página de cadastro
-        messages.error(request, "o funcionario não foi cadastrado", extra_tags="danger")
+        messages.error(request, "Não foi possível concluir o cadastro do profissional. Tente novamente", extra_tags="danger")
         return redirect("cadastro_funcionario")
 
 #verifica se o usuario esta logado
@@ -269,15 +269,15 @@ def pei(request):
             if PEI.objects.filter(estudante=estudante).exists():
                 #se o pei estiver cadastrado envia mensagem de error e
                 #redireciona para página do pei
-                messages.error(request, "o pei ja cadastrado", extra_tags="danger")
+                messages.error(request, "O estudante já possui um PEI cadastrado. No caso de alteração vá para a tela de edição do PEI do estudante", extra_tags="danger")
                 return redirect("pei")
             #cria o pei com os dados da requisição, envia mensagem de pei cadastrado e
             # redireciona para página do pei
             PEI.objects.create(estudante=estudante, professor=professor, tempo=validade)
-            messages.success(request, "o pei foi cadastrado")
+            messages.success(request, "O PEI foi cadastrado com sucesso")
             return redirect("pei")
         #envia mensagem de error e redireciona para página do pei
-        messages.error(request, "o pei não foi cadastrado", extra_tags="danger")
+        messages.error(request, "Não foi possível concluir cadastro PEI. Tente novamente", extra_tags="danger")
         return redirect("pei")
 
 #verifica se o usuario esta logado
@@ -299,7 +299,7 @@ def cadastro_equipe(request):
         #verifica se não tem matricula ou se nao tem lista, senao tiver
         #envia mensagem de error e redireciona para pagina de cadastro equipe
         if not matricula or not lista:
-            messages.error(request,  "funcionario cadastrado nao cadastrado",
+            messages.error(request,  "O profissional informado não esta cadastrado no sistema",
                            extra_tags="danger")
             return redirect("cadastro_equipe")
         #filtra o estudante por matrícula e pega o primeiro estudante
@@ -322,11 +322,11 @@ def cadastro_equipe(request):
         #verifica se todos os funcionarios foram cadastrados, envia mensagem de sucesso
         #e redireciona para pagina de cadastro equipe
         if quantidade == len(lista):
-            messages.success(request, "funcionario cadastrado")
+            messages.success(request, "Profissional cadastrado com sucesso")
             return redirect("cadastro_equipe")
         #se todos os funcionários não foram cadastrados envia mensagem de error
         # e redireciona para página de login
-        messages.error(request, f'{quantidade} funcionario cadastrado', extra_tags="danger")
+        messages.error(request, f'{quantidade} profissionais cadastrados', extra_tags="danger")
         return redirect("cadastro_equipe")
 
 #verifica se o usuario esta logado
@@ -360,7 +360,7 @@ def diagnostico(request):
             if Diagnostico.objects.filter(estudante=estudante).exists():
                 #se tiver diagnostico envia mensagem de error de diagnóstico já cadastrado
                 #e redireciona para página de diagnóstico
-                messages.error(request, "diagnostico ja cadastrado", extra_tags="danger")
+                messages.error(request, "O estudante já possui um diagnóstico cadastrado. No caso de alteração vá para a tela de edição das informações do PEI do estudante", extra_tags="danger")
                 return redirect("diagnostico")
             #cadastra o diagnostico
             Diagnostico.objects.create(estudante=estudante, laudo=laudo,
@@ -368,10 +368,10 @@ def diagnostico(request):
                                        atendimento_fora_da_escola = atendimento,
                                        texto_atendimento=texto_atendimento)
             #envia mensagem de sucesso e redireciona para diagnostico
-            messages.success(request, "diagnostico cadastrado")
+            messages.success(request, "Diagnóstico cadastrado com sucesso")
             return redirect("diagnostico")
         #envia mensagem de erro e redireciona para diagnóstico
-        messages.error(request, "diagnostico nao cadastrado", extra_tags="danger")
+        messages.error(request, "Não foi possível cadastrar o diagnóstico", extra_tags="danger")
         return redirect("diagnostico")
 
 #verifica se o usuario esta logado
@@ -404,15 +404,15 @@ def historico_escolar(request):
             if HistoricoEscolar.objects.filter(estudante=estudante).exists():
                 #se tiver historico escolar envia mensagem de error historico escolar ja
                 #cadastrado e redireciona para pagina de historico escolar
-                messages.error(request, "historico escolar ja cadastrado", extra_tags="danger")
+                messages.error(request, "O estudante já possui um historico escolar cadastrado. No caso de alteração vá para a tela de edição das informações do PEI do estudante", extra_tags="danger")
                 return redirect("historico_escolar")
             #cadastra o historico escolar
             HistoricoEscolar.objects.create(texto=texto, texto2=texto2, estudante=estudante)
             #envia mensagem de sucesso e redireciona para historico escolar
-            messages.success(request, "historico escolar cadastrado")
+            messages.success(request, "Historico escolar cadastrado com sucesso")
             return redirect("historico_escolar")
         #envia mensagem de error e redireciona para historico escolar
-        messages.error(request, "historico escolar não cadastrado", extra_tags="danger")
+        messages.error(request, "Não foi possível cadastrar o historico escolar", extra_tags="danger")
         return redirect("historico_escolar")
 
 #verifica se o usuario esta logado
@@ -441,7 +441,7 @@ def perfil_estudante(request):
             if PerfilEstudante.objects.filter(estudante=estudante).exists():
                 #se tiver perfil estudante envia mensagem de error de
                 # perfil estudante ja cadastrado e redireciona para perfil estudante
-                messages.error(request, "perfil estudante ja cadastrado", extra_tags="danger")
+                messages.error(request, "O estudante já possui um perfil cadastrado. No caso de alteração vá para a tela de edição das informações do PEI do estudante", extra_tags="danger")
                 return redirect("perfil_estudante")
             #cadastra o perfil estudante
             PerfilEstudante.objects.create(estudante=estudante,
@@ -449,10 +449,10 @@ def perfil_estudante(request):
                                            nao_gosta=nao_gosta, dificuldade=desafio,
                                            informacao=informacao)
             #envia mensagem de sucesso e redireciona para perfil estudante
-            messages.success(request, "perfil estudante cadastrado")
+            messages.success(request, "Perfil do estudante cadastrado com sucesso")
             return redirect("perfil_estudante")
         #envia mensagem de error e redireciona para perfil estudante
-        messages.error(request, "perfil estudante não cadastrado", extra_tags="danger")
+        messages.error(request, "Não foi possível cadastrar o perfil do estudante", extra_tags="danger")
         return redirect("perfil_estudante")
 
 #verifica se o usuario esta logado
@@ -477,15 +477,15 @@ def atividade(request):
             if Atividade.objects.filter(estudante=estudante).exists():
                 # se tiver atividade envia mensagem de error
                 # atividade já cadastrado e redireciona para atividade
-                messages.error(request, "atividade ja cadastrado", extra_tags="danger")
+                messages.error(request, "O estudante já possui atividade cadastrada. No caso de alteração vá para a tela de edição das informações do PEI do estudante", extra_tags="danger")
                 return redirect("atividade")
             # cadastra a atividade, envia mensagem de sucesso e redireciona para a
             # página atividade
             Atividade.objects.create(estudante=estudante, atividade=atividade1,
                                      descricao=descricao)
-            messages.success(request, "atividade cadastrada")
+            messages.success(request, "Atividade cadastrada com sucesso")
             return redirect("atividade")
-        messages.error(request, "atividade não cadastrada", extra_tags="danger")
+        messages.error(request, "Não foi possível cadastrar a atividade", extra_tags="danger")
         return redirect("atividade")
 
 #verifica se o usuario esta logado
@@ -511,7 +511,7 @@ def planejamento(request):
             if Planejamento.objects.filter(estudante=estudante).first():
                 #se tiver planejamento enviar menasagem de error de planejamento
                 #ja cadastrado e redireciona para pagina de planjamento
-                messages.error(request, "planejamento ja cadastrado", extra_tags="danger")
+                messages.error(request, "O estudante já possui um planejamento cadastrado. No caso de alteração vá para a tela de edição das informações do PEI do estudanteo", extra_tags="danger")
                 return redirect("planejamento")
             #cadastra o planejamento no banco de dados
             Planejamento.objects.create(estudante=estudante, habilidade=habilidade,
@@ -520,10 +520,10 @@ def planejamento(request):
                                         metas_longo_prazo = metas_longo_prazo)
             #envia mensagem de sucesso de planejamento encontrado e redireciona para pagina
             #de planejamento
-            messages.success(request, "planejamento cadastrado")
+            messages.success(request, "Planejamento cadastrado com sucesso")
             return redirect("planejamento")
         #envia mensagem de error e redireciona para pagina de planejamento
-        messages.error(request, "planejamento não cadastrado", extra_tags="danger")
+        messages.error(request, "Não foi possível cadastrar o planejamento", extra_tags="danger")
         return redirect("planejamento")
 #verifica se o usuario esta logado
 @login_required(login_url="login1")
@@ -565,7 +565,7 @@ def habilidade_academica(request):
             if HabilidadeAcademica.objects.filter(estudante=estudante,
                                                   professor=professor,
                                                   componente_curricular=componente).exists():
-                messages.error(request, "habilidade academica ja cadastrado", extra_tags="danger")
+                messages.error(request, "Habilidade acadêmica informada já foi cadastrada no sistema", extra_tags="danger")
                 return redirect("habilidade_academica")
             #cadastra habilidade academica no banco de dados
             habilidade_academica1 = HabilidadeAcademica.objects.create(estudante=estudante,
@@ -581,10 +581,10 @@ def habilidade_academica(request):
                                                                      avaliacao = avaliacao)
             if habilidade_academica1:
                 #envia mensagem de sucesso e redireciona para página de habilidade academica
-                messages.success(request, "habilidade academica cadastrado")
+                messages.success(request, "Habilidade acadêmica cadastrado")
                 return redirect("habilidade_academica")
         #envia mensagem de error e redireciona para página de habilidade academica
-        messages.error(request, "habilidade academica não cadastrado", extra_tags="danger")
+        messages.error(request, "Não foi possível cadastrar a habilidade acadêmica", extra_tags="danger")
         return redirect("habilidade_academica")
 
 #verifica se o usuario esta logado
@@ -597,19 +597,19 @@ def checklist2(request):
         #pega todos os estudantes do banco de dados
         estudante = Estudante.objects.all()
         #adiciona o tipo da checklist e a checklist na lista
-        tipo = "adaptacao de acesso ao curriculo"
+        tipo = "Adaptações de acesso ao currículo"
         checklist = ["Organização dos agrupamentos de estudantes",
                      "Organização do Espaço Físico e Condições Ambientais",
                      "Organização dos Recursos Didáticos",
                      "Organização Didática da Aula"]
         lista.append({"tipo":tipo, "checklist":checklist})
-        tipo = "adaptacao de objetivo"
+        tipo = "Adaptações de objetivos"
         checklist = ["Priorização de habilidades básicas de atenção, participação e adaptabilidade",
                      "Adequação de objetivos, de acordo com a especificidade do(a) estudante",
                      "Retirada de objetivos propostos no currículo escolar",
                      "Introdução de objetivos específicos, complementares e/ou alternativos"]
         lista.append({"tipo": tipo, "checklist": checklist})
-        tipo = "adaptacao de conteudo"
+        tipo = "Adaptações de conteúdo"
 
         checklist = ["Priorização de conteúdos",
                      "Reformulação da sequência dos conteúdos",
@@ -617,21 +617,21 @@ def checklist2(request):
                      "Eliminação de conteúdos secundários, para dar enfoque mais intensivo e prolongado a conteúdos mais básicos e essenciais no currículo",
                      "Introdução de conteúdos específicos, complementares ou alternativos"]
         lista.append({"tipo": tipo, "checklist": checklist})
-        tipo = "adaptacao do metodo de ensino e da organizacao didatica"
+        tipo = "Adaptações do método de ensino e da organização didática"
         checklist = ["Modificação de procedimentos / estratégias de ensino",
                      "Adoção de métodos, procedimentos e atividades alternativas e/ou complementares às previstas",
                      "Organização diferenciada da sala de aula",
                      "Adaptação de materiais",
                      "Utilização de recursos específicos de acesso ao currículo"]
         lista.append({"tipo": tipo, "checklist": checklist})
-        tipo = "adaptacao sistema"
+        tipo = "Adaptações sistema de avaliação"
         checklist = ["Adaptação e/ou modificação de técnicas, instrumentos, procedimentos e critérios.",
                          "Introdução de critérios específicos de avaliação.",
                          "Necessidade de Avaliação em espaço diferente dos colegas.",
                          "Eliminação de critérios gerais de avaliação.",
                          "Modificação dos critérios de promoção"]
         lista.append({"tipo": tipo, "checklist": checklist})
-        tipo = "adaptacao de temporalidade"
+        tipo = "Adaptações de temporalidade"
         checklist = ["Aumento do Tempo para atividades e avaliações",
                      "Aumento do tempo para trabalhar determinados objetivos/conteúdos",
                      "Diminuição do tempo para trabalhar determinados objetivos/conteúdos",
@@ -659,16 +659,16 @@ def checklist2(request):
             checklist3 = Checklist.objects.filter(estudante=estudante)
             checklist3 = checklist3.filter(checklist=tipo).first()
             if checklist3:
-                messages.error(request, f"{tipo} ja cadastrado", extra_tags="danger")
+                messages.error(request, f"{tipo} já cadastrado", extra_tags="danger")
                 return redirect("checklist2")
             #se tem estudante cadastra a checklist
             Checklist.objects.create(estudante=estudante, checklist=tipo,
                                      pergunta=checklist, texto=texto)
             #envia mensagem de sucesso e redireciona para pagina da checklist
-            messages.success(request, f"{tipo} cadastrado")
+            messages.success(request, f"{tipo} cadastrado com sucesso")
             return redirect("checklist2")
         #envia mensagem de error e redireciona para pagina da checklist
-        messages.error(request, f"{tipo} não cadastrado", extra_tags="danger")
+        messages.error(request, f"Não foi possível cadastrar: {tipo}", extra_tags="danger")
         return redirect("checklist2")
 
 #verifica se o usuario esta logado
@@ -687,7 +687,7 @@ def gerar_pdf(request):
         #filtra o estudante pela matrícula e pega o primeiro
         estudante = Estudante.objects.filter(matricula=matricula).first()
         if not estudante:
-            messages.error(request, "estudante não encontrado", extra_tags="danger")
+            messages.error(request, "Estudante informado não foi encontrado", extra_tags="danger")
             return redirect("gerar_pdf")
         #filtra o pei pelo estudante e pega o primeiro
         pei1 = PEI.objects.filter(estudante=estudante).first()
@@ -768,10 +768,10 @@ def remover_estudante(request):
             #exclui o estudante
             estudante.delete()
             #envia mensagem de sucesso e redireciona para página de remover estudante
-            messages.success(request, "estudante removido")
+            messages.success(request, "Estudante removido com sucesso")
             return redirect("remover_estudante")
         #envia mensagem de error e redireciona para pagina de remover estudante
-        messages.error(request, "estudante não removido", extra_tags="danger")
+        messages.error(request, "Não foi possível remover o estudante", extra_tags="danger")
         return redirect("remover_estudante")
 #verifica se o usuario esta logado
 @login_required(login_url="login1")
@@ -790,10 +790,10 @@ def remover_professor(request):
             #remove o professor
             professor.delete()
             #envia mensagem de sucesso e redireciona para pagina de remover professor
-            messages.success(request, "professor removido")
+            messages.success(request, "Professor removido com sucesso")
             return redirect("remover_professor")
         #envia mensagem de error e redireciona para pagina de remover professor
-        messages.error(request, "professor não removido", extra_tags="danger")
+        messages.error(request, "Não foi possível remover o professor", extra_tags="danger")
         return redirect("remover_professor")
 
 #verifica se o usuario esta logado
@@ -815,10 +815,10 @@ def remover_funcionario(request):
             #remove o funcionario
             funcionario.delete()
             #envia mensagem de sucesso e redireciona para página de remover funcionario
-            messages.success(request, "funcionario removido")
+            messages.success(request, "Profissinal removido com sucesso")
             return redirect("remover_funcionario")
         #envia mensagem de error e redireciona para pagina de remover funcionario
-        messages.error(request, "efuncionario não removido", extra_tags="danger")
+        messages.error(request, "Não foi possível remover o profissinal", extra_tags="danger")
         return redirect("remover_funcionario")
 
 #verifica se o usuario esta logado
@@ -902,9 +902,9 @@ def editar_professor(request, matricula):
             #envia os dados do formulario para o banco de dados
             formulario.save()
             #envia mensagem de sucesso e redireciona para página de editar professor
-            messages.success(request, "professor editado com sucesso")
+            messages.success(request, "Professor editado com sucesso")
             return redirect("editar_professor", matricula=matricula)
-        messages.error(request, "professor não editado", extra_tags="danger")
+        messages.error(request, "Não foi possível editar o professor", extra_tags="danger")
         return redirect("editar_professor", matricula=matricula)
 
 #verifica se o usuario esta logado
@@ -935,9 +935,9 @@ def editar_funcionario(request, cpf):
             #salva o formulario
             formulario.save()
             #envia mensagem de sucesso
-            messages.success(request, "funcionario editado com sucesso")
+            messages.success(request, "Profissinal editado com sucesso")
             return redirect("editar_funcionario", cpf=cpf)
-        messages.error(request, "funcioanrio não editado", extra_tags="danger")
+        messages.error(request, "Não foi possível editar o profissinal", extra_tags="danger")
         return redirect("editar_funcionario", cpf=cpf)
 
 #verifica se o usuario esta logado
@@ -968,10 +968,10 @@ def editar_estudante(request, matricula):
             #salva o formulario
             formulario.save()
             #envia mensagem de sucesso e redireciona para página de editar estudante
-            messages.success(request, "estudante editado com sucesso")
+            messages.success(request, "Estudante editado com sucesso")
             return redirect(editar_estudante, matricula=matricula)
         #envia mensagem de error e redireciona para pagina de editar estudante
-        messages.error(request, "estudante não editado", extra_tags="danger")
+        messages.error(request, "Não foi possível editar o estudante", extra_tags="danger")
         return redirect(editar_estudante, matricula=matricula)
 
 #verifica se o usuario esta logado
@@ -1051,11 +1051,11 @@ def remover_pei(request, matricula):
         #remove o pei
         pei1.delete()
         #envia mensagem de sucesso e redireciona para pagina de dados pei
-        messages.success(request, "pei removido")
+        messages.success(request, "PEI removido com sucesso")
         return redirect("dados_pei", matricula=matricula)
     else:
         # envia mensagem de error e redireciona para pagina de dados pei
-        messages.error(request, "pei não encontrado", extra_tags="danger")
+        messages.error(request, "Não foi possível remover o PEI", extra_tags="danger")
         return redirect("dados_pei", matricula=matricula)
 
 #verifica se o usuario esta logado
@@ -1070,11 +1070,11 @@ def remover_diagnostico(request, matricula):
         #remove o diagnostico
         diagnostico1.delete()
         # envia mensagem de sucesso e redireciona para pagina de dados pei
-        messages.success(request, "diagnostico removido")
+        messages.success(request, "Diagnostico removido com sucesso")
         return redirect("dados_pei", matricula=matricula)
     else:
         # envia mensagem de error e redireciona para pagina de dados pei
-        messages.error(request, "diagnostico não encontrado", extra_tags="danger")
+        messages.error(request, "Diagnóstico não encontrado", extra_tags="danger")
         return redirect("dados_pei", matricula=matricula)
 
 #verifica se o usuario esta logado
@@ -1089,11 +1089,11 @@ def remover_historico_escolar(request, matricula):
         #remove o historico escolar
         historico_escolar1.delete()
         # envia mensagem de sucesso e redireciona para pagina de dados pei
-        messages.success(request, "historico escolar removido")
+        messages.success(request, "Historico escolar removido com sucesso")
         return redirect("dados_pei", matricula=matricula)
     else:
         # envia mensagem de error e redireciona para pagina de dados pei
-        messages.error(request, "historico escolar não encontrado", extra_tags="danger")
+        messages.error(request, "Historico escolar não encontrado", extra_tags="danger")
         return redirect("dados_pei", matricula=matricula)
 
 #verifica se o usuario esta logado
@@ -1108,11 +1108,11 @@ def remover_perfil_estudante(request, matricula):
         #remove o perfil do estudante
         perfil_estudante1.delete()
         # envia mensagem de sucesso e redireciona para pagina de dados pei
-        messages.success(request, "perfil estudante removido")
+        messages.success(request, "Perfil estudante removido com sucesso")
         return redirect("dados_pei", matricula=matricula)
     else:
         # envia mensagem de error e redireciona para pagina de dados pei
-        messages.error(request, "perfil estudante não encontrado", extra_tags="danger")
+        messages.error(request, "Perfil estudante não encontrado", extra_tags="danger")
         return redirect("dados_pei", matricula=matricula)
 
 #verifica se o usuario esta logado
@@ -1127,11 +1127,11 @@ def remover_checklist(request, matricula, id1):
         #remove a checklist
         checklist1.delete()
         # envia mensagem de sucesso e redireciona para pagina de dados pei
-        messages.success(request, "checklist removido")
+        messages.success(request, "Checklist removida com sucesso")
         return redirect("dados_pei", matricula=matricula)
     else:
         # envia mensagem de error e redireciona para pagina de dados pei
-        messages.error(request, "checklist não encontrado", extra_tags="danger")
+        messages.error(request, "A checklist informada não foi encontrada", extra_tags="danger")
         return redirect("dados_pei", matricula=matricula)
 
 #verifica se o usuario esta logado
@@ -1146,11 +1146,11 @@ def remover_atividade(request, matricula):
         #remove a atividade
         atividade1.delete()
         # envia mensagem de sucesso e redireciona para pagina de dados pei
-        messages.success(request, "atividade removida")
+        messages.success(request, "Atividade removida com sucesso")
         return redirect("dados_pei", matricula=matricula)
     else:
         # envia mensagem de error e redireciona para página de dados pei
-        messages.error(request, "atividade não encontrada", extra_tags="danger")
+        messages.error(request, "A atividade informada não foi encontrada", extra_tags="danger")
         return redirect("dados_pei", matricula=matricula)
 
 #verifica se o usuario esta logado
@@ -1165,12 +1165,12 @@ def remover_planejamento(request, matricula):
         #remove o planejamento
         planejamento1.delete()
         # envia mensagem de sucesso e redireciona para página de dados pei
-        messages.success(request, "planejamento removido")
+        messages.success(request, "Planejamento removido com sucesso")
         return redirect("dados_pei", matricula=matricula)
     # envia mensagem de error e redireciona para página de dados pei
     else:
         # envia mensagem de error e redireciona para pagina de dados pei
-        messages.error(request, "planejamento não encontrado", extra_tags="danger")
+        messages.error(request, "O planejamento informado não foi encontrado", extra_tags="danger")
         return redirect("dados_pei", matricula=matricula)
 
 #verifica se o usuario esta logado
@@ -1185,11 +1185,11 @@ def remover_equipe_pei(request, matricula):
         #remove funcionario estudante
         funcionario_estudante.delete()
         # envia mensagem de sucesso e redireciona para página de dados pei
-        messages.success(request, "equipe pei removido")
+        messages.success(request, "Equipe PEI removida com sucesso")
         return redirect("dados_pei", matricula=matricula)
     else:
         # envia mensagem de error e redireciona para página de dados pei
-        messages.error(request, "equipe pei não encontrado", extra_tags="danger")
+        messages.error(request, "A equipe PEI não foi encontrada", extra_tags="danger")
         return redirect("dados_pei", matricula=matricula)
 
 #verifica se o usuario esta logado
@@ -1204,11 +1204,11 @@ def remover_habilidade_academica(request, matricula, id1):
         # remove habilidade academica
         habilidade_academica1.delete()
         # envia mensagem de sucesso e redireciona para pagina de dados pei
-        messages.success(request, "habilidade academica removido")
+        messages.success(request, "Habilidade acadêmica removida com sucesso")
         return redirect("dados_pei", matricula=matricula)
     else:
         # envia mensagem de error e redireciona para pagina de dados pei
-        messages.error(request, "habilidade academica não encontrado", extra_tags="danger")
+        messages.error(request, "A Habilidade Acadêmica informada não foi encontrada", extra_tags="danger")
         return redirect("dados_pei", matricula=matricula)
 
 #verifica se tem dados no banco de dados, se tiver retorna
@@ -1373,11 +1373,11 @@ def editar_pei(request, matricula):
             #salva o formulario
             formulario.save()
             #envia mensagem de sucesso e redireciona para dados pei
-            messages.success(request, "pei editado com sucesso")
+            messages.success(request, "PEI editado com sucesso")
             return redirect("dados_pei", matricula)
         else:
             # envia mensagem de error e redireciona para dados pei
-            messages.error(request, "pei não editado", extra_tags="danger")
+            messages.error(request, "Não foi possível editar o PEI", extra_tags="danger")
             return redirect("dados_pei", matricula)
 
 #verifica se o usuario esta logado
@@ -1404,10 +1404,10 @@ def editar_equipe_pei(request, matricula):
                 #adiciona o estudante e o funcionario ao funcionario estudante
                 FuncionarioEstudante.objects.create(estudante=estudante, funcionario=funcionario)
         #envia mensagem de sucesso e redireciona para pagina dados pei
-        messages.success(request, "a equipe pei foi editada com sucesso")
+        messages.success(request, "A equipe PEI foi editada com sucesso")
         return redirect("dados_pei", matricula=matricula)
     #envia mensagem de error e redireciona para pagina de dados pei
-    messages.error(request, "a equipe pei não foi editada")
+    messages.error(request, "Não foi possível editar a equipe PEI")
     return redirect("dados_pei", matricula=matricula)
 
 #verifica se o usuario esta logado
@@ -1429,11 +1429,11 @@ def editar_diagnostico(request, matricula):
             #salva o formulario
             formulario.save()
             #envia mensagem de sucesso e redireciona para pagina dados pei
-            messages.success(request, "diagnostico editado com sucesso")
+            messages.success(request, "Diagnostico editado com sucesso")
             return redirect("dados_pei", matricula)
         else:
             #envia mensagem de error e redireciona para pagina de dados pei
-            messages.error(request, "diagnostico não editado", extra_tags="danger")
+            messages.error(request, "Não foi possível editar o diagnóstico", extra_tags="danger")
             return redirect("dados_pei", matricula)
 
 #verifica se o usuario esta logado
@@ -1455,11 +1455,11 @@ def editar_historico_escolar(request, matricula):
             #salva o formulario
             formulario.save()
             #envia mensagem de sucesso e redireciona para pagina de sucesso
-            messages.success(request, "historico escolar editado com sucesso")
+            messages.success(request, "Historico escolar editado com sucesso")
             return redirect("dados_pei", matricula)
         #envia mensagem de error e redireciona para pagina de error
         else:
-            messages.error(request, "historico escolar não editado", extra_tags="danger")
+            messages.error(request, "Não foi possível editar o historico escolar", extra_tags="danger")
             return redirect("dados_pei", matricula)
 
 #verifica se o usuario esta logado
@@ -1481,11 +1481,11 @@ def editar_perfil_estudante(request, matricula):
             #salva o formulario
             formulario.save()
             #envia mensagem de sucesso e redireciona para pagina de dados pei
-            messages.success(request, "perfil estudante editado com sucesso")
+            messages.success(request, "Perfil estudante editado com sucesso")
             return redirect("dados_pei", matricula)
         else:
             #envia mensagem de error e redireciona para pagina de dados pei
-            messages.error(request, "perfil estudante não editado", extra_tags="danger")
+            messages.error(request, "Não foi possível editar o perfil estudante", extra_tags="danger")
             return redirect("dados_pei", matricula)
 
 #verifica se o usuario esta logado
@@ -1507,11 +1507,11 @@ def editar_checklist(request, matricula, id1):
             #salva o formulario
             formulario.save()
             #envia mensagem de sucesso e redireciona para pagina de dados pei
-            messages.success(request, "checklist editado com sucesso")
+            messages.success(request, "Checklist editada com sucesso")
             return redirect("dados_pei", matricula)
         else:
             #envia mensagem de error e redireciona para pagina de dados pei
-            messages.error(request, "checklist não editado", extra_tags="danger")
+            messages.error(request, "Não foi possível editar a checklist", extra_tags="danger")
             return redirect("dados_pei", matricula)
 
 #verifica se o usuario esta logado
@@ -1530,11 +1530,11 @@ def editar_atividade(request, matricula):
             #salva o formulario
             formulario.save()
             #envia mensagem de sucesso e redireciona para pagina de dados pei
-            messages.success(request, "atividade editada com sucesso")
+            messages.success(request, "Atividade editada com sucesso")
             return redirect("dados_pei", matricula)
         else:
             #envia mensagem de error e redireciona para pagina de dados pei
-            messages.error(request, "atividade não editada", extra_tags="danger")
+            messages.error(request, "Não foi possível editar a atividade", extra_tags="danger")
             return redirect("dados_pei", matricula)
 
 #verifica se o usuario esta logado
@@ -1553,11 +1553,11 @@ def editar_planejamento(request, matricula):
             #salva o formulario
             formulario.save()
             #envia mensagem de sucesso e redireciona para pagina de dados pei
-            messages.success(request, "planejamento editado com sucesso")
+            messages.success(request, "Planejamento editado com sucesso")
             return redirect("dados_pei", matricula)
         else:
             #envia mensagem de error e redireciona para pagina de dados pei
-            messages.error(request, "planejamento não editado", extra_tags="danger")
+            messages.error(request, "Não foi possível editar o planejamento", extra_tags="danger")
             return redirect("dados_pei", matricula)
 
 #verifica se o usuario esta logado
@@ -1576,11 +1576,11 @@ def editar_habilidade_academica(request, matricula, id1):
             #salva o formulario
             formulario.save()
             #envia mensagem de sucesso e redireciona para pagina de dados pei
-            messages.success(request, "habilidade academica editado com sucesso")
+            messages.success(request, "Habilidade acadêmica editada com sucesso")
             return redirect("dados_pei", matricula)
         else:
             #envia mensagem de error e redireciona para pagina de dados pei
-            messages.error(request, "habilidade academica não editado", extra_tags="danger")
+            messages.error(request, "Não foi possível editar a habilidade acadêmica", extra_tags="danger")
             return redirect("dados_pei", matricula)
 
 #verifica se o usuario esta logado
