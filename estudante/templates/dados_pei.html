@@ -44,190 +44,245 @@
             </thead>
         </table>
         <br>
-        <form action="{% url 'editar_pei' matricula %}" method="post">{% csrf_token %}
-            {% if pei %}
-            <div class="mb-3">
-                <label class="form-label" for="id_professor">{{pei.professor.label}}</label>
-                {{pei.professor}}
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="id_tempo">Validade</label>
-                {{pei.tempo}}
-            </div>
-            <div class="row g-3">
-                <div class="col-6">
-                    <input type="submit" value="confirmar" class="btn btn-success p-1 w-100">
+        {% if pei %}
+        <div class="mb-3">
+            <h1>pei</h1>
+            <p><button class="btn btn-primary" commandfor="tela_pei" command="show-modal">pei</button></p>
+        </div>
+        <dialog id="tela_pei">
+            <h1>pei</h1>
+            <form action="{% url 'editar_pei' matricula %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label" for="id_professor">{{pei.professor.label}}</label>
+                    {{pei.professor}}
                 </div>
-                <div class="col-6">
-                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_pei' estudante.matricula %}">Remover PEI</a>
+                <div class="mb-3">
+                    <label class="form-label" for="id_tempo">Validade</label>
+                    {{pei.tempo}}
                 </div>
-            </div>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <input type="submit" value="confirmar" class="btn btn-success p-1 w-100">
+                    </div>
+                    <div class="col-6">
+                        <a class="btn btn-danger p-1 w-100" href="{% url 'remover_pei' estudante.matricula %}">
+                            remover pei
+                        </a>
+                    </div>
+                    <button type="button" class="btn btn-danger" commandfor="tela_pei"  command="close">fechar</button>
+                </div>
+            </form>
+        </dialog>
             {% else %}
             <h1>pei</h1>
             <p>PEI não cadastrado</p>
             {% endif %}
-        </form>
+
         <br>
         <hr class="w-100  m-0 p-0 border-dark">
         <div class="display-6 p-2">
             Equipe PEI
         </div>
         <br>
-        <form action="{% url 'editar_equipe_pei' matricula %}" method="post">{% csrf_token %}
-            {% if equipe_pei %}
+        {% if equipe_pei %}
+        <button class="btn btn-primary" commandfor="tela_equipe" command="show-modal">equipe pei</button>
+        <dialog id="tela_equipe">
+            <h1>equipe pei</h1>
+            <form action="{% url 'editar_equipe_pei' matricula %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    {{equipe_pei}}
+                </div>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <input type="submit" value="Confirmar" class="btn btn-success p-1 w-100">
+                    </div>
+                    <div class="col-6">
+                        <a class="btn btn-danger p-1 w-100" href="{% url 'remover_equipe_pei' estudante.matricula %}">Remover equipe PEI</a>
+                    </div>
+                    <button class="btn btn-danger" type="button" commandfor="tela_equipe" command="close">fechar</button>
+                </div>
+            </form>
 
-            <div class="mb-3">
-                {{equipe_pei}}
-            </div>
-            <div class="row g-3">
-                <div class="col-6">
-                    <input type="submit" value="Confirmar" class="btn btn-success p-1 w-100">
-                </div>
-                <div class="col-6">
-                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_equipe_pei' estudante.matricula %}">Remover equipe PEI</a>
-                </div>
-            </div>
-            {% else %}
+        </dialog>
+
+         {% else %}
             <p> Equipe não encontrada</p>
             {% endif %}
-        </form>
         <br>
         <hr class="w-100  m-0 p-0 border-dark">
         <div class="display-6 p-2">
             Diagnostico
         </div>
-        <form action="{% url 'editar_diagnostico' matricula %}" method="post">{% csrf_token %}
-            {% if diagnostico %}
-            <div class="mb-3">
-                <label for="id_laudo" class="form-label">{{diagnostico.laudo.label}}</label>
-                {{diagnostico.laudo}}
-            </div>
-            <div class="mb-3">
-                <label for="id_texto" class="form-label">Descrição</label>
-                {{diagnostico.texto}}
-            </div>
-            <div class="mb-3">
-                <label for="id_ano_diagnostico" class="form-label">{{diagnostico.ano_diagnostico.label}}</label>
-                {{diagnostico.ano_diagnostico}}
-            </div>
-            <div class="mb-3">
-                <label for="id_atendimento_fora_da_escola" class="form-label">{{diagnostico.atendimento_fora_da_escola.label}}</label>
-                {{diagnostico.atendimento_fora_da_escola}}
-            </div>
-            <div class="mb-3">
-                <label for="id_texto_atendimento" class="p-1">Caso tenha informado que sim em "atendimento fora da escola", identificar qual tipo de atendimento e periodicidade
-                (Exemplos: Fonoaudiólogo, Fisioterapeuta, Psicopedagoga, etc)</label>
-                {{diagnostico.texto_atendimento}}
-            </div>
-            <div class="row g-3">
-                <div class="col-6">
-                    <input type="submit" value="confirmar" class="btn btn-success p-1 w-100">
+        {% if diagnostico %}
+        <button class="btn btn-primary" commandfor="tela_diagnostico" command="show-modal">tela diagnostico</button>
+        <dialog id="tela_diagnostico">
+            <h1>diagnostico</h1>
+            <form action="{% url 'editar_diagnostico' matricula %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_laudo" class="form-label">{{diagnostico.laudo.label}}</label>
+                    {{diagnostico.laudo}}
                 </div>
-                <div class="col-6">
-                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_diagnostico' estudante.matricula%}">remover diagnostico</a>
+                <div class="mb-3">
+                    <label for="id_texto" class="form-label">Descrição</label>
+                    {{diagnostico.texto}}
                 </div>
-            </div>
-            {% else %}
-                <p>Diagnostico não encontrado</p>
-            {% endif %}
-        </form>
+                <div class="mb-3">
+                    <label for="id_ano_diagnostico" class="form-label">{{diagnostico.ano_diagnostico.label}}</label>
+                    {{diagnostico.ano_diagnostico}}
+                </div>
+                <div class="mb-3">
+                    <label for="id_atendimento_fora_da_escola" class="form-label">{{diagnostico.atendimento_fora_da_escola.label}}</label>
+                    {{diagnostico.atendimento_fora_da_escola}}
+                </div>
+                <div class="mb-3">
+                    <label for="id_texto_atendimento" class="p-1">Caso tenha informado que sim em "atendimento fora da
+                        escola", identificar qual tipo de atendimento e periodicidade
+                        (Exemplos: Fonoaudiólogo, Fisioterapeuta, Psicopedagoga, etc)</label>
+                    {{diagnostico.texto_atendimento}}
+                </div>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <input type="submit" value="confirmar" class="btn btn-success p-1 w-100">
+                    </div>
+                    <div class="col-6">
+                        <a class="btn btn-danger p-1 w-100" href="{% url 'remover_diagnostico' estudante.matricula%}">remover
+                            diagnostico</a>
+                    </div>
+                    <button class="btn btn-danger" type="button" commandfor="tela_diagnostico" command="close">fechar</button>
+                </div>
+            </form>
+        </dialog>
+        {% else %}
+            <p>Diagnostico não encontrado</p>
+        {% endif %}
         <br>
         <hr class="w-100  m-0 p-0 border-dark">
         <div class="display-6 p-2">
             Breve histórico escolar
         </div>
-        <form action="{% url 'editar_historico_escolar' matricula %}" method="post">{% csrf_token %}
-            {% if historico_escolar %}
-            <div class="mb-3">
-                {{historico_escolar.texto}}
-            </div>
-            <div class="mb-3">
-                <label for="id_texto2" class="form-label">Adaptações, estratégias e procedimentos metodológicos já utilizados, que obtiveram êxito com o(a) estudante:</label>
-                {{historico_escolar.texto2}}
-            </div>
-            <div class="row g-3">
-                <div class="col-6">
-                    <input type="submit" value="confirmar" class="btn btn-success p-1 w-100">
+        {% if historico_escolar %}
+        <button class="btn btn-primary" commandfor="tela_historico_escolar" command="show-modal">historico escolar</button>
+        <dialog id="tela_historico_escolar">
+            <h1>breve historico escolar</h1>
+            <form action="{% url 'editar_historico_escolar' matricula %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    {{historico_escolar.texto}}
                 </div>
-                <div class="col-6">
-                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_historico_escolar' estudante.matricula %}">Remover historico</a>
+                <div class="mb-3">
+                    <label for="id_texto2" class="form-label">Adaptações, estratégias e procedimentos metodológicos já
+                        utilizados, que obtiveram êxito com o(a) estudante:</label>
+                    {{historico_escolar.texto2}}
                 </div>
-            </div>
-            {% else %}
+                <div class="row g-3">
+                    <div class="col-6">
+                        <input type="submit" value="confirmar" class="btn btn-success p-1 w-100">
+                    </div>
+                    <div class="col-6">
+                        <a class="btn btn-danger p-1 w-100"
+                           href="{% url 'remover_historico_escolar' estudante.matricula %}">Remover historico</a>
+                    </div>
+                    <button class="btn btn-danger" type="button" commandfor="tela_historico_escolar" command="close">fechar</button>
+                </div>
+            </form>
+        </dialog>
+        {% else %}
             <p>Histórico escolar não encontrado</p>
-            {% endif %}
-        </form>
+        {% endif %}
         <br>
         <hr class="w-100  m-0 p-0 border-dark">
         <div class="display-6 p-2">
             Perfil do estudante
         </div>
-        <form action="{% url 'editar_perfil_estudante' matricula %}" method="post">{% csrf_token %}
-            {% if perfil_estudante %}
-            <div class="mb-3">
-                <label for="id_interesse" class="p-1">{{perfil_estudante.interesse.label}}</label>
-                {{perfil_estudante.interesse}}
-            </div>
-            <div class="mb-3">
-                <label for="id_habilidade" class="p-1">Habilidades</label>
-                {{perfil_estudante.habilidade}}
-            </div>
-            <div class="mb-3">
-                <label for="id_nao_gosta" class="p-1">Não Gosta</label>
-                {{perfil_estudante.nao_gosta}}
-            </div>
-            <div class="mb-3">
-                <label for="id_dificuldade" class="p-1">Dificuldades</label>
-                {{perfil_estudante.dificuldade}}
-            </div>
-            <div class="mb-3">
-                <label for="id_informacao" class="p-1">Outras informações relevantes (indicar de forma sucinta elementos de apoio oferecidos pela família, profissionais clínicos e outros atendimentos/tratamentos/encaminhamentos):</label>
-                {{perfil_estudante.informacao}}
-            </div>
-            <div class="row g-3">
-                <div class="col-6">
-                    <input type="submit" value="Confirmar" class="btn btn-success p-1 w-100">
+        {% if perfil_estudante %}
+        <button class="btn btn-primary" commandfor="tela_perfil_estudante" command="show-modal">tela perfil estudante</button>
+        <dialog id="tela_perfil_estudante">
+            <h1>perfil estudante</h1>
+            <form action="{% url 'editar_perfil_estudante' matricula %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_interesse" class="p-1">{{perfil_estudante.interesse.label}}</label>
+                    {{perfil_estudante.interesse}}
                 </div>
-                <div class="col-6">
-                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_perfil_estudante' estudante.matricula %}">Remover perfil de estudante</a>
+                <div class="mb-3">
+                    <label for="id_habilidade" class="p-1">Habilidades</label>
+                    {{perfil_estudante.habilidade}}
                 </div>
-            </div>
-            {% else %}
-            <p>Perfil do estudante não encontrado</p>
-            {% endif %}
-        </form>
+                <div class="mb-3">
+                    <label for="id_nao_gosta" class="p-1">Não Gosta</label>
+                    {{perfil_estudante.nao_gosta}}
+                </div>
+                <div class="mb-3">
+                    <label for="id_dificuldade" class="p-1">Dificuldades</label>
+                    {{perfil_estudante.dificuldade}}
+                </div>
+                <div class="mb-3">
+                    <label for="id_informacao" class="p-1">Outras informações relevantes (indicar de forma sucinta
+                        elementos de apoio oferecidos pela família, profissionais clínicos e outros
+                        atendimentos/tratamentos/encaminhamentos):</label>
+                    {{perfil_estudante.informacao}}
+                </div>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <input type="submit" value="Confirmar" class="btn btn-success p-1 w-100">
+                    </div>
+                    <div class="col-6">
+                        <a class="btn btn-danger p-1 w-100"
+                           href="{% url 'remover_perfil_estudante' estudante.matricula %}">Remover perfil de
+                            estudante</a>
+                    </div>
+                    <button class="btn btn-danger" type="button" commandfor="tela_perfil_estudante" command="close">fechar</button>
+
+                </div>
+            </form>
+        </dialog>
+       {% else %}
+        <p>Perfil do estudante não encontrado</p>
+        {% endif %}
         <br>
         <hr class="w-100  m-0 p-0 border-dark">
         <br>
         {% if checklist %}
+        <h1>checklist</h1>
         {% for adaptacao in checklist %}
-         <div class="display-6 p-2">
-           {{adaptacao.checklist.value}}
-         </div>
-        <form action="{% url 'editar_checklist' matricula adaptacao.instance.id %}" method="post">{% csrf_token %}
-            <div class="mb-3">
-                <label for="{{adaptacao.checklist.id_for_label}}">{{adaptacao.checklist.label}}</label>
-                {{adaptacao.checklist}}
+
+        <div class="mb-3">
+            <button class="btn btn-primary" commandfor="tela_checklist{{forloop.counter}}" command="show-modal">
+                {{adaptacao.instance.checklist}}
+            </button>
+        </div>
+        <dialog id="tela_checklist{{forloop.counter}}">
+            <div class="display-6 p-2">
+                {{adaptacao.checklist.value}}
             </div>
-            <div class="mb-3">
-                <label for="{{adaptacao.pergunta.id_for_label}}">{{adaptacao.pergunta.label}}</label>
-                {{adaptacao.pergunta}}
-            </div>
-            <div class="mb-3">
-                <label for="{{adaptacao.texto.id_for_label}}" class="form-label">Descrever/Especificar as adaptações selecionadas:</label>
-                {{adaptacao.texto}}
-            </div>
-            <div class="row g-3">
-                <div class="col-6">
-                    <input type="submit" value="confirmar" class="btn btn-success p-1 w-100">
+            <form action="{% url 'editar_checklist' matricula adaptacao.instance.id %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    <label for="{{adaptacao.checklist.id_for_label}}">{{adaptacao.checklist.label}}</label>
+                    {{adaptacao.checklist}}
                 </div>
-                <div class="col-6">
-                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_checklist' estudante.matricula adaptacao.instance.id %}">Remover checklist</a>
+                <div class="mb-3">
+                    <label for="{{adaptacao.pergunta.id_for_label}}">{{adaptacao.pergunta.label}}</label>
+                    {{adaptacao.pergunta}}
                 </div>
-            </div>
-        </form>
-        <hr>
+                <div class="mb-3">
+                    <label for="{{adaptacao.texto.id_for_label}}" class="form-label">Descrever/Especificar as adaptações
+                        selecionadas:</label>
+                    {{adaptacao.texto}}
+                </div>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <input type="submit" value="confirmar" class="btn btn-success p-1 w-100">
+                    </div>
+                    <div class="col-6">
+                        <a class="btn btn-danger p-1 w-100"
+                           href="{% url 'remover_checklist' estudante.matricula adaptacao.instance.id %}">Remover
+                            checklist</a>
+                    </div>
+                    <button class="btn btn-danger" type="button" commandfor="tela_checklist{{forloop.counter}}" command="close">fechar</button>
+                </div>
+            </form>
+            <hr>
+        </dialog>
         {% endfor %}
+
         {% else %}
         <h1>checklist</h1>
         <p>checklist nao encontrada</p>
@@ -237,63 +292,76 @@
          <div class="display-6 p-2">
             Outras atividades
         </div>
-        <form action="{% url 'editar_atividade' matricula %}" method="post">{% csrf_token %}
-            {% if atividade %}
-            <div class="mb-3">
-                <label for="{{atividade.atividade.id_for_label}}" class="form-label">{{atividade.atividade.label}}</label>
-                {{atividade.atividade}}
-            </div>
-            <div class="mb-3">
-                <label for="{{atividade.descricao.id_for_label}}" class="form-label">{{atividade.descricao.label}}</label>
-                {{atividade.descricao}}
-            </div>
-            <div class="row g-3">
-                <div class="col-6">
-                    <input type="submit" value="Confirmar" class="btn btn-success p-1 w-100">
+        {% if atividade %}
+        <button class="btn btn-primary" commandfor="tela_atividade" command="show-modal">atividade</button>
+        <dialog id="tela_atividade">
+            <h1>outras atividades</h1>
+            <form action="{% url 'editar_atividade' matricula %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    <label for="{{atividade.atividade.id_for_label}}"
+                           class="form-label">{{atividade.atividade.label}}</label>
+                    {{atividade.atividade}}
                 </div>
-                <div class="col-6">
-                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_atividade' estudante.matricula %}">Remover atividades</a>
+                <div class="mb-3">
+                    <label for="{{atividade.descricao.id_for_label}}"
+                           class="form-label">{{atividade.descricao.label}}</label>
+                    {{atividade.descricao}}
                 </div>
-            </div>
-            {% else %}
+                <div class="row g-3">
+                    <div class="col-6">
+                        <input type="submit" value="Confirmar" class="btn btn-success p-1 w-100">
+                    </div>
+                    <div class="col-6">
+                        <a class="btn btn-danger p-1 w-100" href="{% url 'remover_atividade' estudante.matricula %}">Remover
+                            atividades</a>
+                    </div>
+                    <button class="btn btn-danger" type="button" commandfor="tela_atividade" command="close">fechar</button>
+                </div>
+            </form>
+        </dialog>
+        {% else %}
             <p>Atividades não encontradas</p>
-            {% endif %}
-        </form>
+        {% endif %}
         <br>
         <hr class="w-100  m-0 p-0 border-dark">
          <div class="display-6 p-2">
             Planejamento
         </div>
-        <form action="{% url 'editar_planejamento' matricula %}" method="post">{% csrf_token %}
-            {% if planejamento %}
-            <div class="mb-3">
-                <label for="{{planejamento.habilidade.id_for_label}}" class="form-label">{{planejamento.habilidade.label}}</label>
-                {{planejamento.habilidade}}
-            </div>
-            <div class="mb-3">
-                <label for="{{planejamento.metas_curto_prazo.id_for_label}}" class="form-label">{{planejamento.metas_curto_prazo.label}}</label>
-                {{planejamento.metas_curto_prazo}}
-            </div>
-            <div class="mb-3">
-                <label for="{{planejamento.metas_medio_prazo.id_for_label}}" class="form-label">{{planejamento.metas_medio_prazo.label}}</label>
-                {{planejamento.metas_medio_prazo}}
-            </div>
-            <div class="mb-3">
-                <label for="{{planejamento.metas_longo_prazo.id_for_label}}" class="form-label">{{planejamento.metas_longo_prazo.label}}</label>
-                {{planejamento.metas_longo_prazo}}
-            </div>
-            <div class="row g-3">
-                <div class="col-6">
-                    <input type="submit" value="Confirmar" class="btn btn-success p-1 w-100">
+        {% if planejamento %}
+        <button class="btn btn-primary" commandfor="tela_planejamento" command="show-modal">planejamento</button>
+        <dialog id="tela_planejamento">
+            <form action="{% url 'editar_planejamento' matricula %}" method="post">{% csrf_token %}
+                <div class="mb-3">
+                    <label for="{{planejamento.habilidade.id_for_label}}" class="form-label">{{planejamento.habilidade.label}}</label>
+                    {{planejamento.habilidade}}
                 </div>
-                <div class="col-6">
-                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_planejamento' estudante.matricula %}">Remover planejamento</a>
+                <div class="mb-3">
+                    <label for="{{planejamento.metas_curto_prazo.id_for_label}}" class="form-label">{{planejamento.metas_curto_prazo.label}}</label>
+                    {{planejamento.metas_curto_prazo}}
                 </div>
-            </div>
-            {% else %}
+                <div class="mb-3">
+                    <label for="{{planejamento.metas_medio_prazo.id_for_label}}" class="form-label">{{planejamento.metas_medio_prazo.label}}</label>
+                    {{planejamento.metas_medio_prazo}}
+                </div>
+                <div class="mb-3">
+                    <label for="{{planejamento.metas_longo_prazo.id_for_label}}" class="form-label">{{planejamento.metas_longo_prazo.label}}</label>
+                    {{planejamento.metas_longo_prazo}}
+                </div>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <input type="submit" value="Confirmar" class="btn btn-success p-1 w-100">
+                    </div>
+                    <div class="col-6">
+                        <a class="btn btn-danger p-1 w-100" href="{% url 'remover_planejamento' estudante.matricula %}">Remover
+                            planejamento</a>
+                    </div>
+                    <button class="btn btn-danger" type="button" commandfor="tela_planejamento" command="close">fechar</button>
+                </div>
+            </form>
+        </dialog>
+        {% else %}
             <p>Planejamento não encontrado</p>
-            {% endif %}
-        </form>
+        {% endif %}
         <br>
         <hr class="w-100  m-0 p-0 border-dark">
          <div class="display-6 p-2">
@@ -301,61 +369,71 @@
          </div>
         {% if lista2 %}
         {% for habilidade_academica in lista2 %}
-        <form action="{% url 'editar_habilidade_academica' matricula habilidade_academica.instance.id %}" method="post">{% csrf_token %}
-            <h2>habilidade academica {{forloop.counter}}</h2>
-            <div class="mb-3">
-                <label for="{{habilidade_academica.professor.id_for_label}}" class="form label">{{habilidade_academica.professor.label}}</label>
-                {{habilidade_academica.professor}}
-            </div>
-            <div class="mb-3">
-                <label for="{{habilidade_academica.componente_curricular.id_for_label}}" class="form label">{{habilidade_academica.componente_curricular.label}}</label>
-                {{habilidade_academica.componente_curricular}}
-            </div>
-            <div class="mb-3">
-                <label for="{{habilidade_academica.adaptacao_curricular.id_for_label}}" class="form label">{{habilidade_academica.adaptacao_curricular.label}}</label>
-                {{habilidade_academica.adaptacao_curricular}}
-            </div>
-            <div class="mb-3">
-                <label for="{{habilidade_academica.habilidade.id_for_label}}" class="form label">{{habilidade_academica.habilidade.label}}</label>
-                {{habilidade_academica.habilidade}}
-            </div>
-            <div class="mb-3">
-                <label for="{{habilidade_academica.objetivo.id_for_label}}" class="form label">{{habilidade_academica.objetivo.label}}</label>
-                {{habilidade_academica.objetivo}}
-            </div>
-            <div class="mb-3">
-                <label for="{{habilidade_academica.facilidade.id_for_label}}" class="form label">{{habilidade_academica.facilidade.label}}</label>
-                {{habilidade_academica.facilidade}}
-            </div>
-            <div class="mb-3">
-                <label for="{{habilidade_academica.dificuldade.id_for_label}}" class="form label">{{habilidade_academica.dificuldade.label}}</label>
-                {{habilidade_academica.dificuldade}}
-            </div>
-            <div class="mb-3">
-                <label for="{{habilidade_academica.metas_turma.id_for_label}}" class="form label">{{habilidade_academica.metas_turma.label}}</label>
-                {{habilidade_academica.metas_turma}}
-            </div>
-            <div class="mb-3">
-                <label for="{{habilidade_academica.procedimento.id_for_label}}" class="form label">{{habilidade_academica.procedimento.label}}</label>
-                {{habilidade_academica.procedimento}}
-            </div>
-            <div class="mb-3">
-                <label for="{{habilidade_academica.adaptaco.id_for_label}}" class="form label">{{habilidade_academica.adaptacao.label}}</label>
-                {{habilidade_academica.adaptacao}}
-            </div>
-            <div class="mb-3">
-                <label for="{{habilidade_academica.avaliacao.id_for_label}}" class="form label">{{habilidade_academica.avaliacao.label}}</label>
-                {{habilidade_academica.avaliacao}}
-            </div>
-            <div class="row g-3">
-                <div class="col-6">
-                    <input type="submit" value="Confirmar" class="btn btn-success p-1 w-100">
+        <div class="mb-3">
+            <button class="btn btn-primary" commandfor="tela_habilidade_academica{{forloop.counter}}"
+                    command="show-modal">habilidade academica {{forloop.counter}}</button>
+        </div>
+        <dialog id="tela_habilidade_academica{{forloop.counter}}">
+            <form action="{% url 'editar_habilidade_academica' matricula habilidade_academica.instance.id %}"
+                  method="post">{% csrf_token %}
+                <h2>habilidade academica {{forloop.counter}}</h2>
+                <div class="mb-3">
+                    <label for="{{habilidade_academica.professor.id_for_label}}" class="form label">{{habilidade_academica.professor.label}}</label>
+                    {{habilidade_academica.professor}}
                 </div>
-                <div class="col-6">
-                    <a class="btn btn-danger p-1 w-100" href="{% url 'remover_habilidade_academica' estudante.matricula habilidade_academica.instance.id %}">Remover habilidade academica</a>
+                <div class="mb-3">
+                    <label for="{{habilidade_academica.componente_curricular.id_for_label}}" class="form label">{{habilidade_academica.componente_curricular.label}}</label>
+                    {{habilidade_academica.componente_curricular}}
                 </div>
-            </div>
-        </form>
+                <div class="mb-3">
+                    <label for="{{habilidade_academica.adaptacao_curricular.id_for_label}}" class="form label">{{habilidade_academica.adaptacao_curricular.label}}</label>
+                    {{habilidade_academica.adaptacao_curricular}}
+                </div>
+                <div class="mb-3">
+                    <label for="{{habilidade_academica.habilidade.id_for_label}}" class="form label">{{habilidade_academica.habilidade.label}}</label>
+                    {{habilidade_academica.habilidade}}
+                </div>
+                <div class="mb-3">
+                    <label for="{{habilidade_academica.objetivo.id_for_label}}" class="form label">{{habilidade_academica.objetivo.label}}</label>
+                    {{habilidade_academica.objetivo}}
+                </div>
+                <div class="mb-3">
+                    <label for="{{habilidade_academica.facilidade.id_for_label}}" class="form label">{{habilidade_academica.facilidade.label}}</label>
+                    {{habilidade_academica.facilidade}}
+                </div>
+                <div class="mb-3">
+                    <label for="{{habilidade_academica.dificuldade.id_for_label}}" class="form label">{{habilidade_academica.dificuldade.label}}</label>
+                    {{habilidade_academica.dificuldade}}
+                </div>
+                <div class="mb-3">
+                    <label for="{{habilidade_academica.metas_turma.id_for_label}}" class="form label">{{habilidade_academica.metas_turma.label}}</label>
+                    {{habilidade_academica.metas_turma}}
+                </div>
+                <div class="mb-3">
+                    <label for="{{habilidade_academica.procedimento.id_for_label}}" class="form label">{{habilidade_academica.procedimento.label}}</label>
+                    {{habilidade_academica.procedimento}}
+                </div>
+                <div class="mb-3">
+                    <label for="{{habilidade_academica.adaptaco.id_for_label}}" class="form label">{{habilidade_academica.adaptacao.label}}</label>
+                    {{habilidade_academica.adaptacao}}
+                </div>
+                <div class="mb-3">
+                    <label for="{{habilidade_academica.avaliacao.id_for_label}}" class="form label">{{habilidade_academica.avaliacao.label}}</label>
+                    {{habilidade_academica.avaliacao}}
+                </div>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <input type="submit" value="Confirmar" class="btn btn-success p-1 w-100">
+                    </div>
+                    <div class="col-6">
+                        <a class="btn btn-danger p-1 w-100"
+                           href="{% url 'remover_habilidade_academica' estudante.matricula habilidade_academica.instance.id %}">Remover
+                            habilidade academica</a>
+                    </div>
+                    <button class="btn btn-danger" type="button" commandfor="tela_habilidade_academica{{forloop.counter}}" command="close">fechar</button>
+                </div>
+            </form>
+        </dialog>
             <hr>
             {% endfor %}
             {% else %}
