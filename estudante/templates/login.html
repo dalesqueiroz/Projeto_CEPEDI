@@ -72,9 +72,9 @@
                 <div class="justify-content-center align-items-center">
                     <form action="{% url 'login1' %}" method="post">{% csrf_token %}
                         <p class="txt-ot fw-bold">Email: <input type="email" name="email" id="email"
-                                                                class="form-control"></p>
+                                                                class="form-control" required></p>
                         <p class="txt-ot fw-bold">Senha: <input type="password" name="senha" id="senha"
-                                                                class="form-control"></p>
+                                                                class="form-control" required></p>
                         <br>
                         <div class="container text-center">
                             <input type="submit" value="Acessar" class="btn btn-lg btn-acesso w-100">
