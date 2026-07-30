@@ -21,6 +21,7 @@ from .forms import (Pei, EquipePei, FormularioDiagnostico, FormularioHistoricoEs
                     EquipePei1)
 from django.core.paginator import Paginator
 from django.db.models import Q
+from datetime import date
 
 
 # Create your views here.
@@ -511,7 +512,7 @@ def planejamento(request):
             if Planejamento.objects.filter(estudante=estudante).first():
                 #se tiver planejamento enviar menasagem de error de planejamento
                 #ja cadastrado e redireciona para pagina de planjamento
-                messages.error(request, "O estudante já possui um planejamento cadastrado. No caso de alteração vá para a tela de edição das informações do PEI do estudanteo", extra_tags="danger")
+                messages.error(request, "O estudante já possui um planejamento cadastrado. No caso de alteração vá para a tela de edição das informações do PEI do estudante", extra_tags="danger")
                 return redirect("planejamento")
             #cadastra o planejamento no banco de dados
             Planejamento.objects.create(estudante=estudante, habilidade=habilidade,
@@ -581,7 +582,7 @@ def habilidade_academica(request):
                                                                      avaliacao = avaliacao)
             if habilidade_academica1:
                 #envia mensagem de sucesso e redireciona para página de habilidade academica
-                messages.success(request, "Habilidade acadêmica cadastrado")
+                messages.success(request, "Habilidade acadêmica cadastrada com sucesso")
                 return redirect("habilidade_academica")
         #envia mensagem de error e redireciona para página de habilidade academica
         messages.error(request, "Não foi possível cadastrar a habilidade acadêmica", extra_tags="danger")
@@ -715,8 +716,8 @@ def gerar_pdf(request):
         html = render_to_string("gerar_pdf.html", dicionario)
         #transforma o codigo html em pdf
         pdf = HTML(string=html).write_pdf()
-        #carrega o pdf
-        return HttpResponse(pdf, content_type="application/pdf")
+        #carrega o pdf e diz ao navegar o nome e a forma de o baixar. No caso inline abrira o arquivo no navegador, já se for attachment baixara o arquivo diretamente
+        return HttpResponse(pdf, content_type="application/pdf", headers={"Content-Disposition": f"inline; filename = PEI_{estudante.nome}_dia_{date.today().strftime('%d_%m_%Y_as_%H_%M')}.pdf"})
 
 #verifica se o usuario esta logado senão estiver redireciona para pagina de login
 @login_required(login_url="login1")

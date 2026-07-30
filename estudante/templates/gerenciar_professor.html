@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <title>Gerenciar Professores</title>
+    <title>Sistema de Gestão de PEI e Acompanhamento Pedagogico</title>
 </head>
 <body>
     {% include 'barra_lateral.html' %}
@@ -13,8 +13,8 @@
                 Sistema de Gestão de PEI e Acompanhamento Pedagogico
             </div>
             <br>
-             <div class="display-6 p-2">
-                Gerenciar Professores
+            <div class="display-6 p-2">
+             Gerenciar Professores
              </div>
             <hr class="w-100  m-0 p-0 border-dark">
             <br>
@@ -22,6 +22,7 @@
             <p><a class="btn btn-secondary fs-5 w-100 py-3" href="{% url 'editar_professor_matricula'%}"> Editar</a></p>
             <p><a class="btn btn-secondary fs-5 w-100 py-3" href="{% url 'remover_professor' %}">Remover</a></p>
             <p><a class="btn btn-secondary fs-5 w-100 py-3" href="{% url 'professor_cadastrado' %}">Verificar professores cadastrados</a></p>
+            <br>
         </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
