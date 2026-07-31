@@ -55,6 +55,10 @@ urlpatterns = [
     path("editar_estudante/<str:matricula>/", views.editar_estudante, name="editar_estudante"),
     path("editar_professor_matricula/", views.editar_professor_matricula, name="editar_professor_matricula"),
     path("editar_funcionario_cpf/", views.editar_funcionario_cpf, name="editar_funcionario_cpf"),
-    path("editar_estudante_matricula/", views.editar_estudante_matricula, name="editar_estudante_matricula")
+    path("editar_estudante_matricula/", views.editar_estudante_matricula, name="editar_estudante_matricula"),
+    path("alterar_senha", views.alterar_senha, name="alterar_senha"),
+    path("alterar_email", views.alterar_email, name="alterar_email"),
+    path("remover_conta", views.remover_conta, name="remover_conta"),
+    path("gerenciar_conta", views.gerenciar_conta, name="gerenciar_conta")
 ]
 

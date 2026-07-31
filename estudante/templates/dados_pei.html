@@ -78,7 +78,11 @@
             <hr class="w-100  m-0 p-0 border-dark">
             {% endif %}
         {% if equipe_pei %}
-        <button class="btn btn-secondary fs-5 w-100 py-3" commandfor="tela_equipe" command="show-modal">Equipe de elaboração do PEI</button>
+        <div class="mb-3">
+            <button class="btn btn-secondary fs-5 w-100 py-3" commandfor="tela_equipe" command="show-modal">Equipe de
+                elaboração do PEI
+            </button>
+        </div>
         <dialog id="tela_equipe">
             <h1>Equipe de elaboração do PEI</h1>
             <form action="{% url 'editar_equipe_pei' matricula %}" method="post">{% csrf_token %}
@@ -107,7 +111,11 @@
         {% endif %}
         <br>
         {% if diagnostico %}
-        <button class="btn btn-secondary fs-5 w-100 py-3" commandfor="tela_diagnostico" command="show-modal">Diagnóstico</button>
+    <div class="mb-3">
+        <button class="btn btn-secondary fs-5 w-100 py-3" commandfor="tela_diagnostico" command="show-modal">
+            Diagnóstico
+        </button>
+    </div>
         <dialog id="tela_diagnostico">
              <div class="display-6 p-2">
                 Diagnóstico
@@ -156,7 +164,11 @@
         {% endif %}
         <br>
         {% if historico_escolar %}
-        <button class="btn btn-secondary fs-5 w-100 py-3" commandfor="tela_historico_escolar" command="show-modal">Historico escolar</button>
+<div class="mb-3">
+    <button class="btn btn-secondary fs-5 w-100 py-3" commandfor="tela_historico_escolar" command="show-modal">Historico
+        escolar
+    </button>
+</div>
         <dialog id="tela_historico_escolar">
             <div class="display-6 p-2">
                 Breve historico escolar
@@ -191,7 +203,11 @@
         {% endif %}
         <br>
         {% if perfil_estudante %}
-        <button class="btn btn-secondary fs-5 w-100 py-3" commandfor="tela_perfil_estudante" command="show-modal">Perfil do estudante</button>
+<div class="mb-3">
+    <button class="btn btn-secondary fs-5 w-100 py-3" commandfor="tela_perfil_estudante" command="show-modal">Perfil do
+        estudante
+    </button>
+</div>
         <dialog id="tela_perfil_estudante">
             <div class="display-6 p-2">
                 Perfil do estudante
@@ -241,7 +257,11 @@
         {% endif %}
         <br>
         {% if atividade %}
-        <button class="btn btn-secondary fs-5 w-100 py-3" commandfor="tela_atividade" command="show-modal">Outras atividades</button>
+<div class="mb-3">
+    <button class="btn btn-secondary fs-5 w-100 py-3" commandfor="tela_atividade" command="show-modal">Outras
+        atividades
+    </button>
+</div>
         <dialog id="tela_atividade">
             <h1>Outras atividades / acompanhamentos a serem desenvolvidos</h1>
             <form action="{% url 'editar_atividade' matricula %}" method="post">{% csrf_token %}
@@ -277,7 +297,10 @@
         {% endif %}
         <br>
         {% if planejamento %}
-        <button class="btn btn-secondary fs-5 w-100 py-3" commandfor="tela_planejamento" command="show-modal">Planejamento</button>
+<div class="mb-3">
+    <button class="btn btn-secondary fs-5 w-100 py-3" commandfor="tela_planejamento" command="show-modal">Planejamento
+    </button>
+</div>
         <dialog id="tela_planejamento">
             <div class="display-6 p-2">
                 Planejamento
