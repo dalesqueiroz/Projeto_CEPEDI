@@ -11,6 +11,6 @@ Para instalar o sistema utilize os comandos
 
  Acesse 127.0.0.1:8000
 
- Usuario admin
+ Usuario admin@email.com
 
  Senha 123456
