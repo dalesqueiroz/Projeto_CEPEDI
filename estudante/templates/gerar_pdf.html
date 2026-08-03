@@ -355,11 +355,21 @@
         </tr>
     </table>
     <br>
+    {% for habilidadeAcademica in lista %}
     <table>
         <tr>
             <th colspan="4">
-                <h2>HABILIDADES ACADÊMICAS – POR COMPONENTE CURRICULAR QUE NECESSITAR DE ADAPTAÇÃO INDIVIDUALIZADA</h2>
+                <h2>Habilidade Academica - {{habilidadeAcademica.professor}} - {{habilidadeAcademica.componente_curricular}}</h2>
             </th>
+        </tr>
+        <tr>
+            <th colspan="4">
+                Professor </th>
+            </tr>
+        <tr>
+            <td colspan="4">
+                {{habilidadeAcademica.professor}}
+            </td>
         </tr>
         <tr>
             <th style="width: 15%">
@@ -387,27 +397,29 @@
         </tr>
         <tr>
             <th colspan="4">
-                Facilidades e dificuldades do estudante com deficiência / necessidades específicas no componente curricular (Considerar Avaliação Diagnóstica, Contato com a Família e outros profissionais, quando houver)            </th>
+                Os objetivos de aprendizagem estabelecidos para o estudante na componenete curricular           </th>
             </tr>
         <tr>
             <td colspan="4">
-                {{habilidadeAcademica.facilidade_dificuldade}}
+                {{habilidadeAcademica.objetivo}}
             </td>
         </tr>
         <tr>
-            <th colspan="2">
-                Metas para a turma
-            </th>
-            <th colspan="2">
-                Metas específicas para o estudante com deficiência/necessidades específicas
-            </th>
+            <th colspan="4">
+                As potencialidades, interesses e facilidades apresentadas pelo estudante com deficiencia nessidade especificas no componente curricular</th>
+            </tr>
+        <tr>
+            <td colspan="4">
+                {{habilidadeAcademica.facilidade}}
+            </td>
         </tr>
         <tr>
-            <td colspan="2">
-                {{habilidadeAcademica.metas_turma}}
-            </td>
-            <td colspan="2">
-                {{habilidadeAcademica.metas_especifica}}
+            <th colspan="4">
+                Dificuldads, barreiras ou necessidades especificas identificadas no componente curricular</th>
+            </tr>
+        <tr>
+            <td colspan="4">
+                {{habilidadeAcademica.dificuldade}}
             </td>
         </tr>
          <tr>
@@ -417,7 +429,16 @@
         </tr>
         <tr>
             <td colspan="4">
-                {{habilidadeAcademica.procedimento_metodologico}}
+                {{habilidadeAcademica.procedimento}}
+            </td>
+        </tr>
+        <tr>
+            <th colspan="4">
+                As adaptações nos conteudos, objetivos, atividades e materiais didaticos</th>
+            </tr>
+        <tr>
+            <td colspan="4">
+                {{habilidadeAcademica.adaptacao}}
             </td>
         </tr>
         <tr>
@@ -432,6 +453,7 @@
         </tr>
     </table>
     <br>
+    {% endfor %}
 
     <table class="tabela-assinatura">
         <thead>

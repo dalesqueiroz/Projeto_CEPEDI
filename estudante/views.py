@@ -711,12 +711,12 @@ def gerar_pdf(request):
         checklist = Checklist.objects.filter(estudante=estudante)
         atividade1 = Atividade.objects.filter(estudante=estudante).first()
         planejamento1 = Planejamento.objects.filter(estudante=estudante).first()
-        habilidade_academica1 = HabilidadeAcademica.objects.filter(estudante=estudante).first()
+        habilidade_academica1 = HabilidadeAcademica.objects.filter(estudante=estudante)
         dicionario = {"estudante":estudante, "pei":pei1, "professor":professor,
                       "funcionarioEstudante":funcionario_estudante, "diagnostico":diagnostico1,
                       "historico_escolar":historico_escolar1, "perfil_estudante":perfil_estudante1,
                       "checklist":checklist, "atividade":atividade1, "planejamento":planejamento1,
-                      "habilidadeAcademica":habilidade_academica1}
+                      "lista":habilidade_academica1}
         #redenriza o template com os dados e converte em string
         html = render_to_string("gerar_pdf.html", dicionario)
         #transforma o codigo html em pdf
