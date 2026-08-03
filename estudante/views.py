@@ -30,6 +30,7 @@ from datetime import date
 def cadastro(request):
     return render(request, 'index.html')
 
+@login_required(login_url="login1")
 def cadastro_sistema(request):
     # verifica se o método da requisição é GET,
     # se for GET renderiza a pagina sistema cadastro
