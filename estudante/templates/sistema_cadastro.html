@@ -17,48 +17,53 @@
         background-color: #ffffff;
     }
 </style>
-<body>
-    {% if messages %}
-        {% for msg in messages %}
-        <div class="alert alert-{{msg.tags}}">
-            {{msg.message}}
+<body class="bg-cinza d-flex justify-content-center align-items-center min-vh-100">
+{% include 'barra_lateral.html' %}
+    <main class="flex-grow-1 p-5">
+        <div class="topbar fw-bold" style=" background-color: #00B612; color: #ffffff; font-size: 14px;">
+            Sistema de Gestão de PEI e Acompanhamento Pedagogico
         </div>
-        {% endfor %}
-    {% endif %}
-    <div class="bg-cinza d-flex justify-content-center align-items-center min-vh-100">
+        {% if messages %}
+            {% for msg in messages %}
+            <div class="alert alert-{{msg.tags}}">
+                {{msg.message}}
+            </div>
+            {% endfor %}
+        {% endif %}
         <div class="d-flex flex-column container-branco p-5 flex-shrink-0 p-3 ">
             <div class="box p-4">
-                <div class="display-6 p-2">Realizar cadastro</div>
-                <form action="{% url 'cadastro_sistema' %}" method="post">{% csrf_token %}
-                    <div class="mb-3">
-                        <label for="nome" class="form-label">Nome</label>
-                        <input class="form-control" type="text" name="nome" id="nome" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="cpf" class="form-label">CPF</label>
-                        <input class="form-control" type="text" name="cpf" id="cpf" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input class="form-control" type="text" name="email" id="email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="senha" class="form-label">Senha</label>
-                        <input class="form-control" type="password" name="senha" id="senha" required>
-                    </div>
-                    <div class="mb3">
-                        <label for="senha1" class="class-label">Confirmar senha</label>
-                        <input class="form-control" type="password" name="senha1" id="senha1" required>
-                    </div>
-                    <input class="btn btn-success p-1 w-100" type="submit" value="Cadastrar">
-                </form>
-                <br>
-                <a href="{% url 'painel_administrador' %}" class="nav-link link-black text-end p-1 " style="font-size: 11px;">
-                    Voltar para o painel administrador
-                </a>
-            </div>
+                    <div class="display-6 p-2">Realizar cadastro</div>
+                    <form action="{% url 'cadastro_sistema' %}" method="post">{% csrf_token %}
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome</label>
+                            <input class="form-control" type="text" name="nome" id="nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cpf" class="form-label">CPF</label>
+                            <input class="form-control" type="text" name="cpf" id="cpf" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input class="form-control" type="text" name="email" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="senha" class="form-label">Senha</label>
+                            <input class="form-control" type="password" name="senha" id="senha" required>
+                        </div>
+                        <div class="mb3">
+                            <label for="senha1" class="class-label">Confirmar senha</label>
+                            <input class="form-control" type="password" name="senha1" id="senha1" required>
+                        </div>
+                        <br>
+                        <input class="btn btn-success p-1 w-100" type="submit" value="Cadastrar">
+                    </form>
+                    <br>
+                    <a href="{% url 'painel_administrador' %}" class="nav-link link-black text-end p-1 " style="font-size: 11px;">
+                        Voltar para o painel administrador
+                    </a>
+                </div>
         </div>
-    </div>
+    </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>
