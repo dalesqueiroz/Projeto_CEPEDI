@@ -17,10 +17,9 @@ O sistema permiti gerar relatorio em PDF com todos os dados do estudante, do PEI
 
 # Instalação
 Para instalar o sistema utilize os comandos
-1. ` git clone -b bianca https://github.com/dalesqueiroz/Projeto_CEPEDI.git `
+1. ` git clone https://github.com/dalesqueiroz/Projeto_CEPEDI.git `
 2. ` cd Projeto_CEPEDI `
-3. ` chmod +x instalar.sh `
-4. ` ./instalar.sh `
+3. ` source instalar.sh `
 5. ` python manage.py runserver `
 
  Acesse 127.0.0.1:8000
